@@ -1,10 +1,23 @@
-import React, { useRef } from "react";
+import React, { useCallback, useRef } from "react";
 import { AgGridReact } from "ag-grid-react";
 import { ModuleRegistry, AllCommunityModule } from "ag-grid-community";
 import { useQueryClient } from "@tanstack/react-query";
-import type { ColDef, ValueGetterParams, GetRowIdParams, CellValueChangedEvent, GridApi } from "ag-grid-community";
+import type {
+  ColDef,
+  ValueGetterParams,
+  GetRowIdParams,
+  GridApi,
+  RowSelectionOptions,
+  CellEditRequestEvent,
+} from "ag-grid-community";
 import type { Reply, DraftDecisionDto } from "../api";
-import { useGetApiReplies, usePostApiRepliesApprove, getGetApiRepliesQueryKey } from "../api/replies";
+import {
+  useGetApiReplies,
+  usePostApiRepliesApprove,
+  usePutApiRepliesIgnoreId,
+  getGetApiRepliesQueryKey,
+} from "../api/replies";
+import { useRadixConfirmDialog } from "../components/ui/useRadixConfirmDialog";
 ModuleRegistry.registerModules([AllCommunityModule]);
 
 const MAX_LEN = 10_000;
@@ -17,13 +30,6 @@ const DEFAULT_COL_DEF: ColDef<Reply> = {
 };
 
 const COLUMN_DEFS: ColDef<Reply>[] = [
-  {
-    headerName: "",
-    checkboxSelection: true,
-    headerCheckboxSelection: true,
-    width: 50,
-    pinned: "left",
-  },
   {
     field: "videoTitle",
     headerName: "Title",
@@ -48,6 +54,11 @@ const COLUMN_DEFS: ColDef<Reply>[] = [
   },
 ];
 
+const ROW_SELECTION: RowSelectionOptions<Reply> = {
+  mode: "multiRow",
+  checkboxes: true,
+  enableClickSelection: false,
+};
 const getRowId = (p: GetRowIdParams<Reply>): string => p.data.commentId!;
 
 export default function RepliesPage() {
@@ -64,15 +75,9 @@ export default function RepliesPage() {
   const queryClient = useQueryClient();
   const queryKey = getGetApiRepliesQueryKey();
   const approveMutation = usePostApiRepliesApprove();
+  const ignoreMutation = usePutApiRepliesIgnoreId();
   const gridApiRef = useRef<GridApi<Reply> | null>(null);
-
-  const onCellValueChanged = (e: CellValueChangedEvent<Reply>) => {
-    const updatedRow = e.data;
-    queryClient.setQueryData<Reply[]>(queryKey, (prev) => {
-      if (!prev) return [updatedRow];
-      return prev.map((r) => (r.commentId === updatedRow.commentId ? updatedRow : r));
-    });
-  };
+  const { confirm, confirmDialog } = useRadixConfirmDialog();
 
   const onApproveSelected = async () => {
     const api = gridApiRef.current;
@@ -81,15 +86,45 @@ export default function RepliesPage() {
     const decisions: DraftDecisionDto[] = selected
       .map((r) => ({
         commentId: r.commentId,
-        approvedText: r.finalText?.trim().slice(0, MAX_LEN),
+        approvedText: r.finalText ?? r.suggestedText ?? "",
       }))
       .filter((d) => d.approvedText && d.approvedText.length > 0);
 
     if (decisions.length === 0) return;
 
+    const ok = await confirm(`Approve ${decisions.length} selected ${decisions.length === 1 ? "reply" : "replies"}`);
+    if (!ok) return;
+
     await approveMutation.mutateAsync({ data: decisions });
     await queryClient.invalidateQueries({ queryKey });
   };
+
+  type RepliesObj = Readonly<{ data: ReadonlyArray<Reply> }>;
+  const onCellEditRequest = useCallback(
+    (e: CellEditRequestEvent<Reply>) => {
+      if (e.colDef.field !== "finalText") {
+        return;
+      }
+
+      queryClient.setQueryData<RepliesObj>(queryKey, (prev) => {
+        const nextText = String(e.newValue ?? "");
+        const list = prev?.data ?? [];
+        const idx = list.findIndex((r) => r.commentId === e.data.commentId);
+        if (idx === -1) {
+          throw new Error("Unknown commentId");
+        }
+        if (list[idx].finalText === nextText) {
+          return prev;
+        }
+
+        const nextList = list.slice();
+        nextList[idx] = { ...list[idx], finalText: nextText };
+
+        return { data: nextList };
+      });
+    },
+    [queryClient, queryKey]
+  );
 
   return (
     <div style={{ height: "100vh", width: "100%" }}>
@@ -97,7 +132,11 @@ export default function RepliesPage() {
         <button onClick={() => void refetch()} disabled={isFetching} className="rounded-2xl border px-3 py-2 text-sm">
           {isFetching ? "Refreshing…" : "Refresh"}
         </button>
-        <button onClick={onApproveSelected} className="rounded-2xl bg-black text-white px-4 py-2 text-sm">
+        <button
+          onClick={onApproveSelected}
+          // disabled={(gridApiRef.current?.getSelectedNodes().length ?? 0) === 0} todo
+          className="rounded-2xl bg-black text-white px-4 py-2 text-sm"
+        >
           Approve Selected
         </button>
       </div>
@@ -106,16 +145,18 @@ export default function RepliesPage() {
         rowData={rows}
         columnDefs={COLUMN_DEFS}
         defaultColDef={DEFAULT_COL_DEF}
-        rowSelection="multiple"
+        rowSelection={ROW_SELECTION}
         animateRows
+        readOnlyEdit
+        onCellEditRequest={onCellEditRequest}
         getRowId={getRowId}
-        onCellValueChanged={onCellValueChanged}
         pagination
-        paginationPageSize={25}
+        paginationPageSize={20}
         onGridReady={(e) => {
           gridApiRef.current = e.api;
         }}
       />
+      {confirmDialog}
     </div>
   );
 }
