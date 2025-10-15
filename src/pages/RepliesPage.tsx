@@ -1,6 +1,6 @@
-import React, { useCallback, useRef } from "react";
+import React, { useCallback, useRef, useState } from "react";
 import { AgGridReact } from "ag-grid-react";
-import { ModuleRegistry, AllCommunityModule } from "ag-grid-community";
+import { ModuleRegistry, AllCommunityModule, themeQuartz } from "ag-grid-community";
 import { useQueryClient } from "@tanstack/react-query";
 import type {
   ColDef,
@@ -9,12 +9,13 @@ import type {
   GridApi,
   RowSelectionOptions,
   CellEditRequestEvent,
+  GridReadyEvent,
 } from "ag-grid-community";
 import type { Reply, DraftDecisionDto } from "../api";
 import {
   useGetApiReplies,
   usePostApiRepliesApprove,
-  usePutApiRepliesIgnoreId,
+  usePostApiRepliesBatchIgnore,
   getGetApiRepliesQueryKey,
 } from "../api/replies";
 import { useRadixConfirmDialog } from "../components/ui/useRadixConfirmDialog";
@@ -75,9 +76,20 @@ export default function RepliesPage() {
   const queryClient = useQueryClient();
   const queryKey = getGetApiRepliesQueryKey();
   const approveMutation = usePostApiRepliesApprove();
-  const ignoreMutation = usePutApiRepliesIgnoreId();
+  const ignoreMutation = usePostApiRepliesBatchIgnore();
   const gridApiRef = useRef<GridApi<Reply> | null>(null);
   const { confirm, confirmDialog } = useRadixConfirmDialog();
+  const [selectedCount, setSelectedCount] = useState(0);
+
+  const onGridReady = useCallback((e: GridReadyEvent<Reply, any>) => {
+    gridApiRef.current = e.api;
+    setSelectedCount(e.api.getSelectedNodes().length);
+  }, []);
+
+  const onSelectionChanged = useCallback(() => {
+    const api = gridApiRef.current;
+    setSelectedCount(api ? api.getSelectedNodes().length : 0);
+  }, []);
 
   const onApproveSelected = async () => {
     const api = gridApiRef.current;
@@ -97,6 +109,22 @@ export default function RepliesPage() {
 
     await approveMutation.mutateAsync({ data: decisions });
     await queryClient.invalidateQueries({ queryKey });
+  };
+
+  const onIgnoreSelected = async () => {
+    const api = gridApiRef.current;
+    if (!api) return;
+
+    const selected = api.getSelectedRows() as Reply[];
+    const ids = selected.map((r) => r.commentId).filter(Boolean) as string[];
+    if (ids.length === 0) return;
+
+    const ok = await confirm(`Ignore ${ids.length} selected ${ids.length === 1 ? "reply" : "replies"}?`);
+    if (!ok) return;
+
+    await ignoreMutation.mutateAsync({ data: ids });
+    await queryClient.invalidateQueries({ queryKey });
+    api.deselectAll();
   };
 
   type RepliesObj = Readonly<{ data: ReadonlyArray<Reply> }>;
@@ -126,6 +154,8 @@ export default function RepliesPage() {
     [queryClient, queryKey]
   );
 
+  const isDark = window.matchMedia?.("(prefers-color-scheme: dark)").matches;
+
   return (
     <div style={{ height: "100vh", width: "100%" }}>
       <div className="flex items-center gap-2 p-3 border-b bg-white">
@@ -134,10 +164,17 @@ export default function RepliesPage() {
         </button>
         <button
           onClick={onApproveSelected}
-          // disabled={(gridApiRef.current?.getSelectedNodes().length ?? 0) === 0} todo
+          disabled={selectedCount === 0}
           className="rounded-2xl bg-black text-white px-4 py-2 text-sm"
         >
           Approve Selected
+        </button>
+        <button
+          onClick={onIgnoreSelected}
+          disabled={selectedCount === 0}
+          className="rounded-2xl border px-3 py-2 text-sm disabled:opacity-50"
+        >
+          Ignore Selected
         </button>
       </div>
 
@@ -146,15 +183,15 @@ export default function RepliesPage() {
         columnDefs={COLUMN_DEFS}
         defaultColDef={DEFAULT_COL_DEF}
         rowSelection={ROW_SELECTION}
+        getRowId={getRowId}
         animateRows
         readOnlyEdit
-        onCellEditRequest={onCellEditRequest}
-        getRowId={getRowId}
         pagination
         paginationPageSize={20}
-        onGridReady={(e) => {
-          gridApiRef.current = e.api;
-        }}
+        theme={themeQuartz}
+        onGridReady={onGridReady}
+        onSelectionChanged={onSelectionChanged}
+        onCellEditRequest={onCellEditRequest}
       />
       {confirmDialog}
     </div>

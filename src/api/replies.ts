@@ -32,6 +32,7 @@ import type {
 
 import type {
   BatchDecisionResultDto,
+  BatchIgnoreResult,
   CopyVideoTemplateRequest,
   DraftDecisionDto,
   ProblemDetails,
@@ -234,23 +235,24 @@ const {mutation: mutationOptions, axios: axiosOptions} = options ?
       return useMutation(mutationOptions, queryClient);
     }
     
-export const putApiRepliesIgnoreId = (
-    id: string, options?: AxiosRequestConfig
- ): Promise<AxiosResponse<void>> => {
+export const postApiRepliesBatchIgnore = (
+    postApiRepliesBatchIgnoreBody: string[], options?: AxiosRequestConfig
+ ): Promise<AxiosResponse<BatchIgnoreResult>> => {
     
     
-    return axios.default.put(
-      `/api/replies/ignore/${id}`,undefined,options
+    return axios.default.post(
+      `/api/replies/batch-ignore`,
+      postApiRepliesBatchIgnoreBody,options
     );
   }
 
 
 
-export const getPutApiRepliesIgnoreIdMutationOptions = <TError = AxiosError<ProblemDetails>,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof putApiRepliesIgnoreId>>, TError,{id: string}, TContext>, axios?: AxiosRequestConfig}
-): UseMutationOptions<Awaited<ReturnType<typeof putApiRepliesIgnoreId>>, TError,{id: string}, TContext> => {
+export const getPostApiRepliesBatchIgnoreMutationOptions = <TError = AxiosError<ProblemDetails>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof postApiRepliesBatchIgnore>>, TError,{data: string[]}, TContext>, axios?: AxiosRequestConfig}
+): UseMutationOptions<Awaited<ReturnType<typeof postApiRepliesBatchIgnore>>, TError,{data: string[]}, TContext> => {
 
-const mutationKey = ['putApiRepliesIgnoreId'];
+const mutationKey = ['postApiRepliesBatchIgnore'];
 const {mutation: mutationOptions, axios: axiosOptions} = options ?
       options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
       options
@@ -260,10 +262,10 @@ const {mutation: mutationOptions, axios: axiosOptions} = options ?
       
 
 
-      const mutationFn: MutationFunction<Awaited<ReturnType<typeof putApiRepliesIgnoreId>>, {id: string}> = (props) => {
-          const {id} = props ?? {};
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof postApiRepliesBatchIgnore>>, {data: string[]}> = (props) => {
+          const {data} = props ?? {};
 
-          return  putApiRepliesIgnoreId(id,axiosOptions)
+          return  postApiRepliesBatchIgnore(data,axiosOptions)
         }
 
         
@@ -271,20 +273,20 @@ const {mutation: mutationOptions, axios: axiosOptions} = options ?
 
   return  { mutationFn, ...mutationOptions }}
 
-    export type PutApiRepliesIgnoreIdMutationResult = NonNullable<Awaited<ReturnType<typeof putApiRepliesIgnoreId>>>
-    
-    export type PutApiRepliesIgnoreIdMutationError = AxiosError<ProblemDetails>
+    export type PostApiRepliesBatchIgnoreMutationResult = NonNullable<Awaited<ReturnType<typeof postApiRepliesBatchIgnore>>>
+    export type PostApiRepliesBatchIgnoreMutationBody = string[]
+    export type PostApiRepliesBatchIgnoreMutationError = AxiosError<ProblemDetails>
 
-    export const usePutApiRepliesIgnoreId = <TError = AxiosError<ProblemDetails>,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof putApiRepliesIgnoreId>>, TError,{id: string}, TContext>, axios?: AxiosRequestConfig}
+    export const usePostApiRepliesBatchIgnore = <TError = AxiosError<ProblemDetails>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof postApiRepliesBatchIgnore>>, TError,{data: string[]}, TContext>, axios?: AxiosRequestConfig}
  , queryClient?: QueryClient): UseMutationResult<
-        Awaited<ReturnType<typeof putApiRepliesIgnoreId>>,
+        Awaited<ReturnType<typeof postApiRepliesBatchIgnore>>,
         TError,
-        {id: string},
+        {data: string[]},
         TContext
       > => {
 
-      const mutationOptions = getPutApiRepliesIgnoreIdMutationOptions(options);
+      const mutationOptions = getPostApiRepliesBatchIgnoreMutationOptions(options);
 
       return useMutation(mutationOptions, queryClient);
     }

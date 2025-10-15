@@ -7,6 +7,7 @@
 
 export * from './aiSuggestionOptions';
 export * from './batchDecisionResultDto';
+export * from './batchIgnoreResult';
 export * from './copyVideoTemplateRequest';
 export * from './draftDecisionDto';
 export * from './draftDecisionResultDto';
