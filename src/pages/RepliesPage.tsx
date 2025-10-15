@@ -17,7 +17,7 @@ import {
   usePostApiRepliesApprove,
   usePostApiRepliesBatchIgnore,
   getGetApiRepliesQueryKey,
-} from "../api/replies";
+} from "../api/replies/replies";
 import { useRadixConfirmDialog } from "../components/ui/useRadixConfirmDialog";
 ModuleRegistry.registerModules([AllCommunityModule]);
 

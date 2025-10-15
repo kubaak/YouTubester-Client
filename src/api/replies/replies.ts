@@ -33,12 +33,15 @@ import type {
 import type {
   BatchDecisionResultDto,
   BatchIgnoreResult,
-  CopyVideoTemplateRequest,
   DraftDecisionDto,
   ProblemDetails,
   Reply,
   ValidationProblemDetails
-} from './';
+} from '.././';
+
+
+
+
 
 export const getApiReplies = (
      options?: AxiosRequestConfig
@@ -123,7 +126,6 @@ export function useGetApiReplies<TData = Awaited<ReturnType<typeof getApiReplies
 
 
 
-
 export const deleteApiRepliesId = (
     id: string, options?: AxiosRequestConfig
  ): Promise<AxiosResponse<void>> => {
@@ -178,8 +180,7 @@ const {mutation: mutationOptions, axios: axiosOptions} = options ?
 
       return useMutation(mutationOptions, queryClient);
     }
-    
-export const postApiRepliesApprove = (
+    export const postApiRepliesApprove = (
     draftDecisionDto: DraftDecisionDto[], options?: AxiosRequestConfig
  ): Promise<AxiosResponse<BatchDecisionResultDto>> => {
     
@@ -234,8 +235,7 @@ const {mutation: mutationOptions, axios: axiosOptions} = options ?
 
       return useMutation(mutationOptions, queryClient);
     }
-    
-export const postApiRepliesBatchIgnore = (
+    export const postApiRepliesBatchIgnore = (
     postApiRepliesBatchIgnoreBody: string[], options?: AxiosRequestConfig
  ): Promise<AxiosResponse<BatchIgnoreResult>> => {
     
@@ -291,58 +291,3 @@ const {mutation: mutationOptions, axios: axiosOptions} = options ?
       return useMutation(mutationOptions, queryClient);
     }
     
-export const postApiVideosCopyTemplate = (
-    copyVideoTemplateRequest: CopyVideoTemplateRequest, options?: AxiosRequestConfig
- ): Promise<AxiosResponse<void>> => {
-    
-    
-    return axios.default.post(
-      `/api/videos/copy-template`,
-      copyVideoTemplateRequest,options
-    );
-  }
-
-
-
-export const getPostApiVideosCopyTemplateMutationOptions = <TError = AxiosError<unknown>,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof postApiVideosCopyTemplate>>, TError,{data: CopyVideoTemplateRequest}, TContext>, axios?: AxiosRequestConfig}
-): UseMutationOptions<Awaited<ReturnType<typeof postApiVideosCopyTemplate>>, TError,{data: CopyVideoTemplateRequest}, TContext> => {
-
-const mutationKey = ['postApiVideosCopyTemplate'];
-const {mutation: mutationOptions, axios: axiosOptions} = options ?
-      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
-      options
-      : {...options, mutation: {...options.mutation, mutationKey}}
-      : {mutation: { mutationKey, }, axios: undefined};
-
-      
-
-
-      const mutationFn: MutationFunction<Awaited<ReturnType<typeof postApiVideosCopyTemplate>>, {data: CopyVideoTemplateRequest}> = (props) => {
-          const {data} = props ?? {};
-
-          return  postApiVideosCopyTemplate(data,axiosOptions)
-        }
-
-        
-
-
-  return  { mutationFn, ...mutationOptions }}
-
-    export type PostApiVideosCopyTemplateMutationResult = NonNullable<Awaited<ReturnType<typeof postApiVideosCopyTemplate>>>
-    export type PostApiVideosCopyTemplateMutationBody = CopyVideoTemplateRequest
-    export type PostApiVideosCopyTemplateMutationError = AxiosError<unknown>
-
-    export const usePostApiVideosCopyTemplate = <TError = AxiosError<unknown>,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof postApiVideosCopyTemplate>>, TError,{data: CopyVideoTemplateRequest}, TContext>, axios?: AxiosRequestConfig}
- , queryClient?: QueryClient): UseMutationResult<
-        Awaited<ReturnType<typeof postApiVideosCopyTemplate>>,
-        TError,
-        {data: CopyVideoTemplateRequest},
-        TContext
-      > => {
-
-      const mutationOptions = getPostApiVideosCopyTemplateMutationOptions(options);
-
-      return useMutation(mutationOptions, queryClient);
-    }
