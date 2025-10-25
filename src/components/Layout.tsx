@@ -1,6 +1,6 @@
 import React from "react";
 import { Link, useLocation } from "react-router-dom";
-import { Video, MessageCircle, Home, Settings } from "lucide-react";
+import { Video, MessageCircle, Home, Settings, HelpCircle, Info, Mail } from "lucide-react";
 
 interface LayoutProps {
   children: React.ReactNode;
@@ -32,6 +32,24 @@ var navigationItems: NavigationItem[] = [
     path: "/settings",
     label: "Settings",
     icon: <Settings className="w-5 h-5" />,
+  },
+];
+
+var secondaryNavigationItems: NavigationItem[] = [
+  {
+    path: "/help",
+    label: "Help",
+    icon: <HelpCircle className="w-4 h-4" />,
+  },
+  {
+    path: "/about",
+    label: "About",
+    icon: <Info className="w-4 h-4" />,
+  },
+  {
+    path: "/contact",
+    label: "Contact",
+    icon: <Mail className="w-4 h-4" />,
   },
 ];
 
@@ -84,6 +102,30 @@ export default function Layout({ children }: LayoutProps) {
           </ul>
         </nav>
         
+        {/* Secondary Navigation */}
+        <div className="px-4 py-4 border-t border-sidebar-border/30">
+          <div className="space-y-1">
+            {secondaryNavigationItems.map((item) => {
+              var isActive = location.pathname === item.path;
+              
+              return (
+                <Link
+                  key={item.path}
+                  to={item.path}
+                  className={`flex items-center px-3 py-2 rounded-lg text-xs font-medium transition-all duration-200 hover-lift ${
+                    isActive
+                      ? "bg-primary/10 text-primary border border-primary/20"
+                      : "text-sidebar-foreground/60 hover:text-sidebar-foreground hover:bg-sidebar-accent/30"
+                  }`}
+                >
+                  <span className="mr-3">{item.icon}</span>
+                  <span>{item.label}</span>
+                </Link>
+              );
+            })}
+          </div>
+        </div>
+        
         {/* Sidebar Footer */}
         <div className="mt-auto p-4 border-t border-sidebar-border/30">
           <div className="flex items-center space-x-3 p-3 rounded-xl bg-sidebar-accent/30">
@@ -95,6 +137,19 @@ export default function Layout({ children }: LayoutProps) {
               <p className="text-xs text-sidebar-foreground/60">Premium Plan</p>
             </div>
           </div>
+          
+          {/* Footer Links */}
+          <div className="mt-3 flex justify-center space-x-4 text-xs">
+            <Link to="/faq" className="text-sidebar-foreground/50 hover:text-sidebar-foreground transition-colors">
+              FAQ
+            </Link>
+            <Link to="/privacy" className="text-sidebar-foreground/50 hover:text-sidebar-foreground transition-colors">
+              Privacy
+            </Link>
+            <Link to="/terms" className="text-sidebar-foreground/50 hover:text-sidebar-foreground transition-colors">
+              Terms
+            </Link>
+          </div>
         </div>
       </div>
 
@@ -105,7 +160,12 @@ export default function Layout({ children }: LayoutProps) {
           <div className="flex justify-between items-center">
             <div className="flex items-center space-x-4">
               <h2 className="text-2xl font-bold text-foreground">
-                {navigationItems.find(item => item.path === location.pathname)?.label || "YouTubester"}
+                {navigationItems.find(item => item.path === location.pathname)?.label || 
+                 secondaryNavigationItems.find(item => item.path === location.pathname)?.label ||
+                 (location.pathname === "/faq" ? "FAQ" : null) ||
+                 (location.pathname === "/privacy" ? "Privacy Policy" : null) ||
+                 (location.pathname === "/terms" ? "Terms of Service" : null) ||
+                 "YouTubester"}
               </h2>
               <div className="px-3 py-1 bg-primary/10 text-primary text-xs font-medium rounded-full border border-primary/20">
                 Beta
