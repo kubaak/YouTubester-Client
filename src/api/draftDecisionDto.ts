@@ -6,8 +6,6 @@
  */
 
 export interface DraftDecisionDto {
-  /** @nullable */
-  commentId?: string | null;
-  /** @nullable */
-  approvedText?: string | null;
+  commentId?: string;
+  approvedText?: string;
 }

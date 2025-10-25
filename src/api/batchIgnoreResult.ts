@@ -11,12 +11,8 @@ export interface BatchIgnoreResult {
   alreadyIgnored?: number;
   skippedPosted?: number;
   notFound?: number;
-  /** @nullable */
-  ignoredIds?: string[] | null;
-  /** @nullable */
-  alreadyIgnoredIds?: string[] | null;
-  /** @nullable */
-  skippedPostedIds?: string[] | null;
-  /** @nullable */
-  notFoundIds?: string[] | null;
+  ignoredIds?: string[];
+  alreadyIgnoredIds?: string[];
+  skippedPostedIds?: string[];
+  notFoundIds?: string[];
 }

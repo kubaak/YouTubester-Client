@@ -7,14 +7,10 @@
 import type { ReplyStatus } from './replyStatus';
 
 export interface Reply {
-  /** @nullable */
-  readonly commentId?: string | null;
-  /** @nullable */
-  readonly videoId?: string | null;
-  /** @nullable */
-  readonly videoTitle?: string | null;
-  /** @nullable */
-  readonly commentText?: string | null;
+  readonly commentId?: string;
+  readonly videoId?: string;
+  readonly videoTitle?: string;
+  readonly commentText?: string;
   status?: ReplyStatus;
   /** @nullable */
   readonly suggestedText?: string | null;

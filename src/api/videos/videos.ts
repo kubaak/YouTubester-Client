@@ -5,13 +5,22 @@
  * OpenAPI spec version: 1.0
  */
 import {
-  useMutation
+  useMutation,
+  useQuery
 } from '@tanstack/react-query';
 import type {
+  DataTag,
+  DefinedInitialDataOptions,
+  DefinedUseQueryResult,
   MutationFunction,
   QueryClient,
+  QueryFunction,
+  QueryKey,
+  UndefinedInitialDataOptions,
   UseMutationOptions,
-  UseMutationResult
+  UseMutationResult,
+  UseQueryOptions,
+  UseQueryResult
 } from '@tanstack/react-query';
 
 import * as axios from 'axios';
@@ -22,13 +31,19 @@ import type {
 } from 'axios';
 
 import type {
-  CopyVideoTemplateRequest
+  CopyVideoTemplateRequest,
+  GetApiVideosParams,
+  ProblemDetails,
+  VideoListItemDtoPagedResult
 } from '.././';
 
 
 
 
 
+/**
+ * @summary Copies video template metadata from source to target video using cached data.
+ */
 export const postApiVideosCopyTemplate = (
     copyVideoTemplateRequest: CopyVideoTemplateRequest, options?: AxiosRequestConfig
  ): Promise<AxiosResponse<void>> => {
@@ -42,7 +57,7 @@ export const postApiVideosCopyTemplate = (
 
 
 
-export const getPostApiVideosCopyTemplateMutationOptions = <TError = AxiosError<unknown>,
+export const getPostApiVideosCopyTemplateMutationOptions = <TError = AxiosError<ProblemDetails>,
     TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof postApiVideosCopyTemplate>>, TError,{data: CopyVideoTemplateRequest}, TContext>, axios?: AxiosRequestConfig}
 ): UseMutationOptions<Awaited<ReturnType<typeof postApiVideosCopyTemplate>>, TError,{data: CopyVideoTemplateRequest}, TContext> => {
 
@@ -69,9 +84,12 @@ const {mutation: mutationOptions, axios: axiosOptions} = options ?
 
     export type PostApiVideosCopyTemplateMutationResult = NonNullable<Awaited<ReturnType<typeof postApiVideosCopyTemplate>>>
     export type PostApiVideosCopyTemplateMutationBody = CopyVideoTemplateRequest
-    export type PostApiVideosCopyTemplateMutationError = AxiosError<unknown>
+    export type PostApiVideosCopyTemplateMutationError = AxiosError<ProblemDetails>
 
-    export const usePostApiVideosCopyTemplate = <TError = AxiosError<unknown>,
+    /**
+ * @summary Copies video template metadata from source to target video using cached data.
+ */
+export const usePostApiVideosCopyTemplate = <TError = AxiosError<ProblemDetails>,
     TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof postApiVideosCopyTemplate>>, TError,{data: CopyVideoTemplateRequest}, TContext>, axios?: AxiosRequestConfig}
  , queryClient?: QueryClient): UseMutationResult<
         Awaited<ReturnType<typeof postApiVideosCopyTemplate>>,
@@ -84,4 +102,94 @@ const {mutation: mutationOptions, axios: axiosOptions} = options ?
 
       return useMutation(mutationOptions, queryClient);
     }
+    /**
+ * @summary Gets a paginated list of videos with optional title and visibility filters.
+ */
+export const getApiVideos = (
+    params?: GetApiVideosParams, options?: AxiosRequestConfig
+ ): Promise<AxiosResponse<VideoListItemDtoPagedResult>> => {
     
+    
+    return axios.default.get(
+      `/api/videos`,{
+    ...options,
+        params: {...params, ...options?.params},}
+    );
+  }
+
+
+
+
+export const getGetApiVideosQueryKey = (params?: GetApiVideosParams,) => {
+    return [
+    `/api/videos`, ...(params ? [params]: [])
+    ] as const;
+    }
+
+    
+export const getGetApiVideosQueryOptions = <TData = Awaited<ReturnType<typeof getApiVideos>>, TError = AxiosError<ProblemDetails>>(params?: GetApiVideosParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiVideos>>, TError, TData>>, axios?: AxiosRequestConfig}
+) => {
+
+const {query: queryOptions, axios: axiosOptions} = options ?? {};
+
+  const queryKey =  queryOptions?.queryKey ?? getGetApiVideosQueryKey(params);
+
+  
+
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof getApiVideos>>> = ({ signal }) => getApiVideos(params, { signal, ...axiosOptions });
+
+      
+
+      
+
+   return  { queryKey, queryFn, ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof getApiVideos>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
+}
+
+export type GetApiVideosQueryResult = NonNullable<Awaited<ReturnType<typeof getApiVideos>>>
+export type GetApiVideosQueryError = AxiosError<ProblemDetails>
+
+
+export function useGetApiVideos<TData = Awaited<ReturnType<typeof getApiVideos>>, TError = AxiosError<ProblemDetails>>(
+ params: undefined |  GetApiVideosParams, options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiVideos>>, TError, TData>> & Pick<
+        DefinedInitialDataOptions<
+          Awaited<ReturnType<typeof getApiVideos>>,
+          TError,
+          Awaited<ReturnType<typeof getApiVideos>>
+        > , 'initialData'
+      >, axios?: AxiosRequestConfig}
+ , queryClient?: QueryClient
+  ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useGetApiVideos<TData = Awaited<ReturnType<typeof getApiVideos>>, TError = AxiosError<ProblemDetails>>(
+ params?: GetApiVideosParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiVideos>>, TError, TData>> & Pick<
+        UndefinedInitialDataOptions<
+          Awaited<ReturnType<typeof getApiVideos>>,
+          TError,
+          Awaited<ReturnType<typeof getApiVideos>>
+        > , 'initialData'
+      >, axios?: AxiosRequestConfig}
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useGetApiVideos<TData = Awaited<ReturnType<typeof getApiVideos>>, TError = AxiosError<ProblemDetails>>(
+ params?: GetApiVideosParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiVideos>>, TError, TData>>, axios?: AxiosRequestConfig}
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+/**
+ * @summary Gets a paginated list of videos with optional title and visibility filters.
+ */
+
+export function useGetApiVideos<TData = Awaited<ReturnType<typeof getApiVideos>>, TError = AxiosError<ProblemDetails>>(
+ params?: GetApiVideosParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiVideos>>, TError, TData>>, axios?: AxiosRequestConfig}
+ , queryClient?: QueryClient 
+ ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+
+  const queryOptions = getGetApiVideosQueryOptions(params,options)
+
+  const query = useQuery(queryOptions, queryClient) as  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+
+  query.queryKey = queryOptions.queryKey ;
+
+  return query;
+}
+
+
+

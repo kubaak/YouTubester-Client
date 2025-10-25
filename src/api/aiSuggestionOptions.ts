@@ -6,8 +6,7 @@
  */
 
 export interface AiSuggestionOptions {
-  /** @nullable */
-  promptEnrichment?: string | null;
+  promptEnrichment?: string;
   generateTitle?: boolean;
   generateDescription?: boolean;
   generateTags?: boolean;

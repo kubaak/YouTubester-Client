@@ -1,5 +1,5 @@
-import React from "react";
-import { MessageCircle, Video, TrendingUp, Users } from "lucide-react";
+import React from 'react';
+import { MessageCircle, Video, TrendingUp, Users } from 'lucide-react';
 
 interface StatCardProps {
   title: string;
@@ -34,7 +34,7 @@ function StatCard({ title, value, icon, trend }: StatCardProps) {
           )}
         </div>
       </div>
-      
+
       {/* Subtle gradient overlay on hover */}
       <div className="absolute inset-0 bg-gradient-primary opacity-0 group-hover:opacity-5 rounded-2xl transition-opacity duration-300" />
     </div>
@@ -48,19 +48,15 @@ export default function DashboardPage() {
       <div className="glass p-8 rounded-3xl shadow-moderate border border-border/50">
         <div className="flex items-center justify-between">
           <div>
-            <h1 className="text-3xl font-bold text-foreground mb-2">
-              Welcome back! 👋
-            </h1>
-            <p className="text-lg text-muted-foreground">
-              Here's what's happening with your YouTube content today.
-            </p>
+            <h1 className="text-3xl font-bold text-foreground mb-2">Welcome back! 👋</h1>
+            <p className="text-lg text-muted-foreground">Here's what's happening with your YouTube content today.</p>
           </div>
           <div className="hidden md:block w-24 h-24 bg-gradient-primary rounded-3xl flex items-center justify-center shadow-strong">
             <TrendingUp className="w-12 h-12 text-primary-foreground" />
           </div>
         </div>
       </div>
-      
+
       {/* Stats Grid */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
         <StatCard
@@ -69,18 +65,8 @@ export default function DashboardPage() {
           icon={<MessageCircle className="w-5 h-5" />}
           trend="+12% from last week"
         />
-        <StatCard
-          title="Video Templates"
-          value="45"
-          icon={<Video className="w-5 h-5" />}
-          trend="+3 new this week"
-        />
-        <StatCard
-          title="Active Users"
-          value="89"
-          icon={<Users className="w-5 h-5" />}
-          trend="+5% from last month"
-        />
+        <StatCard title="Video Templates" value="45" icon={<Video className="w-5 h-5" />} trend="+3 new this week" />
+        <StatCard title="Active Users" value="89" icon={<Users className="w-5 h-5" />} trend="+5% from last month" />
         <StatCard
           title="Engagement Rate"
           value="87%"
@@ -106,16 +92,21 @@ export default function DashboardPage() {
               { type: 'warning', text: 'System maintenance completed', time: '3 hours ago', icon: TrendingUp },
               { type: 'success', text: 'User engagement increased', time: '5 hours ago', icon: Users },
             ].map((activity, index) => {
-              var Icon = activity.icon;
-              var colorClass = {
+              const Icon = activity.icon;
+              const colorClass = {
                 success: 'bg-success/10 text-success border-success/20',
                 info: 'bg-primary/10 text-primary border-primary/20',
-                warning: 'bg-warning/10 text-warning border-warning/20'
+                warning: 'bg-warning/10 text-warning border-warning/20',
               }[activity.type];
-              
+
               return (
-                <div key={index} className="group flex items-center space-x-4 p-4 rounded-2xl hover:bg-accent/30 transition-all duration-300">
-                  <div className={`p-2 rounded-xl border ${colorClass} group-hover:scale-110 transition-transform duration-300`}>
+                <div
+                  key={index}
+                  className="group flex items-center space-x-4 p-4 rounded-2xl hover:bg-accent/30 transition-all duration-300"
+                >
+                  <div
+                    className={`p-2 rounded-xl border ${colorClass} group-hover:scale-110 transition-transform duration-300`}
+                  >
                     <Icon className="w-4 h-4" />
                   </div>
                   <div className="flex-1">
@@ -141,11 +132,16 @@ export default function DashboardPage() {
               { icon: TrendingUp, text: 'View Analytics', gradient: 'from-green-500 to-blue-600' },
               { icon: Users, text: 'Manage Users', gradient: 'from-orange-500 to-red-600' },
             ].map((action, index) => {
-              var Icon = action.icon;
+              const Icon = action.icon;
               return (
-                <button key={index} className="group w-full text-left p-4 rounded-2xl border border-border/50 hover:border-primary/30 hover:shadow-moderate transition-all duration-300 hover-lift">
+                <button
+                  key={index}
+                  className="group w-full text-left p-4 rounded-2xl border border-border/50 hover:border-primary/30 hover:shadow-moderate transition-all duration-300 hover-lift"
+                >
                   <div className="flex items-center space-x-4">
-                    <div className={`p-3 bg-gradient-to-r ${action.gradient} rounded-xl shadow-moderate group-hover:shadow-strong transition-all duration-300`}>
+                    <div
+                      className={`p-3 bg-gradient-to-r ${action.gradient} rounded-xl shadow-moderate group-hover:shadow-strong transition-all duration-300`}
+                    >
                       <Icon className="w-5 h-5 text-white" />
                     </div>
                     <div className="flex-1">
