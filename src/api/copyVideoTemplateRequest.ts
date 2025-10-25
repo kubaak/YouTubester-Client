@@ -8,9 +8,9 @@ import type { AiSuggestionOptions } from './aiSuggestionOptions';
 
 export interface CopyVideoTemplateRequest {
   /** @nullable */
-  sourceUrl?: string | null;
+  sourceVideoId?: string | null;
   /** @nullable */
-  targetUrl?: string | null;
+  targetVideoId?: string | null;
   copyTags?: boolean;
   copyLocation?: boolean;
   copyPlaylists?: boolean;

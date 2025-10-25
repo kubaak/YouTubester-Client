@@ -34,8 +34,10 @@ import type {
   BatchDecisionResultDto,
   BatchIgnoreResult,
   DraftDecisionDto,
+  GetApiRepliesParams,
   ProblemDetails,
   Reply,
+  ReplyListItemDtoPagedResult,
   ValidationProblemDetails
 } from '.././';
 
@@ -44,35 +46,37 @@ import type {
 
 
 export const getApiReplies = (
-     options?: AxiosRequestConfig
- ): Promise<AxiosResponse<Reply[]>> => {
+    params?: GetApiRepliesParams, options?: AxiosRequestConfig
+ ): Promise<AxiosResponse<ReplyListItemDtoPagedResult>> => {
     
     
     return axios.default.get(
-      `/api/replies`,options
+      `/api/replies`,{
+    ...options,
+        params: {...params, ...options?.params},}
     );
   }
 
 
 
 
-export const getGetApiRepliesQueryKey = () => {
+export const getGetApiRepliesQueryKey = (params?: GetApiRepliesParams,) => {
     return [
-    `/api/replies`
+    `/api/replies`, ...(params ? [params]: [])
     ] as const;
     }
 
     
-export const getGetApiRepliesQueryOptions = <TData = Awaited<ReturnType<typeof getApiReplies>>, TError = AxiosError<unknown>>( options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiReplies>>, TError, TData>>, axios?: AxiosRequestConfig}
+export const getGetApiRepliesQueryOptions = <TData = Awaited<ReturnType<typeof getApiReplies>>, TError = AxiosError<unknown>>(params?: GetApiRepliesParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiReplies>>, TError, TData>>, axios?: AxiosRequestConfig}
 ) => {
 
 const {query: queryOptions, axios: axiosOptions} = options ?? {};
 
-  const queryKey =  queryOptions?.queryKey ?? getGetApiRepliesQueryKey();
+  const queryKey =  queryOptions?.queryKey ?? getGetApiRepliesQueryKey(params);
 
   
 
-    const queryFn: QueryFunction<Awaited<ReturnType<typeof getApiReplies>>> = ({ signal }) => getApiReplies({ signal, ...axiosOptions });
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof getApiReplies>>> = ({ signal }) => getApiReplies(params, { signal, ...axiosOptions });
 
       
 
@@ -86,7 +90,7 @@ export type GetApiRepliesQueryError = AxiosError<unknown>
 
 
 export function useGetApiReplies<TData = Awaited<ReturnType<typeof getApiReplies>>, TError = AxiosError<unknown>>(
-  options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiReplies>>, TError, TData>> & Pick<
+ params: undefined |  GetApiRepliesParams, options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiReplies>>, TError, TData>> & Pick<
         DefinedInitialDataOptions<
           Awaited<ReturnType<typeof getApiReplies>>,
           TError,
@@ -96,7 +100,7 @@ export function useGetApiReplies<TData = Awaited<ReturnType<typeof getApiReplies
  , queryClient?: QueryClient
   ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 export function useGetApiReplies<TData = Awaited<ReturnType<typeof getApiReplies>>, TError = AxiosError<unknown>>(
-  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiReplies>>, TError, TData>> & Pick<
+ params?: GetApiRepliesParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiReplies>>, TError, TData>> & Pick<
         UndefinedInitialDataOptions<
           Awaited<ReturnType<typeof getApiReplies>>,
           TError,
@@ -106,16 +110,105 @@ export function useGetApiReplies<TData = Awaited<ReturnType<typeof getApiReplies
  , queryClient?: QueryClient
   ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 export function useGetApiReplies<TData = Awaited<ReturnType<typeof getApiReplies>>, TError = AxiosError<unknown>>(
-  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiReplies>>, TError, TData>>, axios?: AxiosRequestConfig}
+ params?: GetApiRepliesParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiReplies>>, TError, TData>>, axios?: AxiosRequestConfig}
  , queryClient?: QueryClient
   ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 
 export function useGetApiReplies<TData = Awaited<ReturnType<typeof getApiReplies>>, TError = AxiosError<unknown>>(
-  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiReplies>>, TError, TData>>, axios?: AxiosRequestConfig}
+ params?: GetApiRepliesParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiReplies>>, TError, TData>>, axios?: AxiosRequestConfig}
  , queryClient?: QueryClient 
  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
 
-  const queryOptions = getGetApiRepliesQueryOptions(options)
+  const queryOptions = getGetApiRepliesQueryOptions(params,options)
+
+  const query = useQuery(queryOptions, queryClient) as  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+
+  query.queryKey = queryOptions.queryKey ;
+
+  return query;
+}
+
+
+
+/**
+ * @deprecated
+ */
+export const getApiRepliesForApproval = (
+     options?: AxiosRequestConfig
+ ): Promise<AxiosResponse<Reply[]>> => {
+    
+    
+    return axios.default.get(
+      `/api/replies/for-approval`,options
+    );
+  }
+
+
+
+
+export const getGetApiRepliesForApprovalQueryKey = () => {
+    return [
+    `/api/replies/for-approval`
+    ] as const;
+    }
+
+    
+export const getGetApiRepliesForApprovalQueryOptions = <TData = Awaited<ReturnType<typeof getApiRepliesForApproval>>, TError = AxiosError<unknown>>( options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiRepliesForApproval>>, TError, TData>>, axios?: AxiosRequestConfig}
+) => {
+
+const {query: queryOptions, axios: axiosOptions} = options ?? {};
+
+  const queryKey =  queryOptions?.queryKey ?? getGetApiRepliesForApprovalQueryKey();
+
+  
+
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof getApiRepliesForApproval>>> = ({ signal }) => getApiRepliesForApproval({ signal, ...axiosOptions });
+
+      
+
+      
+
+   return  { queryKey, queryFn, ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof getApiRepliesForApproval>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
+}
+
+export type GetApiRepliesForApprovalQueryResult = NonNullable<Awaited<ReturnType<typeof getApiRepliesForApproval>>>
+export type GetApiRepliesForApprovalQueryError = AxiosError<unknown>
+
+
+export function useGetApiRepliesForApproval<TData = Awaited<ReturnType<typeof getApiRepliesForApproval>>, TError = AxiosError<unknown>>(
+  options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiRepliesForApproval>>, TError, TData>> & Pick<
+        DefinedInitialDataOptions<
+          Awaited<ReturnType<typeof getApiRepliesForApproval>>,
+          TError,
+          Awaited<ReturnType<typeof getApiRepliesForApproval>>
+        > , 'initialData'
+      >, axios?: AxiosRequestConfig}
+ , queryClient?: QueryClient
+  ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useGetApiRepliesForApproval<TData = Awaited<ReturnType<typeof getApiRepliesForApproval>>, TError = AxiosError<unknown>>(
+  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiRepliesForApproval>>, TError, TData>> & Pick<
+        UndefinedInitialDataOptions<
+          Awaited<ReturnType<typeof getApiRepliesForApproval>>,
+          TError,
+          Awaited<ReturnType<typeof getApiRepliesForApproval>>
+        > , 'initialData'
+      >, axios?: AxiosRequestConfig}
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useGetApiRepliesForApproval<TData = Awaited<ReturnType<typeof getApiRepliesForApproval>>, TError = AxiosError<unknown>>(
+  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiRepliesForApproval>>, TError, TData>>, axios?: AxiosRequestConfig}
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+/**
+ * @deprecated
+ */
+
+export function useGetApiRepliesForApproval<TData = Awaited<ReturnType<typeof getApiRepliesForApproval>>, TError = AxiosError<unknown>>(
+  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiRepliesForApproval>>, TError, TData>>, axios?: AxiosRequestConfig}
+ , queryClient?: QueryClient 
+ ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+
+  const queryOptions = getGetApiRepliesForApprovalQueryOptions(options)
 
   const query = useQuery(queryOptions, queryClient) as  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
 

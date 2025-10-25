@@ -1,6 +1,8 @@
 import React from "react";
 import { Link, useLocation } from "react-router-dom";
-import { Video, MessageCircle, Home, Settings, HelpCircle, Info, Mail } from "lucide-react";
+import { Video, MessageCircle, Home, Settings, HelpCircle, Info, Mail, LogOut, User } from "lucide-react";
+import { useAuth } from '../contexts/AuthContext';
+import { Button } from './ui/button';
 
 interface LayoutProps {
   children: React.ReactNode;
@@ -55,6 +57,11 @@ var secondaryNavigationItems: NavigationItem[] = [
 
 export default function Layout({ children }: LayoutProps) {
   var location = useLocation();
+  var { user, logout } = useAuth();
+
+  var handleLogout = (): void => {
+    logout();
+  };
 
   return (
     <div className="min-h-screen bg-gradient-surface flex">
@@ -129,13 +136,38 @@ export default function Layout({ children }: LayoutProps) {
         {/* Sidebar Footer */}
         <div className="mt-auto p-4 border-t border-sidebar-border/30">
           <div className="flex items-center space-x-3 p-3 rounded-xl bg-sidebar-accent/30">
-            <div className="w-8 h-8 bg-gradient-primary rounded-full flex items-center justify-center">
-              <span className="text-primary-foreground font-bold text-xs">U</span>
+            <div className="w-8 h-8 bg-gradient-primary rounded-full flex items-center justify-center overflow-hidden">
+              {user?.picture ? (
+                <img 
+                  src={user.picture} 
+                  alt={user.name} 
+                  className="w-full h-full object-cover rounded-full"
+                />
+              ) : (
+                <User className="w-4 h-4 text-primary-foreground" />
+              )}
             </div>
             <div className="flex-1 min-w-0">
-              <p className="text-sm font-medium text-sidebar-foreground truncate">User</p>
-              <p className="text-xs text-sidebar-foreground/60">Premium Plan</p>
+              <p className="text-sm font-medium text-sidebar-foreground truncate" title={user?.name}>
+                {user?.name || 'User'}
+              </p>
+              <p className="text-xs text-sidebar-foreground/60 truncate" title={user?.email}>
+                {user?.email || 'Premium Plan'}
+              </p>
             </div>
+          </div>
+          
+          {/* Logout Button */}
+          <div className="mt-3">
+            <Button
+              onClick={handleLogout}
+              variant="outline"
+              size="sm"
+              className="w-full justify-start text-sidebar-foreground/70 hover:text-sidebar-foreground hover:bg-sidebar-accent/50"
+            >
+              <LogOut className="w-4 h-4 mr-2" />
+              Sign Out
+            </Button>
           </div>
           
           {/* Footer Links */}
@@ -176,8 +208,17 @@ export default function Layout({ children }: LayoutProps) {
                 <div className="w-2 h-2 bg-success rounded-full animate-pulse" />
                 <span>All systems operational</span>
               </div>
-              <div className="w-10 h-10 bg-gradient-primary rounded-full flex items-center justify-center shadow-moderate hover-lift cursor-pointer">
-                <span className="text-primary-foreground font-bold text-sm">U</span>
+              <div className="w-10 h-10 bg-gradient-primary rounded-full flex items-center justify-center shadow-moderate hover-lift cursor-pointer overflow-hidden">
+                {user?.picture ? (
+                  <img 
+                    src={user.picture} 
+                    alt={user.name} 
+                    className="w-full h-full object-cover rounded-full"
+                    title={user.name}
+                  />
+                ) : (
+                  <User className="w-5 h-5 text-primary-foreground" />
+                )}
               </div>
             </div>
           </div>

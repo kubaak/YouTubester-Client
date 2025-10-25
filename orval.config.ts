@@ -12,6 +12,12 @@ export default defineConfig({
       mode: "tags-split",
       clean: true,
       prettier: true,
+      override: {
+        axios: {
+          path: "../lib/axios",
+          name: "default"
+        }
+      }
     }
   },
 });
