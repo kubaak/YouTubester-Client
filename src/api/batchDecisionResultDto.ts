@@ -10,6 +10,5 @@ export interface BatchDecisionResultDto {
   total?: number;
   succeeded?: number;
   failed?: number;
-  /** @nullable */
-  items?: DraftDecisionResultDto[] | null;
+  items?: DraftDecisionResultDto[];
 }

@@ -5,7 +5,4 @@
  * OpenAPI spec version: 1.0
  */
 
-/**
- * @nullable
- */
-export type ValidationProblemDetailsErrors = {[key: string]: string[]} | null;
+export type ValidationProblemDetailsErrors = {[key: string]: string[]};

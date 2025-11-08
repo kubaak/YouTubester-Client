@@ -5,9 +5,10 @@
  * OpenAPI spec version: 1.0
  */
 
-export interface DraftDecisionResultDto {
-  commentId?: string;
-  success?: boolean;
+export interface VideoListItemDto {
+  videoId: string;
   /** @nullable */
-  error?: string | null;
+  title?: string | null;
+  publishedAt?: string;
+  thumbnailUrl: string;
 }
