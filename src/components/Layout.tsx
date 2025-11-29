@@ -1,8 +1,20 @@
 import { useLocation, Link } from 'react-router-dom';
 import { useState, type ComponentType, type ReactNode } from 'react';
-import { ChevronLeft, ChevronRight, Video, MessageCircle, Home, Settings, HelpCircle, Info, Mail } from 'lucide-react';
+import {
+  ChevronLeft,
+  ChevronRight,
+  Video,
+  MessageCircle,
+  Home,
+  Settings,
+  HelpCircle,
+  Info,
+  Mail,
+  User,
+} from 'lucide-react';
 import { SidebarLink } from './SidebarLink';
 import { cn } from '@/lib/cn';
+import { useAuth } from '@/contexts/AuthContext';
 
 type IconType = ComponentType<{ className?: string }>;
 
@@ -43,7 +55,12 @@ interface LayoutProps {
 }
 
 export default function Layout({ children }: LayoutProps) {
-  const location = useLocation();
+  var location = useLocation();
+  var { user, logout } = useAuth();
+
+  var handleLogout = (): void => {
+    logout();
+  };
   const [collapsed, setCollapsed] = useState(false);
 
   const pageTitle = TITLES[location.pathname] ?? 'YouTubester';
@@ -112,20 +129,6 @@ export default function Layout({ children }: LayoutProps) {
 
         {/* Sidebar footer */}
         <div className="mt-auto p-4 border-t border-sidebar-border/30">
-          <div
-            className={cn('flex items-center gap-3 p-3 rounded-xl bg-sidebar-accent/30', collapsed && 'justify-center')}
-          >
-            <div className="w-8 h-8 bg-gradient-primary rounded-full grid place-items-center">
-              <span className="text-primary-foreground font-bold text-xs">U</span>
-            </div>
-            {!collapsed && (
-              <div className="flex-1 min-w-0">
-                <p className="text-sm font-medium text-sidebar-foreground truncate">User</p>
-                <p className="text-xs text-sidebar-foreground/60">Premium Plan</p>
-              </div>
-            )}
-          </div>
-
           {!collapsed && (
             <div className="mt-3 flex justify-center gap-4 text-xs">
               <Link to="/faq" className="text-sidebar-foreground/50 hover:text-sidebar-foreground transition-colors">
@@ -150,13 +153,37 @@ export default function Layout({ children }: LayoutProps) {
         {/* … your existing header & main stay the same … */}
         <header className="glass border-b border-border/50 px-8 py-5 backdrop-blur-xl">
           <div className="flex justify-between items-center">
-            <div className="flex items-center gap-4">
-              <h2 className="text-2xl font-bold text-foreground">{pageTitle}</h2>
+            <div className="flex items-center space-x-4">
+              <h2 className="text-2xl font-bold text-foreground">
+                {primaryNav.find((item) => item.path === location.pathname)?.label ||
+                  secondaryNav.find((item) => item.path === location.pathname)?.label ||
+                  (location.pathname === '/faq' ? 'FAQ' : null) ||
+                  (location.pathname === '/privacy' ? 'Privacy Policy' : null) ||
+                  (location.pathname === '/terms' ? 'Terms of Service' : null) ||
+                  'YouTubester'}
+              </h2>
               <div className="px-3 py-1 bg-primary/10 text-primary text-xs font-medium rounded-full border border-primary/20">
                 Beta
               </div>
             </div>
-            {/* ... right side ... */}
+            <div className="flex items-center space-x-6">
+              <div className="flex items-center space-x-2 text-sm text-muted-foreground">
+                <div className="w-2 h-2 bg-success rounded-full animate-pulse" />
+                <span>All systems operational</span>
+              </div>
+              <div className="w-10 h-10 bg-gradient-primary rounded-full flex items-center justify-center shadow-moderate hover-lift cursor-pointer overflow-hidden">
+                {user?.picture ? (
+                  <img
+                    src={user.picture}
+                    alt={user.name}
+                    className="w-full h-full object-cover rounded-full"
+                    title={user.name}
+                  />
+                ) : (
+                  <User className="w-5 h-5 text-primary-foreground" />
+                )}
+              </div>
+            </div>
           </div>
         </header>
 

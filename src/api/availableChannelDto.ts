@@ -8,7 +8,10 @@
  * OpenAPI spec version: v1
  */
 
-export interface DraftDecisionDto {
-  commentId?: string;
-  approvedText?: string;
+export interface AvailableChannelDto {
+  id?: string;
+  name?: string;
+  uploadsPlaylistId?: string;
+  /** @nullable */
+  eTag?: string | null;
 }

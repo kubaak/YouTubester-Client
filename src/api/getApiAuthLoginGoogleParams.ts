@@ -8,7 +8,6 @@
  * OpenAPI spec version: v1
  */
 
-export interface DraftDecisionDto {
-  commentId?: string;
-  approvedText?: string;
-}
+export type GetApiAuthLoginGoogleParams = {
+returnUrl?: string;
+};
