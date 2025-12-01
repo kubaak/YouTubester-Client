@@ -8,4 +8,9 @@
  * OpenAPI spec version: v1
  */
 
-export type ValidationProblemDetailsErrors = {[key: string]: string[]};
+export interface UserChannelDto {
+  id?: string;
+  title?: string;
+  /** @nullable */
+  picture?: string | null;
+}

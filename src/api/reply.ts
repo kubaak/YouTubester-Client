@@ -4,7 +4,7 @@
  * YouTubester API
  * To access protected endpoints, first log in:
 
-[🔐 Login with Google](/auth/login/google?returnUrl=/swagger/index.html)
+[🔐 Login with Google](/api/auth/login/google?returnUrl=/swagger/index.html)
  * OpenAPI spec version: v1
  */
 import type { ReplyStatus } from './replyStatus';

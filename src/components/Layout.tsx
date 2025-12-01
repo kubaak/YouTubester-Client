@@ -11,6 +11,7 @@ import {
   Info,
   Mail,
   User,
+  LogOut,
 } from 'lucide-react';
 import { SidebarLink } from './SidebarLink';
 import { cn } from '@/lib/cn';
@@ -57,13 +58,15 @@ interface LayoutProps {
 export default function Layout({ children }: LayoutProps) {
   var location = useLocation();
   var { user, logout } = useAuth();
+  var [collapsed, setCollapsed] = useState(false);
+  var [isUserMenuOpen, setIsUserMenuOpen] = useState(false);
 
   var handleLogout = (): void => {
     logout();
+    setIsUserMenuOpen(false);
   };
-  const [collapsed, setCollapsed] = useState(false);
 
-  const pageTitle = TITLES[location.pathname] ?? 'YouTubester';
+  var pageTitle = TITLES[location.pathname] ?? 'YouTubester';
 
   return (
     <div className="min-h-screen bg-gradient-surface flex">
@@ -171,16 +174,53 @@ export default function Layout({ children }: LayoutProps) {
                 <div className="w-2 h-2 bg-success rounded-full animate-pulse" />
                 <span>All systems operational</span>
               </div>
-              <div className="w-10 h-10 bg-gradient-primary rounded-full flex items-center justify-center shadow-moderate hover-lift cursor-pointer overflow-hidden">
-                {user?.picture ? (
-                  <img
-                    src={user.picture}
-                    alt={user.name}
-                    className="w-full h-full object-cover rounded-full"
-                    title={user.name}
-                  />
-                ) : (
-                  <User className="w-5 h-5 text-primary-foreground" />
+              <div className="relative">
+                <button
+                  type="button"
+                  onClick={() => setIsUserMenuOpen((previousIsUserMenuOpen) => !previousIsUserMenuOpen)}
+                  className="w-10 h-10 bg-gradient-primary rounded-full flex items-center justify-center shadow-moderate hover-lift cursor-pointer overflow-hidden focus:outline-none focus:ring-2 focus:ring-primary"
+                  aria-haspopup="menu"
+                  aria-expanded={isUserMenuOpen}
+                >
+                  {user?.picture ? (
+                    <img
+                      src={user.picture}
+                      alt={user.name}
+                      className="w-full h-full object-cover rounded-full"
+                      title={user.name}
+                    />
+                  ) : (
+                    <User className="w-5 h-5 text-primary-foreground" />
+                  )}
+                </button>
+                {isUserMenuOpen && (
+                  <div className="absolute right-0 mt-2 w-48 glass rounded-xl border border-border/40 shadow-moderate z-50 overflow-hidden">
+                    <div className="px-4 py-3 text-sm">
+                      <div className="font-medium text-foreground truncate">
+                        {user?.name ?? 'Signed in user'}
+                      </div>
+                      {user?.email && (
+                        <div className="text-xs text-muted-foreground truncate">{user.email}</div>
+                      )}
+                    </div>
+                    <div className="border-t border-border/40">
+                      <Link
+                        to="/settings"
+                        className="block px-4 py-2 text-sm text-foreground hover:bg-sidebar-accent/40"
+                        onClick={() => setIsUserMenuOpen(false)}
+                      >
+                        Account settings
+                      </Link>
+                      <button
+                        type="button"
+                        onClick={handleLogout}
+                        className="w-full flex items-center gap-2 px-4 py-2 text-left text-sm text-destructive hover:bg-destructive/10"
+                      >
+                        <LogOut className="w-4 h-4" />
+                        <span>Logout</span>
+                      </button>
+                    </div>
+                  </div>
                 )}
               </div>
             </div>
