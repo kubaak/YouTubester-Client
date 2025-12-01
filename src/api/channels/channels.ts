@@ -4,7 +4,7 @@
  * YouTubester API
  * To access protected endpoints, first log in:
 
-[🔐 Login with Google](/auth/login/google?returnUrl=/swagger/index.html)
+[🔐 Login with Google](/api/auth/login/google?returnUrl=/swagger/index.html)
  * OpenAPI spec version: v1
  */
 import {
@@ -34,12 +34,103 @@ import type {
 } from 'axios';
 
 import type {
-  AvailableChannelDto,
   Channel,
-  ProblemDetails
+  ChannelDto,
+  ChannelSyncResult,
+  ProblemDetails,
+  UserChannelDto
 } from '.././';
 
 
+
+
+
+/**
+ * @summary Returns all channels owned by the current user in this application.
+ */
+export const getApiChannels = (
+     options?: AxiosRequestConfig
+ ): Promise<AxiosResponse<UserChannelDto[]>> => {
+    
+    
+    return axios.default.get(
+      `/api/channels`,options
+    );
+  }
+
+
+
+
+export const getGetApiChannelsQueryKey = () => {
+    return [
+    `/api/channels`
+    ] as const;
+    }
+
+    
+export const getGetApiChannelsQueryOptions = <TData = Awaited<ReturnType<typeof getApiChannels>>, TError = AxiosError<ProblemDetails>>( options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiChannels>>, TError, TData>>, axios?: AxiosRequestConfig}
+) => {
+
+const {query: queryOptions, axios: axiosOptions} = options ?? {};
+
+  const queryKey =  queryOptions?.queryKey ?? getGetApiChannelsQueryKey();
+
+  
+
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof getApiChannels>>> = ({ signal }) => getApiChannels({ signal, ...axiosOptions });
+
+      
+
+      
+
+   return  { queryKey, queryFn, ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof getApiChannels>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
+}
+
+export type GetApiChannelsQueryResult = NonNullable<Awaited<ReturnType<typeof getApiChannels>>>
+export type GetApiChannelsQueryError = AxiosError<ProblemDetails>
+
+
+export function useGetApiChannels<TData = Awaited<ReturnType<typeof getApiChannels>>, TError = AxiosError<ProblemDetails>>(
+  options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiChannels>>, TError, TData>> & Pick<
+        DefinedInitialDataOptions<
+          Awaited<ReturnType<typeof getApiChannels>>,
+          TError,
+          Awaited<ReturnType<typeof getApiChannels>>
+        > , 'initialData'
+      >, axios?: AxiosRequestConfig}
+ , queryClient?: QueryClient
+  ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useGetApiChannels<TData = Awaited<ReturnType<typeof getApiChannels>>, TError = AxiosError<ProblemDetails>>(
+  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiChannels>>, TError, TData>> & Pick<
+        UndefinedInitialDataOptions<
+          Awaited<ReturnType<typeof getApiChannels>>,
+          TError,
+          Awaited<ReturnType<typeof getApiChannels>>
+        > , 'initialData'
+      >, axios?: AxiosRequestConfig}
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useGetApiChannels<TData = Awaited<ReturnType<typeof getApiChannels>>, TError = AxiosError<ProblemDetails>>(
+  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiChannels>>, TError, TData>>, axios?: AxiosRequestConfig}
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+/**
+ * @summary Returns all channels owned by the current user in this application.
+ */
+
+export function useGetApiChannels<TData = Awaited<ReturnType<typeof getApiChannels>>, TError = AxiosError<ProblemDetails>>(
+  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiChannels>>, TError, TData>>, axios?: AxiosRequestConfig}
+ , queryClient?: QueryClient 
+ ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+
+  const queryOptions = getGetApiChannelsQueryOptions(options)
+
+  const query = useQuery(queryOptions, queryClient) as  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+
+  query.queryKey = queryOptions.queryKey ;
+
+  return query;
+}
 
 
 
@@ -48,7 +139,7 @@ import type {
  */
 export const getApiChannelsAvailable = (
      options?: AxiosRequestConfig
- ): Promise<AxiosResponse<AvailableChannelDto[]>> => {
+ ): Promise<AxiosResponse<ChannelDto[]>> => {
     
     
     return axios.default.get(
@@ -133,25 +224,25 @@ export function useGetApiChannelsAvailable<TData = Awaited<ReturnType<typeof get
 
 
 /**
- * @summary Pulls channel metadata from YouTube (by name)
+ * @summary Pulls channel metadata from YouTube (by channel id)
  */
-export const postApiChannelsPullChannelName = (
-    channelName: string, options?: AxiosRequestConfig
+export const postApiChannelsPullChannelId = (
+    channelId: string, options?: AxiosRequestConfig
  ): Promise<AxiosResponse<Channel>> => {
     
     
     return axios.default.post(
-      `/api/channels/pull/${channelName}`,undefined,options
+      `/api/channels/pull/${channelId}`,undefined,options
     );
   }
 
 
 
-export const getPostApiChannelsPullChannelNameMutationOptions = <TError = AxiosError<ProblemDetails>,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof postApiChannelsPullChannelName>>, TError,{channelName: string}, TContext>, axios?: AxiosRequestConfig}
-): UseMutationOptions<Awaited<ReturnType<typeof postApiChannelsPullChannelName>>, TError,{channelName: string}, TContext> => {
+export const getPostApiChannelsPullChannelIdMutationOptions = <TError = AxiosError<ProblemDetails>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof postApiChannelsPullChannelId>>, TError,{channelId: string}, TContext>, axios?: AxiosRequestConfig}
+): UseMutationOptions<Awaited<ReturnType<typeof postApiChannelsPullChannelId>>, TError,{channelId: string}, TContext> => {
 
-const mutationKey = ['postApiChannelsPullChannelName'];
+const mutationKey = ['postApiChannelsPullChannelId'];
 const {mutation: mutationOptions, axios: axiosOptions} = options ?
       options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
       options
@@ -161,10 +252,10 @@ const {mutation: mutationOptions, axios: axiosOptions} = options ?
       
 
 
-      const mutationFn: MutationFunction<Awaited<ReturnType<typeof postApiChannelsPullChannelName>>, {channelName: string}> = (props) => {
-          const {channelName} = props ?? {};
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof postApiChannelsPullChannelId>>, {channelId: string}> = (props) => {
+          const {channelId} = props ?? {};
 
-          return  postApiChannelsPullChannelName(channelName,axiosOptions)
+          return  postApiChannelsPullChannelId(channelId,axiosOptions)
         }
 
         
@@ -172,23 +263,23 @@ const {mutation: mutationOptions, axios: axiosOptions} = options ?
 
   return  { mutationFn, ...mutationOptions }}
 
-    export type PostApiChannelsPullChannelNameMutationResult = NonNullable<Awaited<ReturnType<typeof postApiChannelsPullChannelName>>>
+    export type PostApiChannelsPullChannelIdMutationResult = NonNullable<Awaited<ReturnType<typeof postApiChannelsPullChannelId>>>
     
-    export type PostApiChannelsPullChannelNameMutationError = AxiosError<ProblemDetails>
+    export type PostApiChannelsPullChannelIdMutationError = AxiosError<ProblemDetails>
 
     /**
- * @summary Pulls channel metadata from YouTube (by name)
+ * @summary Pulls channel metadata from YouTube (by channel id)
  */
-export const usePostApiChannelsPullChannelName = <TError = AxiosError<ProblemDetails>,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof postApiChannelsPullChannelName>>, TError,{channelName: string}, TContext>, axios?: AxiosRequestConfig}
+export const usePostApiChannelsPullChannelId = <TError = AxiosError<ProblemDetails>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof postApiChannelsPullChannelId>>, TError,{channelId: string}, TContext>, axios?: AxiosRequestConfig}
  , queryClient?: QueryClient): UseMutationResult<
-        Awaited<ReturnType<typeof postApiChannelsPullChannelName>>,
+        Awaited<ReturnType<typeof postApiChannelsPullChannelId>>,
         TError,
-        {channelName: string},
+        {channelId: string},
         TContext
       > => {
 
-      const mutationOptions = getPostApiChannelsPullChannelNameMutationOptions(options);
+      const mutationOptions = getPostApiChannelsPullChannelIdMutationOptions(options);
 
       return useMutation(mutationOptions, queryClient);
     }
@@ -249,6 +340,68 @@ export const usePostApiChannelsSync = <TError = AxiosError<ProblemDetails>,
       > => {
 
       const mutationOptions = getPostApiChannelsSyncMutationOptions(options);
+
+      return useMutation(mutationOptions, queryClient);
+    }
+    /**
+ * @summary Immediately synchronizes the current channel for the currently signed-in user.
+The current channel is resolved from the channel context (yt_channel_id claim).
+ */
+export const postApiChannelsSyncCurrent = (
+     options?: AxiosRequestConfig
+ ): Promise<AxiosResponse<ChannelSyncResult>> => {
+    
+    
+    return axios.default.post(
+      `/api/channels/sync/current`,undefined,options
+    );
+  }
+
+
+
+export const getPostApiChannelsSyncCurrentMutationOptions = <TError = AxiosError<ProblemDetails | ProblemDetails>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof postApiChannelsSyncCurrent>>, TError,void, TContext>, axios?: AxiosRequestConfig}
+): UseMutationOptions<Awaited<ReturnType<typeof postApiChannelsSyncCurrent>>, TError,void, TContext> => {
+
+const mutationKey = ['postApiChannelsSyncCurrent'];
+const {mutation: mutationOptions, axios: axiosOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }, axios: undefined};
+
+      
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof postApiChannelsSyncCurrent>>, void> = () => {
+          
+
+          return  postApiChannelsSyncCurrent(axiosOptions)
+        }
+
+        
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type PostApiChannelsSyncCurrentMutationResult = NonNullable<Awaited<ReturnType<typeof postApiChannelsSyncCurrent>>>
+    
+    export type PostApiChannelsSyncCurrentMutationError = AxiosError<ProblemDetails | ProblemDetails>
+
+    /**
+ * @summary Immediately synchronizes the current channel for the currently signed-in user.
+The current channel is resolved from the channel context (yt_channel_id claim).
+ */
+export const usePostApiChannelsSyncCurrent = <TError = AxiosError<ProblemDetails | ProblemDetails>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof postApiChannelsSyncCurrent>>, TError,void, TContext>, axios?: AxiosRequestConfig}
+ , queryClient?: QueryClient): UseMutationResult<
+        Awaited<ReturnType<typeof postApiChannelsSyncCurrent>>,
+        TError,
+        void,
+        TContext
+      > => {
+
+      const mutationOptions = getPostApiChannelsSyncCurrentMutationOptions(options);
 
       return useMutation(mutationOptions, queryClient);
     }

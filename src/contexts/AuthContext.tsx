@@ -1,5 +1,6 @@
-import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
+import React, { createContext, useContext, useState, useEffect, ReactNode, useRef } from 'react';
 import { authService, User } from '../services/auth';
+import { usePostApiChannelsSyncCurrent } from '../api/channels/channels';
 
 interface AuthContextType {
   user: User | null;
@@ -27,6 +28,7 @@ interface AuthProviderProps {
 export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   var [user, setUser] = useState<User | null>(null);
   var [isLoading, setIsLoading] = useState(true);
+  var hasSyncedCurrentChannel = useRef(false);
 
   var refreshUser = async (): Promise<void> => {
     try {
@@ -47,6 +49,8 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     authService.logout();
   };
 
+  var postApiChannelsSyncCurrentMutation = usePostApiChannelsSyncCurrent();
+
   useEffect(() => {
     var initializeAuth = async (): Promise<void> => {
       setIsLoading(true);
@@ -64,6 +68,13 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
 
     initializeAuth();
   }, []);
+
+  useEffect(() => {
+    if (user !== null && user.isAuthenticated && !hasSyncedCurrentChannel.current) {
+      hasSyncedCurrentChannel.current = true;
+      postApiChannelsSyncCurrentMutation.mutate();
+    }
+  }, [user, postApiChannelsSyncCurrentMutation]);
 
   var isAuthenticated = user !== null && user.isAuthenticated;
 

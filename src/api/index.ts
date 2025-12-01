@@ -4,15 +4,16 @@
  * YouTubester API
  * To access protected endpoints, first log in:
 
-[🔐 Login with Google](/auth/login/google?returnUrl=/swagger/index.html)
+[🔐 Login with Google](/api/auth/login/google?returnUrl=/swagger/index.html)
  * OpenAPI spec version: v1
  */
 
 export * from './aiSuggestionOptions';
-export * from './availableChannelDto';
 export * from './batchDecisionResultDto';
 export * from './batchIgnoreResult';
 export * from './channel';
+export * from './channelDto';
+export * from './channelSyncResult';
 export * from './copyVideoTemplateRequest';
 export * from './draftDecisionDto';
 export * from './draftDecisionResultDto';
@@ -21,6 +22,7 @@ export * from './getApiVideosParams';
 export * from './problemDetails';
 export * from './reply';
 export * from './replyStatus';
+export * from './userChannelDto';
 export * from './validationProblemDetails';
 export * from './validationProblemDetailsErrors';
 export * from './videoListItemDto';
