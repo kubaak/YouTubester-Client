@@ -16,6 +16,8 @@ import {
 import { SidebarLink } from './SidebarLink';
 import { cn } from '@/lib/cn';
 import { useAuth } from '@/contexts/AuthContext';
+import { useAuthStore } from '@/auth/authStore';
+import { ensureWriteConsent } from '@/auth/ensureWriteConsent';
 
 type IconType = ComponentType<{ className?: string }>;
 
@@ -58,6 +60,7 @@ interface LayoutProps {
 export default function Layout({ children }: LayoutProps) {
   var location = useLocation();
   var { user, logout } = useAuth();
+  var { hasWriteAccess, refreshAuth } = useAuthStore();
   var [collapsed, setCollapsed] = useState(false);
   var [isUserMenuOpen, setIsUserMenuOpen] = useState(false);
 
@@ -67,6 +70,13 @@ export default function Layout({ children }: LayoutProps) {
   };
 
   var pageTitle = TITLES[location.pathname] ?? 'YouTubester';
+
+  var handleGrantWriteAccessClick = async (): Promise<void> => {
+    var consentGranted = await ensureWriteConsent();
+    if (consentGranted) {
+      await refreshAuth();
+    }
+  };
 
   return (
     <div className="min-h-screen bg-gradient-surface flex">
@@ -170,6 +180,17 @@ export default function Layout({ children }: LayoutProps) {
               </div>
             </div>
             <div className="flex items-center space-x-6">
+              {hasWriteAccess === false && (
+                <button
+                  type="button"
+                  onClick={() => {
+                    void handleGrantWriteAccessClick();
+                  }}
+                  className="rounded-full border border-primary/40 bg-primary/10 px-3 py-1 text-xs font-medium text-primary hover:bg-primary/20"
+                >
+                  Grant YouTube write access
+                </button>
+              )}
               <div className="flex items-center space-x-2 text-sm text-muted-foreground">
                 <div className="w-2 h-2 bg-success rounded-full animate-pulse" />
                 <span>All systems operational</span>

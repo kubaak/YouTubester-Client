@@ -10,14 +10,9 @@
  * OpenAPI spec version: v1
  */
 
-export type ReplyStatus = typeof ReplyStatus[keyof typeof ReplyStatus];
-
-
-// eslint-disable-next-line @typescript-eslint/no-redeclare
-export const ReplyStatus = {
-  NUMBER_0: 0,
-  NUMBER_1: 1,
-  NUMBER_2: 2,
-  NUMBER_3: 3,
-  NUMBER_4: 4,
-} as const;
+export type GetApiAuthLoginGoogleWriteParams = {
+/**
+ * Local URL to redirect to after consent is granted.
+ */
+returnUrl?: string;
+};
