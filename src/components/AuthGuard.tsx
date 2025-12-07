@@ -1,4 +1,4 @@
-import React, { ReactNode } from 'react';
+import { type ReactNode } from 'react';
 import { useAuth } from '../contexts/AuthContext';
 import { Navigate, useLocation } from 'react-router-dom';
 
@@ -6,7 +6,7 @@ interface AuthGuardProps {
   children: ReactNode;
 }
 
-export const AuthGuard: React.FC<AuthGuardProps> = ({ children }) => {
+export const AuthGuard = ({ children }: AuthGuardProps) => {
   var { isAuthenticated, isLoading } = useAuth();
   var location = useLocation();
 

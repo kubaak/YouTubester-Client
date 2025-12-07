@@ -16,6 +16,7 @@ import {
 import { SidebarLink } from './SidebarLink';
 import { cn } from '@/lib/cn';
 import { useAuth } from '@/contexts/AuthContext';
+import { PendingWriteActionBootstrap } from '@/auth/PendingWriteActionBootstrap';
 
 type IconType = ComponentType<{ className?: string }>;
 
@@ -38,19 +39,6 @@ const secondaryNav: readonly NavigationItem[] = [
   { path: '/contact', label: 'Contact', icon: Mail },
 ] as const;
 
-const TITLES: Record<string, string> = {
-  '/': 'Dashboard',
-  '/replies': 'Replies',
-  '/videoTemplate': 'Video Templates',
-  '/settings': 'Settings',
-  '/help': 'Help',
-  '/about': 'About',
-  '/contact': 'Contact',
-  '/faq': 'FAQ',
-  '/privacy': 'Privacy Policy',
-  '/terms': 'Terms of Service',
-};
-
 interface LayoutProps {
   children: ReactNode;
 }
@@ -66,10 +54,9 @@ export default function Layout({ children }: LayoutProps) {
     setIsUserMenuOpen(false);
   };
 
-  var pageTitle = TITLES[location.pathname] ?? 'YouTubester';
-
   return (
     <div className="min-h-screen bg-gradient-surface flex">
+      <PendingWriteActionBootstrap />
       {/* Sidebar */}
       <aside
         id="app-sidebar"
@@ -154,7 +141,7 @@ export default function Layout({ children }: LayoutProps) {
       {/* Main */}
       <div className="flex-1 flex flex-col overflow-hidden">
         {/* … your existing header & main stay the same … */}
-        <header className="glass border-b border-border/50 px-8 py-5 backdrop-blur-xl">
+        <header className="relative z-[1000] glass border-b border-border/50 px-8 py-5 backdrop-blur-xl">
           <div className="flex justify-between items-center">
             <div className="flex items-center space-x-4">
               <h2 className="text-2xl font-bold text-foreground">
@@ -172,7 +159,6 @@ export default function Layout({ children }: LayoutProps) {
             <div className="flex items-center space-x-6">
               <div className="flex items-center space-x-2 text-sm text-muted-foreground">
                 <div className="w-2 h-2 bg-success rounded-full animate-pulse" />
-                <span>All systems operational</span>
               </div>
               <div className="relative">
                 <button
@@ -194,14 +180,13 @@ export default function Layout({ children }: LayoutProps) {
                   )}
                 </button>
                 {isUserMenuOpen && (
-                  <div className="absolute right-0 mt-2 w-48 glass rounded-xl border border-border/40 shadow-moderate z-50 overflow-hidden">
+                  <div
+                    className="absolute right-0 mt-2 w-56 rounded-xl border border-border/40 bg-white dark:bg-neutral-900 shadow-lg z-[1100] overflow-hidden"
+                    role="menu"
+                  >
                     <div className="px-4 py-3 text-sm">
-                      <div className="font-medium text-foreground truncate">
-                        {user?.name ?? 'Signed in user'}
-                      </div>
-                      {user?.email && (
-                        <div className="text-xs text-muted-foreground truncate">{user.email}</div>
-                      )}
+                      <div className="font-medium text-foreground truncate">{user?.name ?? 'Signed in user'}</div>
+                      {user?.email && <div className="text-xs text-muted-foreground truncate">{user.email}</div>}
                     </div>
                     <div className="border-t border-border/40">
                       <Link
@@ -227,7 +212,7 @@ export default function Layout({ children }: LayoutProps) {
           </div>
         </header>
 
-        <main className="flex-1 p-8 overflow-auto animate-fade-in">
+        <main className="flex-1 p-8 overflow-auto animate-fade-in z-0">
           <div className="max-w-7xl mx-auto">{children}</div>
         </main>
       </div>

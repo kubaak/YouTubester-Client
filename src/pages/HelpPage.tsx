@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import {
   BookOpen,
   Search,
@@ -300,7 +300,6 @@ export default function HelpPage() {
                       <h2 className="text-xl font-bold text-foreground">{article.title}</h2>
                       <p className="text-muted-foreground text-sm">
                         {article.content}
-                        {article.duration && ` • ${article.duration}`}
                       </p>
                     </div>
                   </div>

@@ -1,6 +1,8 @@
-import React, { createContext, useContext, useState, useEffect, ReactNode, useRef } from 'react';
-import { authService, User } from '../services/auth';
+import { createContext, useContext, useState, useEffect, useRef, type ReactNode } from 'react';
+import { authService, type User } from '../services/auth';
 import { usePostApiChannelsSyncCurrent } from '../api/channels/channels';
+import { resetWriteAccessCache } from '@/auth/writeAccess';
+import { clearPendingWriteAction } from '@/auth/pendingWriteAction';
 
 interface AuthContextType {
   user: User | null;
@@ -45,6 +47,8 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   };
 
   var logout = (): void => {
+    resetWriteAccessCache();
+    clearPendingWriteAction();
     setUser(null);
     authService.logout();
   };
