@@ -4,7 +4,9 @@
  * YouTubester API
  * To access protected endpoints, first log in:
 
-[🔐 Login with Google](/api/auth/login/google?returnUrl=/swagger/index.html)
+[🔐 read only Login with Google](/api/auth/login/google?returnUrl=/swagger/index.html)
+
+[🔐 write Login with Google](/api/auth/login/google/write?returnUrl=/swagger/index.html)
  * OpenAPI spec version: v1
  */
 import {
@@ -34,7 +36,8 @@ import type {
 } from 'axios';
 
 import type {
-  GetApiAuthLoginGoogleParams
+  GetApiAuthLoginGoogleParams,
+  GetApiAuthLoginGoogleWriteParams
 } from '.././';
 
 
@@ -116,6 +119,97 @@ export function useGetApiAuthLoginGoogle<TData = Awaited<ReturnType<typeof getAp
  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
 
   const queryOptions = getGetApiAuthLoginGoogleQueryOptions(params,options)
+
+  const query = useQuery(queryOptions, queryClient) as  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+
+  query.queryKey = queryOptions.queryKey ;
+
+  return query;
+}
+
+
+
+/**
+ * @summary Starts the explicit Google write-consent flow.
+ */
+export const getApiAuthLoginGoogleWrite = (
+    params?: GetApiAuthLoginGoogleWriteParams, options?: AxiosRequestConfig
+ ): Promise<AxiosResponse<void>> => {
+    
+    
+    return axios.default.get(
+      `/api/auth/login/google/write`,{
+    ...options,
+        params: {...params, ...options?.params},}
+    );
+  }
+
+
+
+
+export const getGetApiAuthLoginGoogleWriteQueryKey = (params?: GetApiAuthLoginGoogleWriteParams,) => {
+    return [
+    `/api/auth/login/google/write`, ...(params ? [params]: [])
+    ] as const;
+    }
+
+    
+export const getGetApiAuthLoginGoogleWriteQueryOptions = <TData = Awaited<ReturnType<typeof getApiAuthLoginGoogleWrite>>, TError = AxiosError<unknown>>(params?: GetApiAuthLoginGoogleWriteParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiAuthLoginGoogleWrite>>, TError, TData>>, axios?: AxiosRequestConfig}
+) => {
+
+const {query: queryOptions, axios: axiosOptions} = options ?? {};
+
+  const queryKey =  queryOptions?.queryKey ?? getGetApiAuthLoginGoogleWriteQueryKey(params);
+
+  
+
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof getApiAuthLoginGoogleWrite>>> = ({ signal }) => getApiAuthLoginGoogleWrite(params, { signal, ...axiosOptions });
+
+      
+
+      
+
+   return  { queryKey, queryFn, ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof getApiAuthLoginGoogleWrite>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
+}
+
+export type GetApiAuthLoginGoogleWriteQueryResult = NonNullable<Awaited<ReturnType<typeof getApiAuthLoginGoogleWrite>>>
+export type GetApiAuthLoginGoogleWriteQueryError = AxiosError<unknown>
+
+
+export function useGetApiAuthLoginGoogleWrite<TData = Awaited<ReturnType<typeof getApiAuthLoginGoogleWrite>>, TError = AxiosError<unknown>>(
+ params: undefined |  GetApiAuthLoginGoogleWriteParams, options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiAuthLoginGoogleWrite>>, TError, TData>> & Pick<
+        DefinedInitialDataOptions<
+          Awaited<ReturnType<typeof getApiAuthLoginGoogleWrite>>,
+          TError,
+          Awaited<ReturnType<typeof getApiAuthLoginGoogleWrite>>
+        > , 'initialData'
+      >, axios?: AxiosRequestConfig}
+ , queryClient?: QueryClient
+  ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useGetApiAuthLoginGoogleWrite<TData = Awaited<ReturnType<typeof getApiAuthLoginGoogleWrite>>, TError = AxiosError<unknown>>(
+ params?: GetApiAuthLoginGoogleWriteParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiAuthLoginGoogleWrite>>, TError, TData>> & Pick<
+        UndefinedInitialDataOptions<
+          Awaited<ReturnType<typeof getApiAuthLoginGoogleWrite>>,
+          TError,
+          Awaited<ReturnType<typeof getApiAuthLoginGoogleWrite>>
+        > , 'initialData'
+      >, axios?: AxiosRequestConfig}
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+export function useGetApiAuthLoginGoogleWrite<TData = Awaited<ReturnType<typeof getApiAuthLoginGoogleWrite>>, TError = AxiosError<unknown>>(
+ params?: GetApiAuthLoginGoogleWriteParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiAuthLoginGoogleWrite>>, TError, TData>>, axios?: AxiosRequestConfig}
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
+/**
+ * @summary Starts the explicit Google write-consent flow.
+ */
+
+export function useGetApiAuthLoginGoogleWrite<TData = Awaited<ReturnType<typeof getApiAuthLoginGoogleWrite>>, TError = AxiosError<unknown>>(
+ params?: GetApiAuthLoginGoogleWriteParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiAuthLoginGoogleWrite>>, TError, TData>>, axios?: AxiosRequestConfig}
+ , queryClient?: QueryClient 
+ ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+
+  const queryOptions = getGetApiAuthLoginGoogleWriteQueryOptions(params,options)
 
   const query = useQuery(queryOptions, queryClient) as  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
 

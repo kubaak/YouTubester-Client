@@ -4,7 +4,9 @@
  * YouTubester API
  * To access protected endpoints, first log in:
 
-[🔐 Login with Google](/api/auth/login/google?returnUrl=/swagger/index.html)
+[🔐 read only Login with Google](/api/auth/login/google?returnUrl=/swagger/index.html)
+
+[🔐 write Login with Google](/api/auth/login/google/write?returnUrl=/swagger/index.html)
  * OpenAPI spec version: v1
  */
 
@@ -18,6 +20,7 @@ export * from './copyVideoTemplateRequest';
 export * from './draftDecisionDto';
 export * from './draftDecisionResultDto';
 export * from './getApiAuthLoginGoogleParams';
+export * from './getApiAuthLoginGoogleWriteParams';
 export * from './getApiVideosParams';
 export * from './problemDetails';
 export * from './reply';

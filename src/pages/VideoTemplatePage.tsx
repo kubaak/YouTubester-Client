@@ -4,6 +4,7 @@ import { usePostApiVideosCopyTemplate } from '@/api/videos/videos';
 import type { CopyVideoTemplateRequest } from '@/api';
 import { useRadixConfirmDialog } from '@/components/ui/useRadixConfirmDialog';
 import { VideoSelect } from '@/components/VideoSelect';
+import { callWithWriteGuard } from '@/auth/writeGuard';
 
 type FormValues = {
   sourceVideoId: string;
@@ -95,7 +96,11 @@ export default function VideoTemplatePage() {
       aiSuggestionOptions: ai,
     } as any;
 
-    await copyMutation.mutateAsync({ data: req });
+    await callWithWriteGuard({
+      method: 'POST',
+      url: '/api/videos/copy-template',
+      fetcher: () => copyMutation.mutateAsync({ data: req }),
+    });
   });
 
   const disabled =

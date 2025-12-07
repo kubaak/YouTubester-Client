@@ -2,6 +2,7 @@ import React, { useCallback, useRef, useState } from "react";
 import { AgGridReact } from "ag-grid-react";
 import { ModuleRegistry, AllCommunityModule, themeQuartz } from "ag-grid-community";
 import { useQueryClient } from "@tanstack/react-query";
+import { callWithWriteGuard } from "@/auth/writeGuard";
 import type {
   ColDef,
   ValueGetterParams,
@@ -107,7 +108,11 @@ export default function RepliesPage() {
     const ok = await confirm(`Approve ${decisions.length} selected ${decisions.length === 1 ? "reply" : "replies"}`);
     if (!ok) return;
 
-    await approveMutation.mutateAsync({ data: decisions });
+    await callWithWriteGuard({
+      method: "POST",
+      url: "/api/replies/approve",
+      fetcher: () => approveMutation.mutateAsync({ data: decisions }),
+    });
     await queryClient.invalidateQueries({ queryKey });
   };
 
