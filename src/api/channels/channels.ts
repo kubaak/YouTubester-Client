@@ -4,7 +4,9 @@
  * YouTubester API
  * To access protected endpoints, first log in:
 
-[🔐 Login with Google](/api/auth/login/google?returnUrl=/swagger/index.html)
+[🔐 read only Login with Google](/api/auth/login/google?returnUrl=/swagger/index.html)
+
+[🔐 write Login with Google](/api/auth/login/google/write?returnUrl=/swagger/index.html)
  * OpenAPI spec version: v1
  */
 import {
@@ -280,66 +282,6 @@ export const usePostApiChannelsPullChannelId = <TError = AxiosError<ProblemDetai
       > => {
 
       const mutationOptions = getPostApiChannelsPullChannelIdMutationOptions(options);
-
-      return useMutation(mutationOptions, queryClient);
-    }
-    /**
- * @summary Schedules a background sync of all channels owned by the currently signed-in user.
- */
-export const postApiChannelsSync = (
-     options?: AxiosRequestConfig
- ): Promise<AxiosResponse<void>> => {
-    
-    
-    return axios.default.post(
-      `/api/channels/sync`,undefined,options
-    );
-  }
-
-
-
-export const getPostApiChannelsSyncMutationOptions = <TError = AxiosError<ProblemDetails>,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof postApiChannelsSync>>, TError,void, TContext>, axios?: AxiosRequestConfig}
-): UseMutationOptions<Awaited<ReturnType<typeof postApiChannelsSync>>, TError,void, TContext> => {
-
-const mutationKey = ['postApiChannelsSync'];
-const {mutation: mutationOptions, axios: axiosOptions} = options ?
-      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
-      options
-      : {...options, mutation: {...options.mutation, mutationKey}}
-      : {mutation: { mutationKey, }, axios: undefined};
-
-      
-
-
-      const mutationFn: MutationFunction<Awaited<ReturnType<typeof postApiChannelsSync>>, void> = () => {
-          
-
-          return  postApiChannelsSync(axiosOptions)
-        }
-
-        
-
-
-  return  { mutationFn, ...mutationOptions }}
-
-    export type PostApiChannelsSyncMutationResult = NonNullable<Awaited<ReturnType<typeof postApiChannelsSync>>>
-    
-    export type PostApiChannelsSyncMutationError = AxiosError<ProblemDetails>
-
-    /**
- * @summary Schedules a background sync of all channels owned by the currently signed-in user.
- */
-export const usePostApiChannelsSync = <TError = AxiosError<ProblemDetails>,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof postApiChannelsSync>>, TError,void, TContext>, axios?: AxiosRequestConfig}
- , queryClient?: QueryClient): UseMutationResult<
-        Awaited<ReturnType<typeof postApiChannelsSync>>,
-        TError,
-        void,
-        TContext
-      > => {
-
-      const mutationOptions = getPostApiChannelsSyncMutationOptions(options);
 
       return useMutation(mutationOptions, queryClient);
     }

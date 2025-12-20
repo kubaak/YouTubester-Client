@@ -4,6 +4,7 @@ import { usePostApiVideosCopyTemplate } from '@/api/videos/videos';
 import type { CopyVideoTemplateRequest } from '@/api';
 import { useRadixConfirmDialog } from '@/components/ui/useRadixConfirmDialog';
 import { VideoSelect } from '@/components/VideoSelect';
+import { ensureWriteConsentForAction } from '@/auth/ensureWriteConsentForAction';
 
 type FormValues = {
   sourceVideoId: string;
@@ -94,6 +95,16 @@ export default function VideoTemplatePage() {
       copyDefaultLanguages: values.copyDefaultLanguages,
       aiSuggestionOptions: ai,
     } as any;
+
+    var hasWriteAccess = await ensureWriteConsentForAction({
+      confirm,
+      kind: 'videos.copyTemplate',
+      payload: req,
+    });
+
+    if (!hasWriteAccess) {
+      return;
+    }
 
     await copyMutation.mutateAsync({ data: req });
   });

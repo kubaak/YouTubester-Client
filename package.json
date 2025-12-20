@@ -4,8 +4,9 @@
   "version": "0.0.0",
   "type": "module",
   "scripts": {
-    "dev": "vite",
-    "build": "tsc -b && vite build",
+    "gen:requiresWrite": "node ./scripts/gen-requires-write.mjs",
+    "dev": "npm run gen:requiresWrite && vite",
+    "build": "npm run gen:requiresWrite && tsc -b && vite build",
     "lint": "eslint .",
     "preview": "vite preview",
     "orval:gen": "orval --config orval.config.ts"

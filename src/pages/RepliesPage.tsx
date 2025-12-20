@@ -1,7 +1,8 @@
-import React, { useCallback, useRef, useState } from "react";
+import { useCallback, useRef, useState } from "react";
 import { AgGridReact } from "ag-grid-react";
 import { ModuleRegistry, AllCommunityModule, themeQuartz } from "ag-grid-community";
 import { useQueryClient } from "@tanstack/react-query";
+import { ensureWriteConsentForAction } from "@/auth/ensureWriteConsentForAction";
 import type {
   ColDef,
   ValueGetterParams,
@@ -107,6 +108,16 @@ export default function RepliesPage() {
     const ok = await confirm(`Approve ${decisions.length} selected ${decisions.length === 1 ? "reply" : "replies"}`);
     if (!ok) return;
 
+    var hasWriteAccess = await ensureWriteConsentForAction({
+      confirm,
+      kind: 'replies.approve',
+      payload: decisions,
+    });
+
+    if (!hasWriteAccess) {
+      return;
+    }
+
     await approveMutation.mutateAsync({ data: decisions });
     await queryClient.invalidateQueries({ queryKey });
   };
@@ -153,8 +164,6 @@ export default function RepliesPage() {
     },
     [queryClient, queryKey]
   );
-
-  const isDark = window.matchMedia?.("(prefers-color-scheme: dark)").matches;
 
   return (
     <div style={{ height: "100vh", width: "100%" }}>
