@@ -298,9 +298,7 @@ export default function HelpPage() {
                     </div>
                     <div>
                       <h2 className="text-xl font-bold text-foreground">{article.title}</h2>
-                      <p className="text-muted-foreground text-sm">
-                        {article.content}
-                      </p>
+                      <p className="text-muted-foreground text-sm">{article.content}</p>
                     </div>
                   </div>
                 </div>

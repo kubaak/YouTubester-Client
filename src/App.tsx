@@ -9,6 +9,8 @@ import LoginPage from '@/pages/LoginPage';
 import DashboardPage from '@/pages/DashboardPage';
 import RepliesPage from '@/pages/RepliesPage';
 import VideoTemplatePage from '@/pages/VideoTemplatePage';
+import GeneratePage from '@/pages/GeneratePage';
+import ReviewPage from '@/pages/ReviewPage';
 import SettingsPage from '@/pages/SettingsPage';
 import AboutPage from '@/pages/AboutPage';
 import FaqPage from '@/pages/FaqPage';
@@ -38,6 +40,8 @@ export default function App() {
                       <Route path="/" element={<DashboardPage />} />
                       <Route path="/replies" element={<RepliesPage />} />
                       <Route path="/videoTemplate" element={<VideoTemplatePage />} />
+                      <Route path="/generate" element={<GeneratePage />} />
+                      <Route path="/review" element={<ReviewPage />} />
                       <Route path="/settings" element={<SettingsPage />} />
                       <Route path="/about" element={<AboutPage />} />
                       <Route path="/faq" element={<FaqPage />} />

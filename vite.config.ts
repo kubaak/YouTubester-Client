@@ -1,6 +1,6 @@
-import { defineConfig } from 'vite'
-import react from '@vitejs/plugin-react-swc'
-import tsconfigPaths from 'vite-tsconfig-paths'
+import { defineConfig } from 'vite';
+import react from '@vitejs/plugin-react-swc';
+import tsconfigPaths from 'vite-tsconfig-paths';
 
 // https://vite.dev/config/
 export default defineConfig({
@@ -13,5 +13,5 @@ export default defineConfig({
       },
     },
   },
-  resolve: { alias: { "@": new URL("./src", import.meta.url).pathname}}
-})
+  resolve: { alias: { '@': new URL('./src', import.meta.url).pathname } },
+});

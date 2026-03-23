@@ -21,14 +21,12 @@ export default function LoginPage() {
             <h1 className="text-3xl font-bold bg-gradient-primary bg-clip-text text-transparent mb-2">
               Welcome to YouTubester
             </h1>
-            <p className="text-muted-foreground">
-              Sign in to manage your YouTube comments and replies
-            </p>
+            <p className="text-muted-foreground">Sign in to manage your YouTube comments and replies</p>
           </div>
 
           {/* Login Form */}
           <div className="space-y-6">
-            <Button 
+            <Button
               onClick={handleGoogleLogin}
               disabled={isLoading}
               className="w-full h-12 bg-white hover:bg-gray-50 text-gray-800 border border-gray-300 shadow-soft hover-lift"

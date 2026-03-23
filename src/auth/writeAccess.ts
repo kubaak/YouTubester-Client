@@ -1,46 +1,37 @@
-import type { AxiosError, AxiosRequestConfig } from 'axios';
+import axios from 'axios';
+import type { AxiosRequestConfig } from 'axios';
 import { getApiAuthMe } from '@/api/authentication/authentication';
-import { requiresWrite } from '@/auth/requiresWrite.generated';
-
-type AuthMeDto = {
-  hasWriteAccess?: boolean;
-};
 
 // Module-level cached capability (no UI derived from it)
-var writeGrantedRef: boolean | null = null;
+let cachedWriteAccess: boolean | null = null;
 
 // Deduplicate concurrent checks (double click, two mutations at once)
-var inFlightPromise: Promise<boolean> | null = null;
-
-function isAxiosError(error: unknown): error is AxiosError {
-  return typeof error === 'object' && error !== null && 'isAxiosError' in error;
-}
+let inFlightPromise: Promise<boolean> | null = null;
 
 function getCurrentPath(): string {
   return window.location.pathname + window.location.search;
 }
 
 export function redirectToWriteConsent(): void {
-  var returnUrl = encodeURIComponent(getCurrentPath());
-  var writeConsentUrlPath = `/api/auth/login/google/write?returnUrl=${returnUrl}`;
+  const returnUrl = encodeURIComponent(getCurrentPath());
+  const writeConsentUrlPath = `/api/auth/login/google/write?returnUrl=${returnUrl}`;
 
   // Same-window redirect only (no popups)
   window.location.assign(writeConsentUrlPath);
 }
 
 export async function readHasWriteAccess(): Promise<boolean> {
-  var axiosOptions: AxiosRequestConfig = {
+  const axiosOptions: AxiosRequestConfig = {
     withCredentials: true,
   };
 
   try {
     // Orval types this as AxiosResponse<void>, but backend returns JSON.
-    var response = await getApiAuthMe(axiosOptions);
-    var authMeResponse = (response?.data ?? {}) as AuthMeDto;
-    return authMeResponse.hasWriteAccess === true;
+    const response = await getApiAuthMe(axiosOptions);
+    return response.data.hasWriteAccess === true;
   } catch (error) {
     // 401 is expected when not logged in / session expired -> treat as "not authenticated" without console noise.
-    if (isAxiosError(error) && error.response?.status === 401) {
+    if (axios.isAxiosError(error) && error.response?.status === 401) {
       return false;
     }
 
@@ -50,21 +41,13 @@ export async function readHasWriteAccess(): Promise<boolean> {
 }
 
 /**
- * Ensures the user has YouTube write access.
- * - If cached true -> returns true.
- * - If cached false -> redirects to write-consent endpoint and returns false.
- * - If unknown -> calls /api/auth/me and decides.
- *
- * Note: This does not automatically retry any mutation after redirect.
+ * Returns cached write-access status without redirecting.
+ * On first call (or after cache reset), fetches from /api/auth/me and caches the result.
+ * Concurrent calls are deduplicated.
  */
-export async function ensureWriteAccess(): Promise<boolean> {
-  if (writeGrantedRef === true) {
-    return true;
-  }
-
-  if (writeGrantedRef === false) {
-    redirectToWriteConsent();
-    return false;
+export async function checkWriteAccessCached(): Promise<boolean> {
+  if (cachedWriteAccess !== null) {
+    return cachedWriteAccess;
   }
 
   if (inFlightPromise !== null) {
@@ -72,16 +55,9 @@ export async function ensureWriteAccess(): Promise<boolean> {
   }
 
   inFlightPromise = (async () => {
-    var hasWriteAccess = await readHasWriteAccess();
-
-    if (hasWriteAccess) {
-      writeGrantedRef = true;
-      return true;
-    }
-
-    writeGrantedRef = false;
-    redirectToWriteConsent();
-    return false;
+    const result = await readHasWriteAccess();
+    cachedWriteAccess = result;
+    return result;
   })();
 
   try {
@@ -92,25 +68,6 @@ export async function ensureWriteAccess(): Promise<boolean> {
 }
 
 export function resetWriteAccessCache(): void {
-  writeGrantedRef = null;
+  cachedWriteAccess = null;
   inFlightPromise = null;
-}
-
-function keyOf(method: string, url: string): string {
-  var upperMethod = method.toUpperCase();
-  var path = url.replace(/^https?:\/\/[^/]+/i, '');
-  return `${upperMethod} ${path}`;
-}
-
-/**
- * Optional helper: only step-up when the OpenAPI-generated metadata indicates the endpoint is write-protected.
- */
-export async function ensureWriteAccessForRequest(method: string, url: string): Promise<boolean> {
-  var requestKey = keyOf(method, url);
-
-  if (!requiresWrite.has(requestKey)) {
-    return true;
-  }
-
-  return await ensureWriteAccess();
 }

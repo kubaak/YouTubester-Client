@@ -10,10 +10,12 @@
  * OpenAPI spec version: v1
  */
 
-export interface VideoListItemDto {
-  videoId: string;
+export interface UpdateVideoMetadataRequest {
+  videoId?: string;
   /** @nullable */
   title?: string | null;
-  publishedAt?: string;
-  thumbnailUrl: string;
+  /** @nullable */
+  description?: string | null;
+  /** @nullable */
+  tags?: string[] | null;
 }
