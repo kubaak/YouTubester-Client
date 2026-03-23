@@ -10,7 +10,7 @@ interface StatCardProps {
 
 function StatCard({ title, value, icon, trend }: StatCardProps) {
   return (
-    <div className="group glass p-6 rounded-2xl shadow-soft hover-lift border border-border/50 hover:border-primary/30 transition-all duration-300">
+    <div className="group relative overflow-hidden glass p-6 rounded-2xl shadow-soft hover-lift border border-border/50 hover:border-primary/30 transition-all duration-300">
       <div className="flex items-start justify-between">
         <div className="flex-1">
           <div className="flex items-center space-x-2 mb-3">
@@ -36,7 +36,7 @@ function StatCard({ title, value, icon, trend }: StatCardProps) {
       </div>
 
       {/* Subtle gradient overlay on hover */}
-      <div className="absolute inset-0 bg-gradient-primary opacity-0 group-hover:opacity-5 rounded-2xl transition-opacity duration-300" />
+      <div className="pointer-events-none absolute inset-0 bg-gradient-primary opacity-0 group-hover:opacity-5 rounded-2xl transition-opacity duration-300" />
     </div>
   );
 }

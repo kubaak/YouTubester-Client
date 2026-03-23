@@ -1,8 +1,7 @@
-import { useCallback, useRef, useState } from "react";
-import { AgGridReact } from "ag-grid-react";
-import { ModuleRegistry, AllCommunityModule, themeQuartz } from "ag-grid-community";
-import { useQueryClient } from "@tanstack/react-query";
-import { ensureWriteConsentForAction } from "@/auth/ensureWriteConsentForAction";
+import { useCallback, useRef, useState } from 'react';
+import { AgGridReact } from 'ag-grid-react';
+import { ModuleRegistry, AllCommunityModule, themeQuartz } from 'ag-grid-community';
+import { useQueryClient } from '@tanstack/react-query';
 import type {
   ColDef,
   ValueGetterParams,
@@ -11,15 +10,15 @@ import type {
   RowSelectionOptions,
   CellEditRequestEvent,
   GridReadyEvent,
-} from "ag-grid-community";
-import type { Reply, DraftDecisionDto } from "../api";
+} from 'ag-grid-community';
+import type { Reply, DraftDecisionDto } from '../api';
 import {
   useGetApiReplies,
   usePostApiRepliesApprove,
   usePostApiRepliesBatchIgnore,
   getGetApiRepliesQueryKey,
-} from "../api/replies/replies";
-import { useRadixConfirmDialog } from "../components/ui/useRadixConfirmDialog";
+} from '../api/replies/replies';
+import { useRadixConfirmDialog } from '../components/ui/useRadixConfirmDialog';
 ModuleRegistry.registerModules([AllCommunityModule]);
 
 const MAX_LEN = 10_000;
@@ -33,31 +32,54 @@ const DEFAULT_COL_DEF: ColDef<Reply> = {
 
 const COLUMN_DEFS: ColDef<Reply>[] = [
   {
-    field: "videoTitle",
-    headerName: "Title",
+    field: 'videoTitle',
+    headerName: 'Title',
     flex: 2,
     filter: true,
   },
   {
-    field: "commentText",
-    headerName: "Original Comment",
+    field: 'commentText',
+    headerName: 'Original Comment',
     flex: 3,
     filter: true,
+    cellRenderer: (params: { value?: string; data?: Reply }) => {
+      const text = params.value ?? '';
+      const videoId = params.data?.videoId;
+      const commentId = params.data?.commentId;
+
+      if (!videoId || !commentId || !text) {
+        return text;
+      }
+
+      const url = `https://www.youtube.com/watch?v=${videoId}&lc=${commentId}`;
+
+      return (
+        <a
+          href={url}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="text-blue-600 underline"
+          onClick={(e) => e.stopPropagation()}
+        >
+          {text}
+        </a>
+      );
+    },
   },
   {
-    field: "finalText",
+    field: 'finalText',
     headerName: `Approved Reply (max ${MAX_LEN})`,
     flex: 3,
     editable: true,
-    cellEditor: "agLargeTextCellEditor",
+    cellEditor: 'agLargeTextCellEditor',
     cellEditorParams: { maxLength: MAX_LEN, rows: 6 },
-    valueGetter: (p: ValueGetterParams<Reply, string | undefined>) => p.data?.finalText ?? p.data?.suggestedText ?? "",
+    valueGetter: (p: ValueGetterParams<Reply, string | undefined>) => p.data?.finalText ?? p.data?.suggestedText ?? '',
     filter: true,
   },
 ];
 
 const ROW_SELECTION: RowSelectionOptions<Reply> = {
-  mode: "multiRow",
+  mode: 'multiRow',
   checkboxes: true,
   enableClickSelection: false,
 };
@@ -99,24 +121,14 @@ export default function RepliesPage() {
     const decisions: DraftDecisionDto[] = selected
       .map((r) => ({
         commentId: r.commentId,
-        approvedText: r.finalText ?? r.suggestedText ?? "",
+        approvedText: r.finalText ?? r.suggestedText ?? '',
       }))
       .filter((d) => d.approvedText && d.approvedText.length > 0);
 
     if (decisions.length === 0) return;
 
-    const ok = await confirm(`Approve ${decisions.length} selected ${decisions.length === 1 ? "reply" : "replies"}`);
+    const ok = await confirm(`Approve ${decisions.length} selected ${decisions.length === 1 ? 'reply' : 'replies'}`);
     if (!ok) return;
-
-    var hasWriteAccess = await ensureWriteConsentForAction({
-      confirm,
-      kind: 'replies.approve',
-      payload: decisions,
-    });
-
-    if (!hasWriteAccess) {
-      return;
-    }
 
     await approveMutation.mutateAsync({ data: decisions });
     await queryClient.invalidateQueries({ queryKey });
@@ -130,7 +142,7 @@ export default function RepliesPage() {
     const ids = selected.map((r) => r.commentId).filter(Boolean) as string[];
     if (ids.length === 0) return;
 
-    const ok = await confirm(`Ignore ${ids.length} selected ${ids.length === 1 ? "reply" : "replies"}?`);
+    const ok = await confirm(`Ignore ${ids.length} selected ${ids.length === 1 ? 'reply' : 'replies'}?`);
     if (!ok) return;
 
     await ignoreMutation.mutateAsync({ data: ids });
@@ -141,16 +153,16 @@ export default function RepliesPage() {
   type RepliesObj = Readonly<{ data: ReadonlyArray<Reply> }>;
   const onCellEditRequest = useCallback(
     (e: CellEditRequestEvent<Reply>) => {
-      if (e.colDef.field !== "finalText") {
+      if (e.colDef.field !== 'finalText') {
         return;
       }
 
       queryClient.setQueryData<RepliesObj>(queryKey, (prev) => {
-        const nextText = String(e.newValue ?? "");
+        const nextText = String(e.newValue ?? '');
         const list = prev?.data ?? [];
         const idx = list.findIndex((r) => r.commentId === e.data.commentId);
         if (idx === -1) {
-          throw new Error("Unknown commentId");
+          throw new Error('Unknown commentId');
         }
         if (list[idx].finalText === nextText) {
           return prev;
@@ -162,14 +174,14 @@ export default function RepliesPage() {
         return { data: nextList };
       });
     },
-    [queryClient, queryKey]
+    [queryClient, queryKey],
   );
 
   return (
-    <div style={{ height: "100vh", width: "100%" }}>
+    <div style={{ height: '100vh', width: '100%' }}>
       <div className="flex items-center gap-2 p-3 border-b bg-white">
         <button onClick={() => void refetch()} disabled={isFetching} className="rounded-2xl border px-3 py-2 text-sm">
-          {isFetching ? "Refreshing…" : "Refresh"}
+          {isFetching ? 'Refreshing…' : 'Refresh'}
         </button>
         <button
           onClick={onApproveSelected}
@@ -198,6 +210,7 @@ export default function RepliesPage() {
         pagination
         paginationPageSize={20}
         theme={themeQuartz}
+        enableCellTextSelection
         onGridReady={onGridReady}
         onSelectionChanged={onSelectionChanged}
         onCellEditRequest={onCellEditRequest}

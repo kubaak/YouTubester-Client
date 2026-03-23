@@ -10,10 +10,18 @@
  * OpenAPI spec version: v1
  */
 
-export interface VideoListItemDto {
-  videoId: string;
+export interface AuthMeResponse {
   /** @nullable */
-  title?: string | null;
-  publishedAt?: string;
-  thumbnailUrl: string;
+  name?: string | null;
+  /** @nullable */
+  email?: string | null;
+  /** @nullable */
+  sub?: string | null;
+  /** @nullable */
+  channelId?: string | null;
+  /** @nullable */
+  channelTitle?: string | null;
+  /** @nullable */
+  picture?: string | null;
+  hasWriteAccess?: boolean;
 }

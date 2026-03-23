@@ -10,10 +10,6 @@
  * OpenAPI spec version: v1
  */
 
-export interface VideoListItemDto {
-  videoId: string;
-  /** @nullable */
-  title?: string | null;
-  publishedAt?: string;
-  thumbnailUrl: string;
+export interface IDomainEvent {
+  readonly occurredAtUtc?: string;
 }

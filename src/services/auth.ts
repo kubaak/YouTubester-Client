@@ -41,5 +41,5 @@ export const authService = {
     }
 
     window.location.href = '/login';
-  }
+  },
 };

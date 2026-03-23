@@ -1,17 +1,15 @@
 import { useEffect, useRef } from 'react';
-import type { AxiosRequestConfig } from 'axios';
+import axios from 'axios';
 import { useQueryClient } from '@tanstack/react-query';
 
-import { postApiRepliesApprove, getGetApiRepliesQueryKey } from '@/api/replies/replies';
-import { postApiVideosCopyTemplate } from '@/api/videos/videos';
 import { clearPendingWriteAction, getPendingWriteAction } from '@/auth/pendingWriteAction';
-import { readHasWriteAccess } from '@/auth/writeAccess';
-
-const RESUME_MESSAGE = 'Resuming your action…';
+import { getCacheInvalidationKeys } from '@/auth/cacheInvalidationMap';
+import { checkWriteAccessCached } from '@/auth/writeAccess';
+import { buildRequestKey } from '@/auth/requestKey';
 
 export function PendingWriteActionBootstrap(): null {
-  var hasRunRef = useRef(false);
-  var queryClient = useQueryClient();
+  const hasRunRef = useRef(false);
+  const queryClient = useQueryClient();
 
   useEffect(() => {
     if (hasRunRef.current) {
@@ -20,37 +18,34 @@ export function PendingWriteActionBootstrap(): null {
 
     hasRunRef.current = true;
 
-    var run = async (): Promise<void> => {
-      var pendingWriteAction = getPendingWriteAction();
-      if (pendingWriteAction == null) {
+    const run = async (): Promise<void> => {
+      const pendingAction = getPendingWriteAction();
+      if (pendingAction == null) {
         return;
       }
 
-      var hasWriteAccess = await readHasWriteAccess();
+      const hasWriteAccess = await checkWriteAccessCached();
       if (!hasWriteAccess) {
         return;
       }
 
-      // Clear first to prevent double execution on StrictMode/rerender.
+      // Clear before replay to avoid duplicate execution if this bootstrap runs again.
       clearPendingWriteAction();
 
-      var axiosOptions: AxiosRequestConfig = {
-        withCredentials: true,
-      };
-
       try {
-        console.info(RESUME_MESSAGE);
+        console.info('Resuming your action…');
 
-        if (pendingWriteAction.kind === 'replies.approve') {
-          await postApiRepliesApprove(pendingWriteAction.payload, axiosOptions);
-          await queryClient.invalidateQueries({ queryKey: getGetApiRepliesQueryKey() });
-          return;
-        }
+        await axios.request({
+          method: pendingAction.method,
+          url: pendingAction.url,
+          data: pendingAction.body,
+          withCredentials: true,
+        });
 
-        if (pendingWriteAction.kind === 'videos.copyTemplate') {
-          await postApiVideosCopyTemplate(pendingWriteAction.payload, axiosOptions);
-          return;
-        }
+        const requestKey = buildRequestKey(pendingAction.method, pendingAction.url);
+        const queryKeys = getCacheInvalidationKeys(requestKey, pendingAction.body);
+
+        await Promise.all(queryKeys.map((queryKey) => queryClient.invalidateQueries({ queryKey })));
       } catch (error) {
         console.error('Failed to resume pending write action:', error);
       }

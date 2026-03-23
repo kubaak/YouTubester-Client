@@ -110,3 +110,7 @@ npm run orval:gen
 - Reusable UI components in `src/components/ui/`
 - Generated API types and hooks in `src/api/`
 - Utility functions in `src/lib/`
+
+### Rules
+
+- use const and let where you can instead of using var
