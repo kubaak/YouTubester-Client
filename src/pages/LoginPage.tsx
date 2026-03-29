@@ -15,9 +15,11 @@ export default function LoginPage() {
         <div className="glass rounded-2xl p-8 shadow-dramatic border border-border/50">
           {/* Logo and Title */}
           <div className="text-center mb-8">
-            <div className="w-16 h-16 bg-gradient-primary rounded-2xl flex items-center justify-center mx-auto mb-4 shadow-moderate">
-              <span className="text-primary-foreground font-bold text-2xl">Y</span>
-            </div>
+            <img
+              src="/tubester_logo.png"
+              alt="Tubester logo"
+              className="h-10 w-auto max-w-full object-contain shrink-0 mx-auto"
+            />
             <h1 className="mb-2 inline-block bg-gradient-to-r from-violet-500 to-fuchsia-500 bg-clip-text text-3xl font-bold text-transparent">
               Welcome to Tubester
             </h1>

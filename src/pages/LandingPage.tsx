@@ -72,8 +72,20 @@ export default function LandingPage() {
 
   return (
     <div className="min-h-screen bg-gradient-surface">
+      {/* Navbar */}
+      <header className="fixed top-0 inset-x-0 z-50 flex items-center justify-end px-6 py-4 bg-background/70 backdrop-blur-md border-b border-border/50">
+        <Link to="/login">
+          <Button
+            size="sm"
+            className="bg-gradient-primary text-primary-foreground shadow-moderate hover:shadow-strong hover-lift"
+          >
+            Sign In
+          </Button>
+        </Link>
+      </header>
+
       {/* Hero */}
-      <section className="max-w-7xl mx-auto px-6 pt-20 pb-16 text-center">
+      <section className="max-w-7xl mx-auto px-6 pt-36 pb-16 text-center">
         <img
           src="/tubester_logo.png"
           alt="Tubester logo"
