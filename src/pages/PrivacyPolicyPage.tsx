@@ -96,7 +96,7 @@ export default function PrivacyPolicyPage() {
             <h4 className="font-semibold text-foreground">Legal Requirements:</h4>
             <p className="text-muted-foreground">
               We may disclose your information when required by law, such as to comply with a subpoena, court order, or
-              other legal process, or to protect the rights, property, and safety of YouTubester, our users, and the
+              other legal process, or to protect the rights, property, and safety of Tubester, our users, and the
               public.
             </p>
           </div>
@@ -239,7 +239,7 @@ export default function PrivacyPolicyPage() {
           <h1 className="text-3xl font-bold text-foreground mb-2">Privacy Policy</h1>
           <p className="text-muted-foreground max-w-2xl mx-auto">
             Your privacy is important to us. This policy explains how we collect, use, and protect your information when
-            you use YouTubester.
+            you use Tubester.
           </p>
           <p className="text-sm text-muted-foreground mt-2">Last updated: {lastUpdated}</p>
         </div>
@@ -250,12 +250,12 @@ export default function PrivacyPolicyPage() {
         <h2 className="text-xl font-bold text-foreground mb-4">Overview</h2>
         <div className="space-y-4 text-muted-foreground">
           <p>
-            At YouTubester, we are committed to protecting your privacy and ensuring transparency about how we handle
-            your personal information. This Privacy Policy describes our practices concerning the collection, use, and
+            At Tubester, we are committed to protecting your privacy and ensuring transparency about how we handle your
+            personal information. This Privacy Policy describes our practices concerning the collection, use, and
             disclosure of information when you use our service.
           </p>
           <p>
-            By using YouTubester, you agree to the collection and use of information in accordance with this policy. We
+            By using Tubester, you agree to the collection and use of information in accordance with this policy. We
             will not use or share your information except as described in this Privacy Policy.
           </p>
         </div>
@@ -306,7 +306,7 @@ export default function PrivacyPolicyPage() {
           <h3 className="font-semibold text-foreground mb-4">Children's Privacy</h3>
           <div className="text-sm text-muted-foreground space-y-2">
             <p>
-              YouTubester is not intended for users under 13 years old. We do not knowingly collect personal information
+              Tubester is not intended for users under 13 years old. We do not knowingly collect personal information
               from children under 13.
             </p>
             <p>
@@ -352,9 +352,9 @@ export default function PrivacyPolicyPage() {
           <div className="text-sm">
             <h4 className="font-semibold text-foreground mb-2">Compliance & Certifications</h4>
             <p className="text-muted-foreground">
-              YouTubester is committed to compliance with applicable privacy laws including GDPR, CCPA, and other
-              regional privacy regulations. We regularly review and update our practices to maintain the highest
-              standards of data protection.
+              Tubester is committed to compliance with applicable privacy laws including GDPR, CCPA, and other regional
+              privacy regulations. We regularly review and update our practices to maintain the highest standards of
+              data protection.
             </p>
           </div>
         </div>

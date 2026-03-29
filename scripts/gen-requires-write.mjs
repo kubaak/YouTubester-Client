@@ -65,7 +65,7 @@ async function writeOutputFile(entries) {
   lines.push('export const requiresWrite = new Set<string>([');
 
   for (const entry of entries) {
-    lines.push(`  "${entry}",`);
+    lines.push(`  '${entry}',`);
   }
 
   lines.push(']);');

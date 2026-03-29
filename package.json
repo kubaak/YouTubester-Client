@@ -5,7 +5,8 @@
   "type": "module",
   "scripts": {
     "gen:requiresWrite": "node ./scripts/gen-requires-write.mjs",
-    "dev": "npm run gen:requiresWrite && vite",
+    "dist": "npm run gen:requiresWrite && vite",
+    "dev": "vite",
     "build": "npm run gen:requiresWrite && tsc -b && vite build",
     "format": "prettier --write .",
     "lint": "eslint .",

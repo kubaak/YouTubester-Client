@@ -18,10 +18,10 @@ export default function LoginPage() {
             <div className="w-16 h-16 bg-gradient-primary rounded-2xl flex items-center justify-center mx-auto mb-4 shadow-moderate">
               <span className="text-primary-foreground font-bold text-2xl">Y</span>
             </div>
-            <h1 className="text-3xl font-bold bg-gradient-primary bg-clip-text text-transparent mb-2">
-              Welcome to YouTubester
+            <h1 className="mb-2 inline-block bg-gradient-to-r from-violet-500 to-fuchsia-500 bg-clip-text text-3xl font-bold text-transparent">
+              Welcome to Tubester
             </h1>
-            <p className="text-muted-foreground">Sign in to manage your YouTube comments and replies</p>
+            <p className="text-muted-foreground">Sign in to manage your YouTube with AI</p>
           </div>
 
           {/* Login Form */}

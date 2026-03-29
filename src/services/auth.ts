@@ -40,6 +40,6 @@ export const authService = {
       // Ignore logout errors and proceed with client-side redirect
     }
 
-    window.location.href = '/login';
+    window.location.href = '/';
   },
 };

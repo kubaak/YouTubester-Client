@@ -27,12 +27,12 @@ interface NavigationItem {
 }
 
 const primaryNav: readonly NavigationItem[] = [
-  { path: '/', label: 'Dashboard', icon: Home },
+  { path: '/dashboard', label: 'Dashboard', icon: Home },
   { path: '/replies', label: 'Replies', icon: MessageCircle },
   { path: '/videoTemplate', label: 'Copy Template', icon: Video },
   { path: '/generate', label: 'Generate', icon: Video },
   { path: '/review', label: 'Review', icon: Video },
-  { path: '/settings', label: 'Settings', icon: Settings },
+  // { path: '/settings', label: 'Settings', icon: Settings },
 ] as const;
 
 const secondaryNav: readonly NavigationItem[] = [
@@ -70,10 +70,12 @@ export default function Layout({ children }: LayoutProps) {
         {/* Header */}
         <div className={cn('px-6 py-6 border-b border-sidebar-border/30', collapsed && 'px-3')}>
           <div className={cn('flex items-center gap-3', collapsed && 'justify-center gap-2')}>
-            <div className="w-8 h-8 bg-gradient-primary rounded-xl grid place-items-center shadow-moderate">
-              <span className="text-primary-foreground font-bold text-sm">Y</span>
-            </div>
-            {!collapsed && <h1 className="text-xl font-bold text-foreground">YouTubester</h1>}
+            <img
+              src="/tubester_logo.png"
+              alt="Tubester logo"
+              className="h-10 w-auto max-w-full object-contain shrink-0"
+            />
+            {!collapsed && <h1 className="text-xl font-bold text-foreground">Tubester</h1>}
             <button
               type="button"
               aria-label={collapsed ? 'Expand sidebar' : 'Collapse sidebar'}
@@ -152,7 +154,7 @@ export default function Layout({ children }: LayoutProps) {
                   (location.pathname === '/faq' ? 'FAQ' : null) ||
                   (location.pathname === '/privacy' ? 'Privacy Policy' : null) ||
                   (location.pathname === '/terms' ? 'Terms of Service' : null) ||
-                  'YouTubester'}
+                  'Tubester'}
               </h2>
               <div className="px-3 py-1 bg-primary/10 text-primary text-xs font-medium rounded-full border border-primary/20">
                 Beta
