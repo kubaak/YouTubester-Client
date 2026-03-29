@@ -14,91 +14,64 @@ export default function FaqPage() {
 
   const faqData: FaqItem[] = [
     {
-      question: 'What is YouTubester and how does it work?',
+      question: 'What is Tubester and how does it work?',
       answer:
-        'YouTubester is an AI-powered platform designed to help YouTube creators manage their channels more efficiently. It uses advanced algorithms to generate contextual replies to comments, create video templates, and automate various channel management tasks. Simply connect your YouTube account, configure your preferences, and let our AI assist you in engaging with your audience.',
+        'Tubester is an AI-powered platform built to help YouTube creators save time and manage their channels more efficiently. It can generate contextual replies to comments, create optimized titles, descriptions, and tags, and copy metadata from your existing videos. Just connect your YouTube account, choose your preferences, and use Tubester to simplify content management and audience engagement.',
       category: 'general',
     },
     {
-      question: 'Is YouTubester free to use?',
+      question: 'Is Tubester free to use?',
       answer:
-        'YouTubester offers a free tier with basic features including limited AI-generated replies and video templates. Our Premium plans provide unlimited access to all features, advanced AI capabilities, priority support, and detailed analytics. You can start with our free plan and upgrade as your channel grows.',
+        'Tubester offers a free tier with access to basic features, including limited AI-generated replies and video templates. Paid plans unlock higher usage limits. You can start with the free plan and upgrade later as your needs grow.',
       category: 'pricing',
     },
     {
       question: 'How do I connect my YouTube channel?',
       answer:
-        "To connect your YouTube channel, go to Settings > Account > Connect YouTube Channel. You'll be redirected to Google's secure authentication page where you can grant YouTubester the necessary permissions to manage your channel. We only request the minimum permissions required for our features to work.",
+        'To connect your YouTube channel, simply sign in with your Google account and select the YouTube channel you want Tubester to work with.',
       category: 'setup',
     },
     {
       question: 'Can I customize the AI-generated replies?',
-      answer:
-        'Absolutely! You can train the AI to match your brand voice by providing examples of your preferred communication style. In the Settings page, you can set up custom reply templates, define your brand tone, and specify topics you want the AI to focus on or avoid. The AI learns from your feedback and improves over time.',
+      answer: 'Yes. You can review and refine AI-generated replies before posting.',
       category: 'features',
     },
     {
       question: 'Is my YouTube account data secure?',
       answer:
-        "Yes, security is our top priority. We use enterprise-grade encryption for all data transmission and storage. Your YouTube credentials are never stored on our servers - we use OAuth tokens that can be revoked at any time. We're GDPR compliant and follow strict data protection protocols. You can review our complete privacy policy for more details.",
+        "We take security seriously. Data is protected during transmission and storage, and Tubester uses Google's OAuth flow for authentication. Your password is never shared with Tubester, and you can revoke access from your Google account at any time. For more information, please review our privacy policy.",
       category: 'security',
     },
     {
-      question: 'How do video templates work?',
+      question: 'Can I use Tubester for multiple channels?',
       answer:
-        'Video templates allow you to create standardized formats for your content. You can set up templates for different video types (tutorials, reviews, vlogs, etc.) with predefined elements like intro/outro scripts, description formats, and tag suggestions. The AI can suggest improvements and help you maintain consistency across your content.',
-      category: 'features',
-    },
-    {
-      question: 'Can I use YouTubester for multiple channels?',
-      answer:
-        'Yes, our Premium plans support multiple YouTube channels. You can manage all your channels from a single dashboard, with separate settings and configurations for each channel. This is perfect for creators who manage multiple channels or agencies working with multiple clients.',
+        'Support for multiple channels depends on your plan. If available on your plan, you can manage more than one YouTube channel from a single account while keeping each channel’s settings separate.',
       category: 'features',
     },
     {
       question: 'What happens if I exceed my monthly limits?',
       answer:
-        "If you reach your monthly limits on the free plan, you'll receive a notification with options to upgrade or wait until the next billing cycle. Premium users have much higher limits, and if exceeded, we'll notify you before any additional charges. You can always monitor your usage in the dashboard.",
+        "If you reach your plan's monthly limits, you'll see it in the app and can upgrade if needed. Limits reset at the start of the next billing cycle.",
       category: 'pricing',
     },
     {
       question: 'How accurate are the AI-generated replies?',
       answer:
-        'Our AI has a high accuracy rate and continuously improves through machine learning. However, we always recommend reviewing AI-generated content before posting. You can set up approval workflows to ensure all replies meet your standards. The AI learns from your edits and becomes more accurate over time.',
+        'AI-generated replies are designed to be relevant and helpful, but they may still need review before posting. We recommend checking outputs to make sure they match your intent, tone, and channel standards.',
       category: 'features',
-    },
-    {
-      question: 'Can I export my data?',
-      answer:
-        'Yes, you can export all your data including templates, reply history, and analytics at any time. Go to Settings > Data Management > Export Data. This ensures you always have access to your content and can migrate to other platforms if needed.',
-      category: 'general',
-    },
-    {
-      question: 'How do I cancel my subscription?',
-      answer:
-        "You can cancel your subscription at any time from Settings > Billing > Manage Subscription. Your account will remain active until the end of your current billing period, and you'll retain access to all premium features during this time. After cancellation, your account will automatically downgrade to the free tier.",
-      category: 'pricing',
-    },
-    {
-      question: 'Do you offer refunds?',
-      answer:
-        "We offer a 30-day money-back guarantee for all premium plans. If you're not satisfied with YouTubester within the first 30 days, contact our support team for a full refund. Refunds for longer subscriptions are evaluated on a case-by-case basis.",
-      category: 'pricing',
     },
     {
       question: 'How can I get support?',
-      answer:
-        'We offer multiple support channels: live chat (available 24/7 for Premium users), email support, and an extensive knowledge base. Free users have access to email support with responses typically within 24 hours. Premium users receive priority support with faster response times.',
+      answer: 'If you need help, please email us at info@tubester.app',
       category: 'support',
     },
     {
-      question: 'Does YouTubester work with YouTube Shorts?',
+      question: 'Does Tubester work with YouTube Shorts?',
       answer:
-        'Yes! YouTubester fully supports YouTube Shorts. You can create specific templates for Shorts, manage comments on Short videos, and use our AI to generate engaging replies that work well for the Shorts format. Our analytics also track Shorts performance separately.',
+        'Yes. Tubester can also be used with YouTube Shorts where the relevant YouTube metadata or workflow is supported.',
       category: 'features',
     },
   ];
-
   const categories = [
     { id: 'all', label: 'All Questions' },
     { id: 'general', label: 'General' },
@@ -134,8 +107,8 @@ export default function FaqPage() {
         <div>
           <h1 className="text-3xl font-bold text-foreground mb-2">Frequently Asked Questions</h1>
           <p className="text-muted-foreground max-w-2xl mx-auto">
-            Find answers to common questions about YouTubester. If you can't find what you're looking for, don't
-            hesitate to contact our support team.
+            Find answers to common questions about Tubester. If you can't find what you're looking for, don't hesitate
+            to contact our support team.
           </p>
         </div>
       </div>
@@ -206,16 +179,14 @@ export default function FaqPage() {
       {/* Contact Section */}
       <div className="glass rounded-xl p-8 border border-border/50 text-center">
         <h2 className="text-xl font-bold text-foreground mb-4">Still have questions?</h2>
-        <p className="text-muted-foreground mb-6">
-          Our support team is here to help you get the most out of YouTubester.
-        </p>
+        <p className="text-muted-foreground mb-6">Our support team is here to help you get the most out of Tubester.</p>
         <div className="flex flex-col sm:flex-row gap-4 justify-center">
-          <button className="px-6 py-3 bg-gradient-primary text-primary-foreground rounded-xl font-medium shadow-moderate hover:shadow-strong transition-all duration-300 hover-lift">
+          <a
+            href="mailto:info@tubester.app?subject=Tubester%20Support"
+            className="px-6 py-3 bg-gradient-primary text-primary-foreground rounded-xl font-medium shadow-moderate hover:shadow-strong transition-all duration-300 hover-lift"
+          >
             Contact Support
-          </button>
-          <button className="px-6 py-3 glass border border-border/50 text-foreground rounded-xl font-medium hover:shadow-soft transition-all duration-300 hover-lift">
-            Browse Help Center
-          </button>
+          </a>
         </div>
       </div>
     </div>

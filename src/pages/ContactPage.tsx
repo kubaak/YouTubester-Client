@@ -132,7 +132,7 @@ export default function ContactPage() {
         <div>
           <h1 className="text-3xl font-bold text-foreground mb-2">Get in Touch</h1>
           <p className="text-muted-foreground max-w-2xl mx-auto">
-            Have a question, need help, or want to share feedback? We're here to help you succeed with YouTubester.
+            Have a question, need help, or want to share feedback? We're here to help you succeed with Tubester.
           </p>
         </div>
       </div>
@@ -150,7 +150,7 @@ export default function ContactPage() {
           <li>
             • Try our <span className="text-primary font-medium">troubleshooting tools</span> in Settings
           </li>
-          <li>• Make sure you're using the latest version of YouTubester</li>
+          <li>• Make sure you're using the latest version of Tubester</li>
         </ul>
       </div>
 

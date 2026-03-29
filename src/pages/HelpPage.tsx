@@ -25,19 +25,19 @@ export default function HelpPage() {
   const helpContent = {
     'getting-started': [
       {
-        title: 'Welcome to YouTubester',
-        content: 'Learn the basics of using YouTubester to enhance your YouTube channel management.',
+        title: 'Welcome to Tubester',
+        content: 'Learn the basics of using Tubester to enhance your YouTube channel management.',
         type: 'guide',
         sections: [
           {
-            title: 'What is YouTubester?',
+            title: 'What is Tubester?',
             content:
-              'YouTubester is an AI-powered platform designed to help YouTube creators manage their channels more efficiently. It provides tools for automated comment replies, video template management, and channel analytics.',
+              'Tubester is an AI-powered platform designed to help YouTube creators manage their channels more efficiently. It provides tools for automated comment replies, video template management, and channel analytics.',
           },
           {
             title: 'Setting up your account',
             content:
-              '1. Sign up for a YouTubester account\n2. Connect your YouTube channel using OAuth\n3. Complete your profile setup\n4. Choose your subscription plan',
+              '1. Sign up for a Tubester account\n2. Connect your YouTube channel using OAuth\n3. Complete your profile setup\n4. Choose your subscription plan',
           },
           {
             title: 'Connecting your YouTube channel',
@@ -48,7 +48,7 @@ export default function HelpPage() {
       },
       {
         title: 'Quick Start Tutorial',
-        content: 'Get up and running with YouTubester in just 5 minutes.',
+        content: 'Get up and running with Tubester in just 5 minutes.',
         type: 'video',
         duration: '5 min',
         sections: [
@@ -148,7 +148,7 @@ export default function HelpPage() {
     'account-settings': [
       {
         title: 'Account Management',
-        content: 'Manage your YouTubester account settings and preferences.',
+        content: 'Manage your Tubester account settings and preferences.',
         type: 'guide',
         sections: [
           {
@@ -211,8 +211,8 @@ export default function HelpPage() {
         <div>
           <h1 className="text-3xl font-bold text-foreground mb-2">Help Center</h1>
           <p className="text-muted-foreground max-w-2xl mx-auto">
-            Everything you need to know about using YouTubester effectively. Find guides, tutorials, and answers to
-            common questions.
+            Everything you need to know about using Tubester effectively. Find guides, tutorials, and answers to common
+            questions.
           </p>
         </div>
       </div>
@@ -340,7 +340,7 @@ export default function HelpPage() {
         <div className="glass rounded-xl p-6 border border-border/50">
           <h3 className="font-semibold text-foreground mb-4">Video Tutorials</h3>
           <p className="text-muted-foreground text-sm mb-4">
-            Watch step-by-step video guides to master YouTubester features.
+            Watch step-by-step video guides to master Tubester features.
           </p>
           <button className="flex items-center space-x-2 text-primary hover:text-primary/80 text-sm font-medium">
             <PlayCircle className="w-4 h-4" />
@@ -376,7 +376,7 @@ export default function HelpPage() {
       <div className="glass rounded-xl p-8 border border-border/50 text-center">
         <h2 className="text-xl font-bold text-foreground mb-4">Still need help?</h2>
         <p className="text-muted-foreground mb-6 max-w-2xl mx-auto">
-          Can't find what you're looking for? Our support team is here to help you succeed with YouTubester.
+          Can't find what you're looking for? Our support team is here to help you succeed with Tubester.
         </p>
         <div className="flex flex-col sm:flex-row gap-4 justify-center">
           <button className="px-8 py-3 bg-gradient-primary text-primary-foreground rounded-xl font-medium shadow-moderate hover:shadow-strong transition-all duration-300 hover-lift">

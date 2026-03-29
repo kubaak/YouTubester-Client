@@ -10,13 +10,13 @@ export default function TermsOfServicePage() {
       content: (
         <div className="space-y-4">
           <p>
-            By accessing and using YouTubester, you accept and agree to be bound by the terms and provision of this
+            By accessing and using Tubester, you accept and agree to be bound by the terms and provision of this
             agreement. If you do not agree to abide by the above, please do not use this service.
           </p>
           <div className="bg-green-50 border border-green-200 rounded-xl p-4">
             <p className="text-sm text-green-800">
               <strong>Key Point:</strong> Your use of our service constitutes acceptance of these terms. If you disagree
-              with any part of these terms, you must discontinue use of YouTubester.
+              with any part of these terms, you must discontinue use of Tubester.
             </p>
           </div>
         </div>
@@ -28,7 +28,7 @@ export default function TermsOfServicePage() {
       content: (
         <div className="space-y-4">
           <p>
-            YouTubester is a platform that provides AI-powered tools for YouTube creators, including automated comment
+            Tubester is a platform that provides AI-powered tools for YouTube creators, including automated comment
             replies, video template management, and channel analytics. Our service is designed to help creators manage
             their channels more efficiently.
           </p>
@@ -58,7 +58,7 @@ export default function TermsOfServicePage() {
       title: 'User Responsibilities',
       content: (
         <div className="space-y-4">
-          <p>As a user of YouTubester, you agree to:</p>
+          <p>As a user of Tubester, you agree to:</p>
 
           <div className="space-y-4">
             <div className="flex items-start space-x-3">
@@ -111,7 +111,7 @@ export default function TermsOfServicePage() {
       title: 'Prohibited Uses',
       content: (
         <div className="space-y-4">
-          <p>You may not use YouTubester for any of the following prohibited activities:</p>
+          <p>You may not use Tubester for any of the following prohibited activities:</p>
 
           <div className="space-y-4">
             <div className="flex items-start space-x-3">
@@ -175,8 +175,8 @@ export default function TermsOfServicePage() {
           <div className="space-y-3">
             <h4 className="font-semibold text-foreground">Our Rights:</h4>
             <p className="text-muted-foreground">
-              The YouTubester service and its original content, features, and functionality are and will remain the
-              exclusive property of YouTubester and its licensors. The service is protected by copyright, trademark, and
+              The Tubester service and its original content, features, and functionality are and will remain the
+              exclusive property of Tubester and its licensors. The service is protected by copyright, trademark, and
               other laws.
             </p>
           </div>
@@ -216,9 +216,9 @@ export default function TermsOfServicePage() {
           <div className="space-y-3">
             <h4 className="font-semibold text-foreground">Limitation of Liability:</h4>
             <p className="text-muted-foreground text-sm">
-              In no event shall YouTubester, its directors, employees, partners, agents, suppliers, or affiliates be
-              liable for any indirect, incidental, special, consequential, or punitive damages, including without
-              limitation, loss of profits, data, use, goodwill, or other intangible losses.
+              In no event shall Tubester, its directors, employees, partners, agents, suppliers, or affiliates be liable
+              for any indirect, incidental, special, consequential, or punitive damages, including without limitation,
+              loss of profits, data, use, goodwill, or other intangible losses.
             </p>
           </div>
 
@@ -253,7 +253,7 @@ export default function TermsOfServicePage() {
         <div>
           <h1 className="text-3xl font-bold text-foreground mb-2">Terms of Service</h1>
           <p className="text-muted-foreground max-w-2xl mx-auto">
-            These terms and conditions outline the rules and regulations for the use of YouTubester's services.
+            These terms and conditions outline the rules and regulations for the use of Tubester's services.
           </p>
           <p className="text-sm text-muted-foreground mt-2">Last updated: {lastUpdated}</p>
         </div>
@@ -266,9 +266,9 @@ export default function TermsOfServicePage() {
           <div>
             <h3 className="font-semibold text-foreground mb-2">Important Notice</h3>
             <p className="text-muted-foreground text-sm">
-              Please read these Terms of Service carefully before using our service. By using YouTubester, you
-              acknowledge that you have read, understood, and agreed to be bound by these terms. If you do not agree to
-              these terms, you may not use our service.
+              Please read these Terms of Service carefully before using our service. By using Tubester, you acknowledge
+              that you have read, understood, and agreed to be bound by these terms. If you do not agree to these terms,
+              you may not use our service.
             </p>
           </div>
         </div>
@@ -306,7 +306,7 @@ export default function TermsOfServicePage() {
           <div className="text-sm text-muted-foreground space-y-2">
             <p>
               These Terms of Service are governed by and construed in accordance with the laws of the jurisdiction where
-              YouTubester operates.
+              Tubester operates.
             </p>
             <p>
               Any disputes arising under these terms will be subject to the exclusive jurisdiction of the courts in that
@@ -399,9 +399,9 @@ export default function TermsOfServicePage() {
           <div>
             <h4 className="font-semibold text-green-900 mb-2">Acknowledgment</h4>
             <p className="text-sm text-green-800">
-              By using YouTubester, you acknowledge that you have read these Terms of Service, understood them, and
-              agree to be bound by them. These terms constitute the entire agreement between you and YouTubester
-              regarding your use of the service.
+              By using Tubester, you acknowledge that you have read these Terms of Service, understood them, and agree
+              to be bound by them. These terms constitute the entire agreement between you and Tubester regarding your
+              use of the service.
             </p>
           </div>
         </div>
