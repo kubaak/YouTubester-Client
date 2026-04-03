@@ -52,3 +52,5 @@ jobs:
           script: |
             kubectl -n tubester set image deployment/tubester-client client=${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${{ env.IMAGE_TAG }}
             kubectl -n tubester rollout status deployment/tubester-client
+          labels: |
+            org.opencontainers.image.source=https://github.com/${{ github.repository }}

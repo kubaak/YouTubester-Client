@@ -32,7 +32,7 @@ export default function LandingPage() {
       icon: <MessageCircle className="w-7 h-7 text-primary" />,
       title: 'AI Comment Replies',
       description:
-        'Automatically generate contextual, on-brand replies to YouTube comments. Review, edit, and approve in bulk.',
+        'Generate contextual reply suggestions for YouTube comments using AI. Review, edit, and approve before posting.',
     },
     {
       icon: <Video className="w-7 h-7 text-primary" />,
@@ -54,7 +54,7 @@ export default function LandingPage() {
       icon: <Shield className="w-7 h-7 text-primary" />,
       title: 'Secure OAuth Authentication',
       description:
-        'Sign in with your Google account. No passwords stored — only secure OAuth 2.0 tokens you can revoke anytime.',
+        'Sign in with your Google account. No passwords stored. You can revoke access anytime from your Google account settings.',
     },
     {
       icon: <CheckCircle className="w-7 h-7 text-primary" />,
