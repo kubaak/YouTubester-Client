@@ -10,13 +10,14 @@
  * OpenAPI spec version: v1
  */
 
-export interface CopyVideoTemplateRequest {
-  sourceVideoId?: string;
-  targetVideoId?: string;
-  operationId?: string;
-  copyTags?: boolean;
-  copyLocation?: boolean;
-  copyPlaylists?: boolean;
-  copyCategory?: boolean;
-  copyDefaultLanguages?: boolean;
+export interface ChannelSettingsDto {
+  channelId?: string;
+  isCommentAssistantEnabled?: boolean;
+  isSuggestRepliesForTopLevelCommentsOnly?: boolean;
+  maxSuggestedRepliesPerSync?: number;
+  maxCommentAgeDays?: number;
+  replyLanguage?: string;
+  /** @nullable */
+  responseForNonTextualComments?: string | null;
+  updatedAtUtc?: string;
 }

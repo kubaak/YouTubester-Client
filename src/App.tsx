@@ -14,6 +14,7 @@ import VideoTemplatePage from '@/pages/VideoTemplatePage';
 import GeneratePage from '@/pages/GeneratePage';
 import ReviewPage from '@/pages/ReviewPage';
 import SettingsPage from '@/pages/SettingsPage';
+import ChannelSettingsPage from '@/pages/ChannelSettingsPage';
 import AboutPage from '@/pages/AboutPage';
 import FaqPage from '@/pages/FaqPage';
 import ContactPage from '@/pages/ContactPage';
@@ -94,6 +95,7 @@ export default function App() {
                       <Route path="/generate" element={<GeneratePage />} />
                       <Route path="/review" element={<ReviewPage />} />
                       <Route path="/settings" element={<SettingsPage />} />
+                      <Route path="/settings/channel" element={<ChannelSettingsPage />} />
                       <Route path="/about" element={<AboutPage />} />
                       <Route path="/faq" element={<FaqPage />} />
                       <Route path="/contact" element={<ContactPage />} />
