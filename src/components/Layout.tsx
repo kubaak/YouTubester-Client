@@ -154,6 +154,7 @@ export default function Layout({ children }: LayoutProps) {
                   (location.pathname === '/faq' ? 'FAQ' : null) ||
                   (location.pathname === '/privacy' ? 'Privacy Policy' : null) ||
                   (location.pathname === '/terms' ? 'Terms of Service' : null) ||
+                  (location.pathname === '/settings/channel' ? 'Channel Settings' : null) ||
                   'Tubester'}
               </h2>
               <div className="px-3 py-1 bg-primary/10 text-primary text-xs font-medium rounded-full border border-primary/20">
@@ -199,6 +200,13 @@ export default function Layout({ children }: LayoutProps) {
                         onClick={() => setIsUserMenuOpen(false)}
                       >
                         Account settings
+                      </Link>
+                      <Link
+                        to="/settings/channel"
+                        className="block px-4 py-2 text-sm text-foreground hover:bg-sidebar-accent/40"
+                        onClick={() => setIsUserMenuOpen(false)}
+                      >
+                        Channel settings
                       </Link>
                       <button
                         type="button"
