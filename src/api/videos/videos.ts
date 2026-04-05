@@ -176,7 +176,6 @@ export const getApiVideos = (
     
     return axios.default.get(
       `/api/videos`,{
-        responseType: 'text',
     ...options,
         params: {...params, ...options?.params},}
     );
