@@ -10,6 +10,7 @@
  * OpenAPI spec version: v1
  */
 
+export * from './accountSettingsDto';
 export * from './actionResult';
 export * from './aiTemplateEnqueueResult';
 export * from './aiVideoTemplateRequest';
@@ -28,6 +29,8 @@ export * from './iDomainEvent';
 export * from './problemDetails';
 export * from './reply';
 export * from './replyStatus';
+export * from './subscriptionSummaryDto';
+export * from './updateAccountSettingsRequest';
 export * from './updateChannelSettingsRequest';
 export * from './updateVideoMetadataRequest';
 export * from './validationProblemDetails';

@@ -195,7 +195,7 @@ export default function Layout({ children }: LayoutProps) {
                     </div>
                     <div className="border-t border-border/40">
                       <Link
-                        to="/settings"
+                        to="/settings/account"
                         className="block px-4 py-2 text-sm text-foreground hover:bg-sidebar-accent/40"
                         onClick={() => setIsUserMenuOpen(false)}
                       >
