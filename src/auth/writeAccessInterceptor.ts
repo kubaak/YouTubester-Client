@@ -7,7 +7,19 @@ import type { HttpMethod } from '@/auth/pendingWriteAction';
 import { checkWriteAccessCached, redirectToWriteConsent } from '@/auth/writeAccess';
 import { buildRequestKey, normalizeUrl } from '@/auth/requestKey';
 
+const OPERATION_ID_HEADER = 'OperationId';
+
 axios.interceptors.request.use(async (config: InternalAxiosRequestConfig) => {
+  const headers = config.headers ?? {};
+
+  let operationId = headers[OPERATION_ID_HEADER] as string | undefined;
+  if (!operationId) {
+    operationId = crypto.randomUUID();
+    headers[OPERATION_ID_HEADER] = operationId;
+  }
+
+  config.headers = headers;
+
   const requestKey = buildRequestKey(config.method ?? 'GET', config.url ?? '');
 
   if (!requiresWrite.has(requestKey)) {

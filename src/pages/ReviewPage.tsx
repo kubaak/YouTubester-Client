@@ -1,4 +1,4 @@
-import { useCallback, useMemo } from 'react';
+import { useCallback } from 'react';
 import { useForm } from 'react-hook-form';
 import { useQueryClient } from '@tanstack/react-query';
 
@@ -97,7 +97,7 @@ export default function ReviewPage() {
   });
 
   const onSaveDraft = handleSubmit(async (values) => {
-    const ok = await confirm('Save current metadata as a draft?');
+    const ok = await confirm('Save these changes as a draft?');
     if (!ok) return;
 
     await saveDraftMutation.mutateAsync({ data: buildRequest(values) });
@@ -105,7 +105,7 @@ export default function ReviewPage() {
   });
 
   const onSubmitToYouTube = handleSubmit(async (values) => {
-    const ok = await confirm('Submit these metadata changes to YouTube?');
+    const ok = await confirm('Submit these changes to YouTube?');
     if (!ok) return;
 
     await updateVideoMutation.mutateAsync({ data: buildRequest(values) });
@@ -113,100 +113,163 @@ export default function ReviewPage() {
   });
 
   return (
-    <div className="mx-auto max-w-3xl p-6">
-      <h1 className="text-xl font-semibold">Review Video Metadata</h1>
-      <p className="mt-1 text-sm text-gray-600">
-        Review and edit the AI-generated metadata, then save as a draft or submit to YouTube.
-      </p>
+    <div className="min-h-full bg-slate-50/70">
+      <div className="mx-auto max-w-4xl px-6 py-10">
+        <div className="mb-8">
+          <h1 className="text-3xl font-semibold tracking-tight text-slate-900 sm:text-4xl">Review video details</h1>
 
-      <form className="mt-6 space-y-6">
-        <VideoSelect label="Video" value={videoId} onChange={handleVideoChange} placeholder="Choose a video…" />
+          <p className="mt-3 max-w-2xl text-sm leading-6 text-slate-600 sm:text-base">
+            Review and edit your title, description, and tags before saving a draft or sending the changes to YouTube.
+          </p>
+        </div>
 
-        {isAiTemplateInProgress && (
-          <div className="rounded-xl border border-yellow-300 bg-yellow-50 px-4 py-3 text-sm text-yellow-800">
-            AI generation is in progress — fields are locked until it completes.
-          </div>
-        )}
-
-        <fieldset className="rounded-2xl border p-4" disabled={isFormLocked}>
-          <legend className="text-sm font-medium">Metadata snapshot</legend>
-
-          {videoId.length === 0 ? (
-            <p className="mt-2 text-sm text-gray-500">Select a video to load its metadata.</p>
-          ) : videoDetailsQuery.isLoading ? (
-            <p className="mt-2 text-sm text-gray-500">Loading snapshot…</p>
-          ) : videoDetailsQuery.isError ? (
-            <p className="mt-2 text-sm text-red-600">Failed to load snapshot.</p>
-          ) : (
-            <div className="mt-2 grid gap-3">
+        <form className="space-y-6">
+          <div className="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm sm:p-8">
+            <div className="grid gap-6">
               <div>
-                <label className="block text-sm">Title</label>
-                <input
-                  type="text"
-                  {...register('title')}
-                  className="mt-1 w-full rounded-xl border px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-black disabled:opacity-50"
+                <VideoSelect
+                  label="Select a video to load its current details"
+                  value={videoId}
+                  onChange={handleVideoChange}
+                  placeholder="Start typing or pick a video…"
+                  disabled={saveDraftMutation.isPending || updateVideoMutation.isPending}
                 />
               </div>
 
-              <div>
-                <label className="block text-sm">Description</label>
-                <textarea
-                  {...register('description')}
-                  rows={6}
-                  className="mt-1 w-full rounded-xl border px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-black disabled:opacity-50"
-                />
-              </div>
+              {isAiTemplateInProgress && (
+                <div className="rounded-2xl border border-amber-200 bg-amber-50 px-4 py-3 text-sm text-amber-800">
+                  AI suggestions are still being prepared. Editing is temporarily locked until generation is complete.
+                </div>
+              )}
 
-              <div>
-                <label className="block text-sm">Tags</label>
-                <textarea
-                  {...register('tagsText')}
-                  rows={3}
-                  className="mt-1 w-full rounded-xl border px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-black disabled:opacity-50"
-                  placeholder="Comma or newline separated"
-                />
-              </div>
+              {videoId ? (
+                <fieldset disabled={isFormLocked} className="space-y-4">
+                  <div className="rounded-2xl border border-slate-200 bg-slate-50 p-5">
+                    <div className="mb-4">
+                      <h2 className="text-sm font-semibold text-slate-900">Video details</h2>
+                      <p className="mt-1 text-sm text-slate-500">
+                        Make any final edits before saving or publishing your changes.
+                      </p>
+                    </div>
 
-              <div className="flex items-center gap-2">
-                <button
-                  type="button"
-                  onClick={onSaveDraft}
-                  disabled={!canSubmit || isSubmitting || saveDraftMutation.isPending || !isDirty}
-                  className="rounded-xl border border-black px-4 py-2 text-sm disabled:opacity-50"
-                >
-                  {saveDraftMutation.isPending ? 'Saving…' : 'Save Draft'}
-                </button>
+                    {videoDetailsQuery.isLoading ? (
+                      <div className="rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm text-slate-500">
+                        Loading video details…
+                      </div>
+                    ) : videoDetailsQuery.isError ? (
+                      <div className="rounded-2xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700">
+                        Failed to load video details.
+                      </div>
+                    ) : (
+                      <div className="grid gap-5">
+                        <div>
+                          <label htmlFor="title" className="block text-sm font-medium text-slate-900">
+                            Title
+                          </label>
+                          <input
+                            id="title"
+                            type="text"
+                            {...register('title')}
+                            className="mt-2 w-full rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm text-slate-900 shadow-sm outline-none transition placeholder:text-slate-400 focus:border-slate-400 focus:ring-4 focus:ring-slate-200 disabled:cursor-not-allowed disabled:opacity-60"
+                          />
+                        </div>
 
-                <button
-                  type="button"
-                  onClick={onSubmitToYouTube}
-                  disabled={!canSubmit || isSubmitting || updateVideoMutation.isPending}
-                  className="rounded-xl bg-black px-4 py-2 text-sm text-white disabled:opacity-50"
-                >
-                  {updateVideoMutation.isPending ? 'Updating…' : 'Submit to YouTube'}
-                </button>
-              </div>
+                        <div>
+                          <label htmlFor="description" className="block text-sm font-medium text-slate-900">
+                            Description
+                          </label>
+                          <textarea
+                            id="description"
+                            {...register('description')}
+                            rows={8}
+                            className="mt-2 w-full rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm text-slate-900 shadow-sm outline-none transition placeholder:text-slate-400 focus:border-slate-400 focus:ring-4 focus:ring-slate-200 disabled:cursor-not-allowed disabled:opacity-60"
+                          />
+                        </div>
 
-              <div className="flex flex-col gap-1">
-                {saveDraftMutation.isSuccess && <span className="text-sm text-green-700">Draft saved.</span>}
-                {saveDraftMutation.isError && (
-                  <span className="text-sm text-red-600">
-                    {(saveDraftMutation.error as any)?.message ?? 'Failed to save draft'}
-                  </span>
-                )}
-                {updateVideoMutation.isSuccess && <span className="text-sm text-green-700">Submitted to YouTube.</span>}
-                {updateVideoMutation.isError && (
-                  <span className="text-sm text-red-600">
-                    {(updateVideoMutation.error as any)?.message ?? 'Failed to update video'}
-                  </span>
-                )}
-              </div>
+                        <div>
+                          <label htmlFor="tagsText" className="block text-sm font-medium text-slate-900">
+                            Tags
+                          </label>
+                          <p className="mt-1 text-sm text-slate-500">Enter tags separated by commas or new lines.</p>
+                          <textarea
+                            id="tagsText"
+                            {...register('tagsText')}
+                            rows={4}
+                            className="mt-2 w-full rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm text-slate-900 shadow-sm outline-none transition placeholder:text-slate-400 focus:border-slate-400 focus:ring-4 focus:ring-slate-200 disabled:cursor-not-allowed disabled:opacity-60"
+                            placeholder="tutorial, youtube growth, creator tips"
+                          />
+                        </div>
+                      </div>
+                    )}
+                  </div>
+
+                  {saveDraftMutation.isSuccess && (
+                    <div className="rounded-2xl border border-emerald-200 bg-emerald-50 px-4 py-3 text-sm text-emerald-700">
+                      Draft saved successfully.
+                    </div>
+                  )}
+
+                  {saveDraftMutation.isError && (
+                    <div className="rounded-2xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700">
+                      {(saveDraftMutation.error as any)?.message ?? 'Failed to save draft.'}
+                    </div>
+                  )}
+
+                  {updateVideoMutation.isSuccess && (
+                    <div className="rounded-2xl border border-emerald-200 bg-emerald-50 px-4 py-3 text-sm text-emerald-700">
+                      Changes were submitted to YouTube successfully.
+                    </div>
+                  )}
+
+                  {updateVideoMutation.isError && (
+                    <div className="rounded-2xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700">
+                      {(updateVideoMutation.error as any)?.message ?? 'Failed to submit changes to YouTube.'}
+                    </div>
+                  )}
+
+                  <div className="rounded-2xl border border-slate-200 bg-white/70 p-4">
+                    <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+                      <p className="text-sm text-slate-500">
+                        Save a draft to continue later, or submit your final changes to YouTube now.
+                      </p>
+
+                      <div className="flex flex-col gap-3 sm:flex-row">
+                        <button
+                          type="button"
+                          onClick={onSaveDraft}
+                          disabled={!canSubmit || isSubmitting || saveDraftMutation.isPending || !isDirty}
+                          className="inline-flex items-center justify-center rounded-2xl border border-slate-300 bg-white px-5 py-3 text-sm font-medium text-slate-700 shadow-sm transition hover:border-slate-400 hover:bg-slate-50 focus:outline-none focus:ring-4 focus:ring-slate-200 disabled:cursor-not-allowed disabled:opacity-50"
+                        >
+                          {saveDraftMutation.isPending ? 'Saving draft…' : 'Save draft'}
+                        </button>
+
+                        <button
+                          type="button"
+                          onClick={onSubmitToYouTube}
+                          disabled={!canSubmit || isSubmitting || updateVideoMutation.isPending}
+                          className="inline-flex items-center justify-center rounded-2xl bg-slate-900 px-5 py-3 text-sm font-medium text-white shadow-sm transition hover:bg-slate-800 focus:outline-none focus:ring-4 focus:ring-slate-300 disabled:cursor-not-allowed disabled:bg-slate-300"
+                        >
+                          {updateVideoMutation.isPending ? 'Submitting…' : 'Submit to YouTube'}
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                </fieldset>
+              ) : (
+                <div className="rounded-2xl border border-dashed border-slate-300 bg-slate-50 px-5 py-8 text-sm text-slate-500">
+                  <p className="font-medium text-slate-700">Choose a video to get started</p>
+                  <p className="mt-2">
+                    Once selected, you’ll be able to review the title, description, and tags, then save a draft or
+                    submit the changes to YouTube.
+                  </p>
+                </div>
+              )}
             </div>
-          )}
-        </fieldset>
-      </form>
+          </div>
+        </form>
 
-      {confirmDialog}
+        {confirmDialog}
+      </div>
     </div>
   );
 }

@@ -9,12 +9,8 @@
 [🔐 write Login with Google](/api/auth/login/google/write?returnUrl=/swagger/index.html)
  * OpenAPI spec version: v1
  */
+import type { DraftDecisionDto } from './draftDecisionDto';
 
-export interface CopyVideoTemplateRequest {
-  sourceVideoId?: string;
-  targetVideoId?: string;
-  copyTags?: boolean;
-  copyPlaylists?: boolean;
-  copyCategory?: boolean;
-  copyDefaultLanguages?: boolean;
+export interface BatchDecisionRequest {
+  decisions?: DraftDecisionDto[];
 }

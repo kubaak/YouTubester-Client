@@ -9,6 +9,9 @@
 [🔐 write Login with Google](/api/auth/login/google/write?returnUrl=/swagger/index.html)
  * OpenAPI spec version: v1
  */
+import type { GeoLocationDto } from './geoLocationDto';
+import type { PlaylistDto } from './playlistDto';
+import type { CategoryDto } from './categoryDto';
 
 export interface VideoDetailsDto {
   /** @nullable */
@@ -17,4 +20,13 @@ export interface VideoDetailsDto {
   description?: string | null;
   tags: string[];
   isAiTemplateInProgress?: boolean;
+  location?: GeoLocationDto;
+  /** @nullable */
+  locationDescription?: string | null;
+  playlists: PlaylistDto[];
+  category?: CategoryDto;
+  /** @nullable */
+  defaultLanguage?: string | null;
+  /** @nullable */
+  defaultAudioLanguage?: string | null;
 }

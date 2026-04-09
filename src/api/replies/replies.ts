@@ -36,9 +36,9 @@ import type {
 } from 'axios';
 
 import type {
+  BatchDecisionRequest,
   BatchDecisionResultDto,
   BatchIgnoreResult,
-  DraftDecisionDto,
   ProblemDetails,
   Reply,
   ValidationProblemDetails
@@ -190,21 +190,21 @@ const {mutation: mutationOptions, axios: axiosOptions} = options ?
  * @summary Approves batch of replies
  */
 export const postApiRepliesApprove = (
-    draftDecisionDto: DraftDecisionDto[], options?: AxiosRequestConfig
+    batchDecisionRequest: BatchDecisionRequest, options?: AxiosRequestConfig
  ): Promise<AxiosResponse<BatchDecisionResultDto>> => {
     
     
     return axios.default.post(
       `/api/replies/approve`,
-      draftDecisionDto,options
+      batchDecisionRequest,options
     );
   }
 
 
 
 export const getPostApiRepliesApproveMutationOptions = <TError = AxiosError<ValidationProblemDetails>,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof postApiRepliesApprove>>, TError,{data: DraftDecisionDto[]}, TContext>, axios?: AxiosRequestConfig}
-): UseMutationOptions<Awaited<ReturnType<typeof postApiRepliesApprove>>, TError,{data: DraftDecisionDto[]}, TContext> => {
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof postApiRepliesApprove>>, TError,{data: BatchDecisionRequest}, TContext>, axios?: AxiosRequestConfig}
+): UseMutationOptions<Awaited<ReturnType<typeof postApiRepliesApprove>>, TError,{data: BatchDecisionRequest}, TContext> => {
 
 const mutationKey = ['postApiRepliesApprove'];
 const {mutation: mutationOptions, axios: axiosOptions} = options ?
@@ -216,7 +216,7 @@ const {mutation: mutationOptions, axios: axiosOptions} = options ?
       
 
 
-      const mutationFn: MutationFunction<Awaited<ReturnType<typeof postApiRepliesApprove>>, {data: DraftDecisionDto[]}> = (props) => {
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof postApiRepliesApprove>>, {data: BatchDecisionRequest}> = (props) => {
           const {data} = props ?? {};
 
           return  postApiRepliesApprove(data,axiosOptions)
@@ -228,18 +228,18 @@ const {mutation: mutationOptions, axios: axiosOptions} = options ?
   return  { mutationFn, ...mutationOptions }}
 
     export type PostApiRepliesApproveMutationResult = NonNullable<Awaited<ReturnType<typeof postApiRepliesApprove>>>
-    export type PostApiRepliesApproveMutationBody = DraftDecisionDto[]
+    export type PostApiRepliesApproveMutationBody = BatchDecisionRequest
     export type PostApiRepliesApproveMutationError = AxiosError<ValidationProblemDetails>
 
     /**
  * @summary Approves batch of replies
  */
 export const usePostApiRepliesApprove = <TError = AxiosError<ValidationProblemDetails>,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof postApiRepliesApprove>>, TError,{data: DraftDecisionDto[]}, TContext>, axios?: AxiosRequestConfig}
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof postApiRepliesApprove>>, TError,{data: BatchDecisionRequest}, TContext>, axios?: AxiosRequestConfig}
  , queryClient?: QueryClient): UseMutationResult<
         Awaited<ReturnType<typeof postApiRepliesApprove>>,
         TError,
-        {data: DraftDecisionDto[]},
+        {data: BatchDecisionRequest},
         TContext
       > => {
 
