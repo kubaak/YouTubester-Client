@@ -1,4 +1,3 @@
-import { useMemo } from 'react';
 import { Controller, useForm } from 'react-hook-form';
 import { useNavigate } from 'react-router-dom';
 
@@ -42,7 +41,7 @@ export default function GeneratePage() {
     (promptEnrichment.trim().length > 0 || generateTitle || generateDescription || generateTags);
 
   const onGenerate = handleSubmit(async (values) => {
-    const ok = await confirm('Generate Metadata for the selected video?');
+    const ok = await confirm('Improve this video with AI?');
     if (!ok) return;
 
     const request: AiVideoTemplateRequest = {
@@ -57,83 +56,140 @@ export default function GeneratePage() {
       await aiTemplateMutation.mutateAsync({ data: request });
       navigate(`/review?videoId=${encodeURIComponent(values.targetVideoId)}`);
     } catch {
-      // error already shown via isError
+      // error already exposed via isError
     }
   });
 
   return (
-    <div className="mx-auto max-w-3xl p-6">
-      <h1 className="text-xl font-semibold">Generate Metadata</h1>
-      <p className="mt-1 text-sm text-gray-600">
-        Select a target video and configure AI generation options. After enqueuing, you'll be redirected to review the
-        results.
-      </p>
+    <div className="min-h-full bg-slate-50/70">
+      <div className="mx-auto max-w-4xl px-6 py-10">
+        <div className="mb-8">
+          <h1 className="mt-4 text-3xl font-semibold tracking-tight text-slate-900 sm:text-4xl">
+            Improve your video with AI
+          </h1>
 
-      <form className="mt-6 space-y-6">
-        <Controller
-          control={control}
-          name="targetVideoId"
-          render={({ field }) => (
-            <VideoSelect
-              label="Target video"
-              value={field.value}
-              onChange={field.onChange}
-              placeholder="Choose the target video…"
-              disabled={aiTemplateMutation.isPending}
-            />
-          )}
-        />
+          <p className="mt-3 max-w-2xl text-sm leading-6 text-slate-600 sm:text-base">
+            Select a video that you want to improve, add a short description or context, and let AI prepare title,
+            description, and tag suggestions for you. You’ll review and edit everything before anything is applied.
+          </p>
+        </div>
 
-        <fieldset className="rounded-2xl border p-4" disabled={aiTemplateMutation.isPending}>
-          <legend className="text-sm font-medium">AI generation options</legend>
+        <form className="space-y-6">
+          <div className="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm sm:p-8">
+            <div className="grid gap-6">
+              <div>
+                <Controller
+                  control={control}
+                  name="targetVideoId"
+                  render={({ field }) => (
+                    <VideoSelect
+                      label="Choose your video"
+                      value={field.value}
+                      onChange={field.onChange}
+                      placeholder="Start typing or pick a video…"
+                      disabled={aiTemplateMutation.isPending}
+                    />
+                  )}
+                />
+              </div>
 
-          <div className="mt-2 grid gap-3">
-            <div>
-              <label className="block text-sm">Prompt</label>
-              <textarea
-                {...register('promptEnrichment')}
-                rows={4}
-                className="mt-1 w-full rounded-xl border px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-black disabled:opacity-50"
-                placeholder="e.g., Focus on beginners; include a clear benefit; optimize for search"
-              />
-            </div>
+              <fieldset disabled={aiTemplateMutation.isPending} className="space-y-6">
+                <div>
+                  <label htmlFor="promptEnrichment" className="block text-sm font-medium text-slate-900">
+                    Tell the AI what this video is about
+                  </label>
+                  <p className="mt-1 text-sm text-slate-500">
+                    Add context, audience, tone, keywords, or anything you want the AI to consider.
+                  </p>
+                  <textarea
+                    id="promptEnrichment"
+                    {...register('promptEnrichment')}
+                    rows={5}
+                    className="mt-3 w-full rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm text-slate-900 shadow-sm outline-none transition placeholder:text-slate-400 focus:border-slate-400 focus:ring-4 focus:ring-slate-200 disabled:cursor-not-allowed disabled:opacity-60"
+                    placeholder="e.g., Funny cat compilation"
+                  />
+                </div>
 
-            <div className="grid grid-cols-2 gap-3 text-sm">
-              <label className="inline-flex items-center gap-2">
-                <input type="checkbox" {...register('generateTitle')} />
-                Generate Title
-              </label>
-              <label className="inline-flex items-center gap-2">
-                <input type="checkbox" {...register('generateDescription')} />
-                Generate Description
-              </label>
-              <label className="inline-flex items-center gap-2">
-                <input type="checkbox" {...register('generateTags')} />
-                Generate Tags
-              </label>
-            </div>
+                <div className="rounded-2xl border border-slate-200 bg-slate-50 p-5">
+                  <div className="mb-4">
+                    <h2 className="text-sm font-semibold text-slate-900">What should the AI improve?</h2>
+                    <p className="mt-1 text-sm text-slate-500">
+                      Choose which parts you want to improve. You can select one, two, or all three.
+                    </p>
+                  </div>
 
-            <div className="flex items-center gap-2">
-              <button
-                type="button"
-                onClick={onGenerate}
-                disabled={!canGenerate}
-                className="rounded-xl bg-black px-4 py-2 text-sm text-white disabled:opacity-50"
-              >
-                {aiTemplateMutation.isPending ? 'Generating…' : 'Generate'}
-              </button>
+                  <div className="grid gap-3 sm:grid-cols-3">
+                    <label className="flex cursor-pointer items-start gap-3 rounded-2xl border border-slate-200 bg-white p-4 shadow-sm transition hover:border-slate-300 hover:shadow">
+                      <input
+                        type="checkbox"
+                        {...register('generateTitle')}
+                        className="mt-1 h-4 w-4 rounded border-slate-300 text-slate-900 focus:ring-slate-400"
+                      />
+                      <div>
+                        <div className="text-sm font-medium text-slate-900">Title</div>
+                        <div className="mt-1 text-xs leading-5 text-slate-500">
+                          Make stronger, more clickable title.
+                        </div>
+                      </div>
+                    </label>
 
-              {aiTemplateMutation.isError && (
-                <span className="text-sm text-red-600">
-                  {(aiTemplateMutation.error as any)?.message ?? 'Failed to enqueue job'}
-                </span>
-              )}
+                    <label className="flex cursor-pointer items-start gap-3 rounded-2xl border border-slate-200 bg-white p-4 shadow-sm transition hover:border-slate-300 hover:shadow">
+                      <input
+                        type="checkbox"
+                        {...register('generateDescription')}
+                        className="mt-1 h-4 w-4 rounded border-slate-300 text-slate-900 focus:ring-slate-400"
+                      />
+                      <div>
+                        <div className="text-sm font-medium text-slate-900">Description</div>
+                        <div className="mt-1 text-xs leading-5 text-slate-500">
+                          Make clearer, more useful video description.
+                        </div>
+                      </div>
+                    </label>
+
+                    <label className="flex cursor-pointer items-start gap-3 rounded-2xl border border-slate-200 bg-white p-4 shadow-sm transition hover:border-slate-300 hover:shadow">
+                      <input
+                        type="checkbox"
+                        {...register('generateTags')}
+                        className="mt-1 h-4 w-4 rounded border-slate-300 text-slate-900 focus:ring-slate-400"
+                      />
+                      <div>
+                        <div className="text-sm font-medium text-slate-900">Tags</div>
+                        <div className="mt-1 text-xs leading-5 text-slate-500">
+                          Suggest tags that better match the content.
+                        </div>
+                      </div>
+                    </label>
+                  </div>
+                </div>
+
+                {aiTemplateMutation.isError && (
+                  <div className="rounded-2xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700">
+                    {(aiTemplateMutation.error as any)?.message ?? 'Failed to generate suggestions.'}
+                  </div>
+                )}
+
+                <div className="flex flex-col gap-3 border-t border-slate-200 pt-6 sm:flex-row sm:items-center sm:justify-between">
+                  <p className="text-sm text-slate-500">
+                    Suggestions will open in review so you can edit them before applying.
+                  </p>
+
+                  <button
+                    type="button"
+                    onClick={onGenerate}
+                    disabled={!canGenerate}
+                    className="inline-flex items-center justify-center rounded-2xl bg-slate-900 px-5 py-3 text-sm font-medium text-white shadow-sm transition hover:bg-slate-800 focus:outline-none focus:ring-4 focus:ring-slate-300 disabled:cursor-not-allowed disabled:bg-slate-300"
+                  >
+                    {aiTemplateMutation.isPending ? 'Improving video…' : 'Improve video'}
+                  </button>
+                </div>
+              </fieldset>
             </div>
           </div>
-        </fieldset>
-      </form>
+        </form>
 
-      {confirmDialog}
+        {confirmDialog}
+      </div>
     </div>
   );
 }

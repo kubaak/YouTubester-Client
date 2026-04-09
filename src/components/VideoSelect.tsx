@@ -109,7 +109,7 @@ export function VideoSelect({ label, value, onChange, placeholder = 'Select a vi
               <img
                 src={selected.thumbnailUrl}
                 alt={selected.title!}
-                className="w-10 h-6 rounded object-cover border"
+                className="w-15 h-9 rounded object-cover border"
                 loading="lazy"
               />
             )}

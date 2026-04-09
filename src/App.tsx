@@ -10,7 +10,7 @@ import LandingPage from '@/pages/LandingPage';
 import LoginPage from '@/pages/LoginPage';
 import DashboardPage from '@/pages/DashboardPage';
 import RepliesPage from '@/pages/RepliesPage';
-import VideoTemplatePage from '@/pages/VideoTemplatePage';
+import CopyPage from '@/pages/CopyPage';
 import GeneratePage from '@/pages/GeneratePage';
 import ReviewPage from '@/pages/ReviewPage';
 import AccountSettingsPage from '@/pages/AccountSettingsPage';
@@ -90,10 +90,10 @@ export default function App() {
                   <Layout>
                     <Routes>
                       <Route path="/dashboard" element={<DashboardPage />} />
-                      <Route path="/replies" element={<RepliesPage />} />
-                      <Route path="/videoTemplate" element={<VideoTemplatePage />} />
+                      <Route path="/copy" element={<CopyPage />} />
                       <Route path="/generate" element={<GeneratePage />} />
                       <Route path="/review" element={<ReviewPage />} />
+                      <Route path="/replies" element={<RepliesPage />} />
                       <Route path="/settings/account" element={<AccountSettingsPage />} />
                       <Route path="/settings/channel" element={<ChannelSettingsPage />} />
                       <Route path="/about" element={<AboutPage />} />

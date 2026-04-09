@@ -10,11 +10,7 @@
  * OpenAPI spec version: v1
  */
 
-export interface CopyVideoTemplateRequest {
-  sourceVideoId?: string;
-  targetVideoId?: string;
-  copyTags?: boolean;
-  copyPlaylists?: boolean;
-  copyCategory?: boolean;
-  copyDefaultLanguages?: boolean;
+export interface GeoLocationDto {
+  latitude?: number;
+  longitude?: number;
 }

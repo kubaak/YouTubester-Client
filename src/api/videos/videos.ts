@@ -40,6 +40,7 @@ import type {
   AiVideoTemplateRequest,
   CopyVideoTemplateRequest,
   GetApiVideosParams,
+  PostApiVideosResyncParams,
   ProblemDetails,
   UpdateVideoMetadataRequest,
   VideoDetailsDto,
@@ -111,7 +112,10 @@ export const usePostApiVideosCopyTemplate = <TError = AxiosError<ProblemDetails>
 
       return useMutation(mutationOptions, queryClient);
     }
-    export const postApiVideosAiTemplate = (
+    /**
+ * @summary Improve video metadata using AI
+ */
+export const postApiVideosAiTemplate = (
     aiVideoTemplateRequest: AiVideoTemplateRequest, options?: AxiosRequestConfig
  ): Promise<AxiosResponse<AiTemplateEnqueueResult>> => {
     
@@ -153,7 +157,10 @@ const {mutation: mutationOptions, axios: axiosOptions} = options ?
     export type PostApiVideosAiTemplateMutationBody = AiVideoTemplateRequest
     export type PostApiVideosAiTemplateMutationError = AxiosError<ProblemDetails>
 
-    export const usePostApiVideosAiTemplate = <TError = AxiosError<ProblemDetails>,
+    /**
+ * @summary Improve video metadata using AI
+ */
+export const usePostApiVideosAiTemplate = <TError = AxiosError<ProblemDetails>,
     TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof postApiVideosAiTemplate>>, TError,{data: AiVideoTemplateRequest}, TContext>, axios?: AxiosRequestConfig}
  , queryClient?: QueryClient): UseMutationResult<
         Awaited<ReturnType<typeof postApiVideosAiTemplate>>,
@@ -259,7 +266,7 @@ export function useGetApiVideos<TData = Awaited<ReturnType<typeof getApiVideos>>
 
 
 /**
- * @summary Gets video metadata (title, description, tags) for a single video.
+ * @summary Gets video details (title, description, tags) for a single video.
  */
 export const getApiVideosVideoId = (
     videoId: string, options?: AxiosRequestConfig
@@ -328,7 +335,7 @@ export function useGetApiVideosVideoId<TData = Awaited<ReturnType<typeof getApiV
  , queryClient?: QueryClient
   ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
 /**
- * @summary Gets video metadata (title, description, tags) for a single video.
+ * @summary Gets video details (title, description, tags) for a single video.
  */
 
 export function useGetApiVideosVideoId<TData = Awaited<ReturnType<typeof getApiVideosVideoId>>, TError = AxiosError<ProblemDetails>>(
@@ -467,6 +474,68 @@ export const usePostApiVideosSaveDraft = <TError = AxiosError<ProblemDetails>,
       > => {
 
       const mutationOptions = getPostApiVideosSaveDraftMutationOptions(options);
+
+      return useMutation(mutationOptions, queryClient);
+    }
+    /**
+ * @summary Resyncs a video's details and playlists from YouTube.
+ */
+export const postApiVideosResync = (
+    params?: PostApiVideosResyncParams, options?: AxiosRequestConfig
+ ): Promise<AxiosResponse<VideoDetailsDto>> => {
+    
+    
+    return axios.default.post(
+      `/api/videos/resync`,undefined,{
+    ...options,
+        params: {...params, ...options?.params},}
+    );
+  }
+
+
+
+export const getPostApiVideosResyncMutationOptions = <TError = AxiosError<ProblemDetails>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof postApiVideosResync>>, TError,{params?: PostApiVideosResyncParams}, TContext>, axios?: AxiosRequestConfig}
+): UseMutationOptions<Awaited<ReturnType<typeof postApiVideosResync>>, TError,{params?: PostApiVideosResyncParams}, TContext> => {
+
+const mutationKey = ['postApiVideosResync'];
+const {mutation: mutationOptions, axios: axiosOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }, axios: undefined};
+
+      
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof postApiVideosResync>>, {params?: PostApiVideosResyncParams}> = (props) => {
+          const {params} = props ?? {};
+
+          return  postApiVideosResync(params,axiosOptions)
+        }
+
+        
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type PostApiVideosResyncMutationResult = NonNullable<Awaited<ReturnType<typeof postApiVideosResync>>>
+    
+    export type PostApiVideosResyncMutationError = AxiosError<ProblemDetails>
+
+    /**
+ * @summary Resyncs a video's details and playlists from YouTube.
+ */
+export const usePostApiVideosResync = <TError = AxiosError<ProblemDetails>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof postApiVideosResync>>, TError,{params?: PostApiVideosResyncParams}, TContext>, axios?: AxiosRequestConfig}
+ , queryClient?: QueryClient): UseMutationResult<
+        Awaited<ReturnType<typeof postApiVideosResync>>,
+        TError,
+        {params?: PostApiVideosResyncParams},
+        TContext
+      > => {
+
+      const mutationOptions = getPostApiVideosResyncMutationOptions(options);
 
       return useMutation(mutationOptions, queryClient);
     }

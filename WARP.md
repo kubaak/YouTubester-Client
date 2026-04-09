@@ -7,7 +7,7 @@ This file provides guidance to WARP (warp.dev) when working with code in this re
 YouTubester-Client is a React frontend application for managing YouTube content operations. It's built with Vite, TypeScript, and React Query for state management. The application provides two main interfaces:
 
 - **RepliesPage**: AG Grid-based interface for reviewing and approving YouTube comment replies
-- **VideoTemplatePage**: Form-based interface for copying video templates between YouTube channels with optional AI enhancements
+- **CopyPage**: Form-based interface for copying video templates between YouTube channels with optional AI enhancements
 
 ## Development Commands
 
@@ -57,7 +57,7 @@ npm run orval:gen
 ### Routing
 
 - React Router DOM for client-side routing
-- Two main routes: `/replies` and `/videoTemplate`
+- Two main routes: `/replies` and `/copy`
 - Root redirects to dashboard page
 
 ## Key Components
@@ -70,7 +70,7 @@ npm run orval:gen
 - Real-time updates via React Query mutations
 - Confirmation dialogs for destructive actions
 
-### VideoTemplatePage
+### CopyPage
 
 - Complex form with conditional UI based on AI toggle
 - Mutual exclusivity between "copy tags" and "generate tags" options

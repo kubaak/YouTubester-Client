@@ -6,13 +6,13 @@ import {
   Video,
   MessageCircle,
   Home,
-  Settings,
   HelpCircle,
   Info,
   Mail,
   User,
   LogOut,
 } from 'lucide-react';
+
 import { SidebarLink } from './SidebarLink';
 import { cn } from '@/lib/cn';
 import { useAuth } from '@/contexts/AuthContext';
@@ -28,11 +28,10 @@ interface NavigationItem {
 
 const primaryNav: readonly NavigationItem[] = [
   { path: '/dashboard', label: 'Dashboard', icon: Home },
-  { path: '/replies', label: 'Replies', icon: MessageCircle },
-  { path: '/videoTemplate', label: 'Copy Template', icon: Video },
-  { path: '/generate', label: 'Generate', icon: Video },
+  { path: '/copy', label: 'Copy', icon: Video },
+  { path: '/generate', label: 'Improve', icon: Video },
   { path: '/review', label: 'Review', icon: Video },
-  // { path: '/settings', label: 'Settings', icon: Settings },
+  { path: '/replies', label: 'Replies', icon: MessageCircle },
 ] as const;
 
 const secondaryNav: readonly NavigationItem[] = [
@@ -46,45 +45,49 @@ interface LayoutProps {
 }
 
 export default function Layout({ children }: LayoutProps) {
-  var location = useLocation();
-  var { user, logout } = useAuth();
-  var [collapsed, setCollapsed] = useState(false);
-  var [isUserMenuOpen, setIsUserMenuOpen] = useState(false);
+  const location = useLocation();
+  const { user, logout } = useAuth();
+  const [collapsed, setCollapsed] = useState(false);
+  const [isUserMenuOpen, setIsUserMenuOpen] = useState(false);
 
-  var handleLogout = (): void => {
+  const handleLogout = (): void => {
     logout();
     setIsUserMenuOpen(false);
   };
 
+  const currentPageTitle =
+    primaryNav.find((item) => item.path === location.pathname)?.label ||
+    secondaryNav.find((item) => item.path === location.pathname)?.label ||
+    (location.pathname === '/faq' ? 'FAQ' : null) ||
+    (location.pathname === '/privacy' ? 'Privacy Policy' : null) ||
+    (location.pathname === '/terms' ? 'Terms of Service' : null) ||
+    (location.pathname === '/settings/account' ? 'Account Settings' : null) ||
+    (location.pathname === '/settings/channel' ? 'Channel Settings' : null) ||
+    'Tubester';
+
   return (
-    <div className="min-h-screen bg-gradient-surface flex">
+    <div className="flex min-h-screen bg-gradient-surface text-foreground">
       <PendingWriteActionBootstrap />
       {/* Sidebar */}
       <aside
         id="app-sidebar"
         className={cn(
-          'glass border-r border-sidebar-border/50 transition-[width] duration-300 ease-out',
+          'glass shrink-0 border-r border-sidebar-border/50 transition-[width] duration-300 ease-out',
           collapsed ? 'w-16' : 'w-72',
         )}
       >
         {/* Header */}
-        <div className={cn('px-6 py-6 border-b border-sidebar-border/30', collapsed && 'px-3')}>
-          <div className={cn('flex items-center gap-3', collapsed && 'justify-center gap-2')}>
-            <img
-              src="/tubester_logo.png"
-              alt="Tubester logo"
-              className="h-10 w-auto max-w-full object-contain shrink-0"
-            />
-            {!collapsed && <h1 className="text-xl font-bold text-foreground">Tubester</h1>}
+        <div className={cn('border-b border-sidebar-border/30 py-5', collapsed ? 'px-3' : 'px-6')}>
+          <div className={cn('flex', collapsed ? 'flex-col items-center gap-3' : 'items-center gap-3')}>
             <button
               type="button"
               aria-label={collapsed ? 'Expand sidebar' : 'Collapse sidebar'}
               aria-expanded={!collapsed}
               aria-controls="app-sidebar"
-              onClick={() => setCollapsed((v) => !v)}
+              onClick={() => setCollapsed((value) => !value)}
               className={cn(
-                'ml-auto rounded-lg border p-2 hover:bg-sidebar-accent/50 focus:outline-none focus:ring-2 focus:ring-primary',
-                collapsed && 'ml-0',
+                'inline-flex items-center justify-center rounded-lg border border-sidebar-border/60 p-2 text-foreground transition-colors hover:bg-sidebar-accent/50 focus:outline-none focus:ring-2 focus:ring-primary',
+                !collapsed && 'ml-auto order-3',
               )}
               title={collapsed ? 'Expand' : 'Collapse'}
             >
@@ -94,14 +97,22 @@ export default function Layout({ children }: LayoutProps) {
                 <ChevronLeft className="h-4 w-4" aria-hidden="true" />
               )}
             </button>
+
+            <img
+              src="/tubester_logo.png"
+              alt="Tubester logo"
+              className="h-10 w-auto max-w-full shrink-0 object-contain"
+            />
+
+            {!collapsed && <h1 className="truncate text-xl font-bold tracking-tight text-foreground">Tubester</h1>}
           </div>
         </div>
 
         {/* Primary nav */}
-        <nav className={cn('px-4 py-6', collapsed && 'px-2')} aria-label="Primary">
-          <ul className="space-y-1">
+        <nav className={cn('px-4 py-5', collapsed && 'px-2')} aria-label="Primary">
+          <ul className="space-y-1.5">
             {primaryNav.map(({ path, label, icon: Icon }) => (
-              <li key={path} className="animate-slide-up">
+              <li key={path}>
                 <SidebarLink to={path} end={path === '/'} icon={Icon} collapsed={collapsed}>
                   {label}
                 </SidebarLink>
@@ -111,8 +122,8 @@ export default function Layout({ children }: LayoutProps) {
         </nav>
 
         {/* Secondary nav */}
-        <div className="px-4 py-4 border-t border-sidebar-border/30">
-          <nav className="space-y-1" aria-label="Secondary">
+        <div className={cn('border-t border-sidebar-border/30 px-4 py-4', collapsed && 'px-2')}>
+          <nav className="space-y-1.5" aria-label="Secondary">
             {secondaryNav.map(({ path, label, icon: Icon }) => (
               <SidebarLink key={path} to={path} end icon={Icon} size="sm" collapsed={collapsed}>
                 {label}
@@ -122,19 +133,19 @@ export default function Layout({ children }: LayoutProps) {
         </div>
 
         {/* Sidebar footer */}
-        <div className="mt-auto p-4 border-t border-sidebar-border/30">
+        <div className="mt-auto border-t border-sidebar-border/30 p-4">
           {!collapsed && (
-            <div className="mt-3 flex justify-center gap-4 text-xs">
-              <Link to="/faq" className="text-sidebar-foreground/50 hover:text-sidebar-foreground transition-colors">
+            <div className="mt-2 flex items-center justify-center gap-4 text-xs">
+              <Link to="/faq" className="text-sidebar-foreground/50 transition-colors hover:text-sidebar-foreground">
                 FAQ
               </Link>
               <Link
                 to="/privacy"
-                className="text-sidebar-foreground/50 hover:text-sidebar-foreground transition-colors"
+                className="text-sidebar-foreground/50 transition-colors hover:text-sidebar-foreground"
               >
                 Privacy
               </Link>
-              <Link to="/terms" className="text-sidebar-foreground/50 hover:text-sidebar-foreground transition-colors">
+              <Link to="/terms" className="text-sidebar-foreground/50 transition-colors hover:text-sidebar-foreground">
                 Terms
               </Link>
             </div>
@@ -143,33 +154,23 @@ export default function Layout({ children }: LayoutProps) {
       </aside>
 
       {/* Main */}
-      <div className="flex-1 flex flex-col overflow-hidden">
-        {/* … your existing header & main stay the same … */}
-        <header className="relative z-[1000] glass border-b border-border/50 px-8 py-5 backdrop-blur-xl">
-          <div className="flex justify-between items-center">
-            <div className="flex items-center space-x-4">
-              <h2 className="text-2xl font-bold text-foreground">
-                {primaryNav.find((item) => item.path === location.pathname)?.label ||
-                  secondaryNav.find((item) => item.path === location.pathname)?.label ||
-                  (location.pathname === '/faq' ? 'FAQ' : null) ||
-                  (location.pathname === '/privacy' ? 'Privacy Policy' : null) ||
-                  (location.pathname === '/terms' ? 'Terms of Service' : null) ||
-                  (location.pathname === '/settings/channel' ? 'Channel Settings' : null) ||
-                  'Tubester'}
-              </h2>
-              <div className="px-3 py-1 bg-primary/10 text-primary text-xs font-medium rounded-full border border-primary/20">
+      <div className="flex min-w-0 flex-1 flex-col overflow-hidden">
+        <header className="glass relative z-40 border-b border-border/50 px-6 py-4">
+          <div className="flex items-center justify-between gap-4">
+            <div className="flex min-w-0 items-center gap-4">
+              <h2 className="truncate text-2xl font-bold tracking-tight text-foreground">{currentPageTitle}</h2>
+
+              <div className="hidden rounded-full border border-primary/20 bg-primary/10 px-3 py-1 text-xs font-medium text-primary sm:inline-flex">
                 Beta
               </div>
             </div>
-            <div className="flex items-center space-x-6">
-              <div className="flex items-center space-x-2 text-sm text-muted-foreground">
-                <div className="w-2 h-2 bg-success rounded-full animate-pulse" />
-              </div>
+
+            <div className="flex items-center gap-4 sm:gap-5">
               <div className="relative">
                 <button
                   type="button"
-                  onClick={() => setIsUserMenuOpen((previousIsUserMenuOpen) => !previousIsUserMenuOpen)}
-                  className="w-10 h-10 bg-gradient-primary rounded-full flex items-center justify-center shadow-moderate hover-lift cursor-pointer overflow-hidden focus:outline-none focus:ring-2 focus:ring-primary"
+                  onClick={() => setIsUserMenuOpen((open) => !open)}
+                  className="flex h-10 w-10 items-center justify-center overflow-hidden rounded-full bg-gradient-primary shadow-moderate transition-transform hover:scale-[1.02] focus:outline-none focus:ring-2 focus:ring-primary"
                   aria-haspopup="menu"
                   aria-expanded={isUserMenuOpen}
                 >
@@ -177,33 +178,35 @@ export default function Layout({ children }: LayoutProps) {
                     <img
                       src={user.picture}
                       alt={user.name}
-                      className="w-full h-full object-cover rounded-full"
+                      className="h-full w-full rounded-full object-cover"
                       title={user.name}
                     />
                   ) : (
-                    <User className="w-5 h-5 text-primary-foreground" />
+                    <User className="h-5 w-5 text-primary-foreground" />
                   )}
                 </button>
+
                 {isUserMenuOpen && (
                   <div
-                    className="absolute right-0 mt-2 w-56 rounded-xl border border-border/40 bg-white dark:bg-neutral-900 shadow-lg z-[1100] overflow-hidden"
+                    className="absolute right-0 z-50 mt-2 w-56 overflow-hidden rounded-2xl border border-border/50 bg-background shadow-lg ring-1 ring-black/5"
                     role="menu"
                   >
                     <div className="px-4 py-3 text-sm">
-                      <div className="font-medium text-foreground truncate">{user?.name ?? 'Signed in user'}</div>
-                      {user?.email && <div className="text-xs text-muted-foreground truncate">{user.email}</div>}
+                      <div className="truncate font-medium text-foreground">{user?.name ?? 'Signed in user'}</div>
+                      {user?.email && <div className="truncate text-xs text-muted-foreground">{user.email}</div>}
                     </div>
-                    <div className="border-t border-border/40">
+
+                    <div className="border-t border-border/50">
                       <Link
                         to="/settings/account"
-                        className="block px-4 py-2 text-sm text-foreground hover:bg-sidebar-accent/40"
+                        className="block px-4 py-2.5 text-sm text-foreground transition-colors hover:bg-sidebar-accent/40"
                         onClick={() => setIsUserMenuOpen(false)}
                       >
                         Account settings
                       </Link>
                       <Link
                         to="/settings/channel"
-                        className="block px-4 py-2 text-sm text-foreground hover:bg-sidebar-accent/40"
+                        className="block px-4 py-2.5 text-sm text-foreground transition-colors hover:bg-sidebar-accent/40"
                         onClick={() => setIsUserMenuOpen(false)}
                       >
                         Channel settings
@@ -211,9 +214,9 @@ export default function Layout({ children }: LayoutProps) {
                       <button
                         type="button"
                         onClick={handleLogout}
-                        className="w-full flex items-center gap-2 px-4 py-2 text-left text-sm text-destructive hover:bg-destructive/10"
+                        className="flex w-full items-center gap-2 px-4 py-2.5 text-left text-sm text-destructive transition-colors hover:bg-destructive/10"
                       >
-                        <LogOut className="w-4 h-4" />
+                        <LogOut className="h-4 w-4" />
                         <span>Logout</span>
                       </button>
                     </div>
@@ -224,8 +227,8 @@ export default function Layout({ children }: LayoutProps) {
           </div>
         </header>
 
-        <main className="flex-1 p-8 overflow-auto animate-fade-in z-0">
-          <div className="max-w-7xl mx-auto">{children}</div>
+        <main className="z-0 flex-1 overflow-auto px-5 py-5 sm:px-6 sm:py-6 lg:px-8 lg:py-6">
+          <div className="mx-auto w-full max-w-5xl">{children}</div>
         </main>
       </div>
     </div>
