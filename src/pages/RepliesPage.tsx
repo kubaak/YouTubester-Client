@@ -11,7 +11,7 @@ import type {
   CellEditRequestEvent,
   GridReadyEvent,
 } from 'ag-grid-community';
-import type { Reply, DraftDecisionDto } from '../api';
+import type { Reply, DraftDecisionDto, BatchDecisionRequest } from '../api';
 import {
   useGetApiReplies,
   usePostApiRepliesApprove,
@@ -130,7 +130,8 @@ export default function RepliesPage() {
     const ok = await confirm(`Approve ${decisions.length} selected ${decisions.length === 1 ? 'reply' : 'replies'}`);
     if (!ok) return;
 
-    await approveMutation.mutateAsync({ data: decisions });
+    const request: BatchDecisionRequest = { decisions };
+    await approveMutation.mutateAsync({ data: request });
     await queryClient.invalidateQueries({ queryKey });
   };
 
