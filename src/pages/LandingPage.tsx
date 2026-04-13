@@ -1,6 +1,7 @@
 import { useEffect } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { Video, MessageCircle, Zap, Shield, Sparkles, ArrowRight, CheckCircle } from 'lucide-react';
+
 import { useAuth } from '@/contexts/AuthContext';
 import { Button } from '@/components/ui/button';
 
@@ -16,10 +17,10 @@ export default function LandingPage() {
 
   if (isLoading) {
     return (
-      <div className="min-h-screen bg-gradient-surface flex items-center justify-center">
-        <div className="glass rounded-2xl p-8 shadow-dramatic border border-border/50">
-          <div className="flex items-center justify-center space-x-3">
-            <div className="w-8 h-8 border-4 border-primary/20 border-t-primary rounded-full animate-spin" />
+      <div className="flex min-h-screen items-center justify-center bg-gradient-surface">
+        <div className="glass rounded-2xl border border-border/50 p-8 shadow-dramatic">
+          <div className="flex items-center justify-center gap-3">
+            <div className="h-8 w-8 animate-spin rounded-full border-4 border-primary/20 border-t-primary" />
             <span className="text-lg font-medium text-foreground">Loading...</span>
           </div>
         </div>
@@ -29,169 +30,198 @@ export default function LandingPage() {
 
   const features = [
     {
-      icon: <MessageCircle className="w-7 h-7 text-primary" />,
-      title: 'AI Comment Replies',
+      icon: <MessageCircle className="h-6 w-6 text-primary" />,
+      title: 'AI reply suggestions',
       description:
-        'Generate contextual reply suggestions for YouTube comments using AI. Review, edit, and approve before posting.',
+        'Generate thoughtful reply suggestions for YouTube comments, then review and edit them before posting.',
     },
     {
-      icon: <Video className="w-7 h-7 text-primary" />,
-      title: 'Video Metadata Copying',
-      description: 'Copy tags, descriptions, playlists, and other metadata from one video to another in seconds.',
+      icon: <Video className="h-6 w-6 text-primary" />,
+      title: 'Reuse video settings',
+      description: 'Copy tags, playlists, and other useful settings from one video to another in just a few clicks.',
     },
     {
-      icon: <Sparkles className="w-7 h-7 text-primary" />,
-      title: 'AI-Powered Metadata',
+      icon: <Sparkles className="h-6 w-6 text-primary" />,
+      title: 'Improve titles and descriptions',
+      description: 'Use AI to generate or improve titles, descriptions, and tags that better match your content.',
+    },
+    {
+      icon: <Zap className="h-6 w-6 text-primary" />,
+      title: 'Work faster in bulk',
       description:
-        'Generate or enrich titles, descriptions, and tags for your videos using AI, then push changes directly to YouTube.',
+        'Review, edit, approve, or ignore multiple replies in one workflow instead of handling them one by one.',
     },
     {
-      icon: <Zap className="w-7 h-7 text-primary" />,
-      title: 'Batch Operations',
-      description: 'Approve, ignore, or edit multiple comment replies at once with a powerful grid-based interface.',
-    },
-    {
-      icon: <Shield className="w-7 h-7 text-primary" />,
-      title: 'Secure OAuth Authentication',
+      icon: <Shield className="h-6 w-6 text-primary" />,
+      title: 'Secure Google sign-in',
       description:
-        'Sign in with your Google account. No passwords stored. You can revoke access anytime from your Google account settings.',
+        'Connect with your Google account securely. No passwords stored, and you can revoke access at any time.',
     },
     {
-      icon: <CheckCircle className="w-7 h-7 text-primary" />,
-      title: 'Review Workflow',
+      icon: <CheckCircle className="h-6 w-6 text-primary" />,
+      title: 'You stay in control',
       description:
-        'Every AI suggestion goes through your approval before anything is posted, so you stay in full control.',
+        'Nothing gets posted automatically without your review, so every suggestion stays under your control.',
     },
   ];
 
   const steps = [
-    { number: '1', title: 'Connect', description: 'Sign in with your Google / YouTube account.' },
-    { number: '2', title: 'Create', description: 'Let AI generate replies and enrich your video metadata.' },
-    { number: '3', title: 'Review & Publish', description: 'Approve suggestions and push them to YouTube.' },
+    {
+      number: '1',
+      title: 'Connect your channel',
+      description: 'Sign in with your Google account to connect YouTube securely.',
+    },
+    {
+      number: '2',
+      title: 'Generate suggestions',
+      description: 'Create AI replies and improve your video metadata in seconds.',
+    },
+    {
+      number: '3',
+      title: 'Review and publish',
+      description: 'Approve what you want and send changes to YouTube when ready.',
+    },
   ];
 
   return (
-    <div className="min-h-screen bg-gradient-surface">
-      {/* Navbar */}
-      <header className="fixed top-0 inset-x-0 z-50 flex items-center justify-end px-6 py-4 bg-background/70 backdrop-blur-md border-b border-border/50">
-        <Link to="/login">
-          <Button
-            size="sm"
-            className="bg-gradient-primary text-primary-foreground shadow-moderate hover:shadow-strong hover-lift"
-          >
-            Sign In
-          </Button>
-        </Link>
+    <div className="min-h-screen bg-gradient-surface text-foreground">
+      <header className="fixed inset-x-0 top-0 z-50 border-b border-border/50 bg-background/80 backdrop-blur-xl">
+        <div className="mx-auto flex max-w-7xl items-center justify-between px-6 py-4">
+          <div className="flex items-center gap-3">
+            <img src="/tubester_logo.png" alt="Tubester logo" className="h-9 w-auto object-contain" />
+            <span className="text-lg font-bold tracking-tight text-foreground">Tubester</span>
+          </div>
+
+          <div className="flex items-center gap-3">
+            <Link to="/login">
+              <Button
+                size="sm"
+                className="bg-gradient-primary text-primary-foreground shadow-moderate hover:shadow-strong"
+              >
+                Sign In
+              </Button>
+            </Link>
+          </div>
+        </div>
       </header>
 
-      {/* Hero */}
-      <section className="max-w-7xl mx-auto px-6 pt-36 pb-16 text-center">
-        <img
-          src="/tubester_logo.png"
-          alt="Tubester logo"
-          className="h-20 mx-auto mb-8"
-        />
-        <h1 className="text-5xl md:text-6xl font-bold text-foreground leading-tight mb-6">
-          Manage Your YouTube Channel{' '}
-          <span className="inline-block bg-gradient-to-r from-purple-500 to-pink-500 bg-clip-text text-transparent">
-            Smarter with AI
-          </span>
-        </h1>
-        <p className="text-xl text-muted-foreground max-w-3xl mx-auto mb-10 leading-relaxed">
-          Tubester helps creators generate smart comment replies, reuse video metadata, and enrich content with AI
-        </p>
-        <div className="flex flex-col sm:flex-row gap-4 justify-center">
-          <Link to="/login">
-            <Button
-              size="lg"
-              className="bg-gradient-primary text-primary-foreground shadow-moderate hover:shadow-strong hover-lift px-8 h-12 text-base"
-            >
-              Get Started Free
-              <ArrowRight className="ml-2 w-5 h-5" />
-            </Button>
-          </Link>
-          <a href="#features">
-            <Button
-              size="lg"
-              variant="outline"
-              className="glass border border-border/50 text-foreground hover:shadow-soft hover-lift px-8 h-12 text-base"
-            >
-              Learn More
-            </Button>
-          </a>
-        </div>
-      </section>
+      <section className="mx-auto max-w-7xl px-6 pb-20 pt-32 sm:pt-36">
+        <div className="mx-auto max-w-4xl text-center">
+          <h1 className="text-4xl font-bold tracking-tight text-foreground sm:text-5xl lg:text-6xl">
+            Manage Your YouTube Channel{' '}
+            <span className="bg-gradient-to-r from-purple-500 to-pink-500 bg-clip-text text-transparent">
+              Smarter with AI
+            </span>
+          </h1>
 
-      {/* Features */}
-      <section id="features" className="max-w-7xl mx-auto px-6 py-16">
-        <h2 className="text-3xl font-bold text-foreground text-center mb-4">Everything You Need</h2>
-        <p className="text-muted-foreground text-center max-w-2xl mx-auto mb-12">
-          A complete toolkit for YouTube creators who want to save time and boost engagement.
-        </p>
-        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {features.map((feature, index) => (
-            <div
-              key={index}
-              className="glass rounded-xl p-6 border border-border/50 hover:shadow-moderate transition-all duration-300 hover-lift"
-            >
-              <div className="flex items-start space-x-4">
-                <div className="flex-shrink-0 p-3 bg-primary/10 rounded-xl border border-primary/20">
-                  {feature.icon}
-                </div>
-                <div className="space-y-2">
-                  <h3 className="font-semibold text-foreground">{feature.title}</h3>
-                  <p className="text-muted-foreground text-sm leading-relaxed">{feature.description}</p>
-                </div>
-              </div>
-            </div>
-          ))}
-        </div>
-      </section>
-
-      {/* How it works */}
-      <section className="max-w-7xl mx-auto px-6 py-16">
-        <h2 className="text-3xl font-bold text-foreground text-center mb-12">How It Works</h2>
-        <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-8">
-          {steps.map((step, index) => (
-            <div key={index} className="text-center space-y-4">
-              <div className="w-14 h-14 mx-auto bg-gradient-primary rounded-2xl grid place-items-center shadow-moderate">
-                <span className="text-primary-foreground font-bold text-xl">{step.number}</span>
-              </div>
-              <h3 className="font-semibold text-foreground text-lg">{step.title}</h3>
-              <p className="text-muted-foreground text-sm leading-relaxed">{step.description}</p>
-            </div>
-          ))}
-        </div>
-      </section>
-
-      {/* CTA */}
-      <section className="max-w-7xl mx-auto px-6 py-16">
-        <div className="glass rounded-2xl p-12 border border-border/50 text-center">
-          <h2 className="text-3xl font-bold text-foreground mb-4">Ready to Get Started?</h2>
-          <p className="text-muted-foreground max-w-xl mx-auto mb-8">
-            Sign in with your Google account and start managing your YouTube channel more efficiently today.
+          <p className="mx-auto mt-6 max-w-2xl text-base leading-7 text-muted-foreground sm:text-lg">
+            Tubester helps you review AI-generated replies, improve video details, and handle repetitive channel work
+            with more speed and control.
           </p>
-          <Link to="/login">
-            <Button
-              size="lg"
-              className="bg-gradient-primary text-primary-foreground shadow-moderate hover:shadow-strong hover-lift px-10 h-12 text-base"
-            >
-              Sign In with Google
-              <ArrowRight className="ml-2 w-5 h-5" />
-            </Button>
-          </Link>
+
+          <div className="mt-10 flex flex-col items-center justify-center gap-4 sm:flex-row">
+            <Link to="/login">
+              <Button
+                size="lg"
+                className="h-12 bg-gradient-primary px-8 text-base font-semibold text-primary-foreground shadow-moderate hover:shadow-strong"
+              >
+                Get started free
+                <ArrowRight className="ml-2 h-5 w-5" />
+              </Button>
+            </Link>
+
+            <a href="#features">
+              <Button
+                size="lg"
+                variant="outline"
+                className="h-12 border-border/60 bg-background/70 px-8 text-base font-semibold text-foreground hover:bg-accent"
+              >
+                See features
+              </Button>
+            </a>
+          </div>
         </div>
       </section>
 
-      {/* Footer */}
-      <footer className="border-t border-border/50 mt-8">
-        <div className="max-w-7xl mx-auto px-6 py-8 flex flex-col sm:flex-row items-center justify-between gap-4 text-sm text-muted-foreground">
+      <section id="features" className="mx-auto max-w-7xl px-6 py-12 sm:py-16">
+        <div className="mx-auto max-w-2xl text-center">
+          <h2 className="text-3xl font-bold tracking-tight text-foreground">Everything you need to save time</h2>
+          <p className="mt-4 text-base leading-7 text-muted-foreground">
+            Built for creators who want a faster workflow without giving up control over what gets published.
+          </p>
+        </div>
+
+        <div className="mt-12 grid gap-6 md:grid-cols-2 xl:grid-cols-3">
+          {features.map((feature) => (
+            <div
+              key={feature.title}
+              className="rounded-3xl border border-border/50 bg-background/80 p-6 shadow-sm transition-all duration-300 hover:-translate-y-0.5 hover:shadow-moderate"
+            >
+              <div className="mb-4 inline-flex rounded-2xl border border-primary/20 bg-primary/10 p-3">
+                {feature.icon}
+              </div>
+
+              <h3 className="text-lg font-semibold tracking-tight text-foreground">{feature.title}</h3>
+              <p className="mt-2 text-sm leading-6 text-muted-foreground">{feature.description}</p>
+            </div>
+          ))}
+        </div>
+      </section>
+
+      <section className="mx-auto max-w-7xl px-6 py-12 sm:py-16">
+        <div className="rounded-3xl border border-border/50 bg-background/70 p-8 shadow-sm sm:p-10">
+          <div className="mx-auto max-w-2xl text-center">
+            <h2 className="text-3xl font-bold tracking-tight text-foreground">How it works</h2>
+            <p className="mt-4 text-base leading-7 text-muted-foreground">
+              Get from connection to published updates in a simple three-step workflow.
+            </p>
+          </div>
+
+          <div className="mt-10 grid gap-8 sm:grid-cols-2 lg:grid-cols-3">
+            {steps.map((step) => (
+              <div key={step.number} className="text-center">
+                <div className="mx-auto grid h-14 w-14 place-items-center rounded-2xl bg-gradient-primary shadow-moderate">
+                  <span className="text-xl font-bold text-primary-foreground">{step.number}</span>
+                </div>
+                <h3 className="mt-4 text-lg font-semibold tracking-tight text-foreground">{step.title}</h3>
+                <p className="mt-2 text-sm leading-6 text-muted-foreground">{step.description}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      <section className="mx-auto max-w-7xl px-6 py-12 sm:py-16">
+        <div className="rounded-3xl border border-primary/20 bg-gradient-to-r from-primary/10 via-background to-primary/5 p-8 text-center shadow-sm sm:p-12">
+          <h2 className="text-3xl font-bold tracking-tight text-foreground">Ready to work faster on YouTube?</h2>
+          <p className="mx-auto mt-4 max-w-2xl text-base leading-7 text-muted-foreground">
+            Sign in with Google and start reviewing replies, improving metadata, and managing your channel more
+            efficiently.
+          </p>
+
+          <div className="mt-8">
+            <Link to="/login">
+              <Button
+                size="lg"
+                className="h-12 bg-gradient-primary px-10 text-base font-semibold text-primary-foreground shadow-moderate hover:shadow-strong"
+              >
+                Sign in with Google
+                <ArrowRight className="ml-2 h-5 w-5" />
+              </Button>
+            </Link>
+          </div>
+        </div>
+      </section>
+
+      <footer className="mt-8 border-t border-border/50">
+        <div className="mx-auto flex max-w-7xl flex-col items-center justify-between gap-4 px-6 py-8 text-sm text-muted-foreground sm:flex-row">
           <span>&copy; {new Date().getFullYear()} Tubester. All rights reserved.</span>
-          <div className="flex gap-6">
-            <Link to="/privacy" className="hover:text-foreground transition-colors">
+
+          <div className="flex items-center gap-6">
+            <Link to="/privacy" className="transition-colors hover:text-foreground">
               Privacy Policy
             </Link>
-            <Link to="/terms" className="hover:text-foreground transition-colors">
+            <Link to="/terms" className="transition-colors hover:text-foreground">
               Terms of Service
             </Link>
           </div>

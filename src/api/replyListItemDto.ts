@@ -10,6 +10,16 @@
  * OpenAPI spec version: v1
  */
 
-export interface IDomainEvent {
-  readonly occurredAtUtc?: string;
+export interface ReplyListItemDto {
+  commentId: string;
+  videoId: string;
+  /** @nullable */
+  videoTitle?: string | null;
+  /** @nullable */
+  commentText?: string | null;
+  thumbnailUrl: string;
+  /** @nullable */
+  originalCommentAt?: string | null;
+  /** @nullable */
+  suggestedText?: string | null;
 }

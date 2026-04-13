@@ -10,13 +10,16 @@
  * OpenAPI spec version: v1
  */
 
-export type ReplyStatus = (typeof ReplyStatus)[keyof typeof ReplyStatus];
-
-export const ReplyStatus = {
-  NUMBER_0: 0,
-  NUMBER_1: 1,
-  NUMBER_2: 2,
-  NUMBER_3: 3,
-  NUMBER_4: 4,
-  NUMBER_5: 5,
-} as const;
+/**
+ * Search Suggested Replies Request
+ */
+export interface SearchSuggestedRepliesRequest {
+  /** @nullable */
+  videoId?: string | null;
+  /** @nullable */
+  originalComment?: string | null;
+  /** @nullable */
+  pageSize?: number | null;
+  /** @nullable */
+  pageToken?: string | null;
+}
