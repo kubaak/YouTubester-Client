@@ -9,120 +9,97 @@
 [🔐 write Login with Google](/api/auth/login/google/write?returnUrl=/swagger/index.html)
  * OpenAPI spec version: v1
  */
-import { useMutation, useQuery } from '@tanstack/react-query';
-import type {
-  DataTag,
-  DefinedInitialDataOptions,
-  DefinedUseQueryResult,
-  MutationFunction,
-  QueryClient,
-  QueryFunction,
-  QueryKey,
-  UndefinedInitialDataOptions,
-  UseMutationOptions,
-  UseMutationResult,
-  UseQueryOptions,
-  UseQueryResult,
-} from '@tanstack/react-query';
+import { useMutation } from '@tanstack/react-query';
+import type { MutationFunction, QueryClient, UseMutationOptions, UseMutationResult } from '@tanstack/react-query';
 
 import * as axios from 'axios';
 import type { AxiosError, AxiosRequestConfig, AxiosResponse } from 'axios';
 
 import type {
+  ApiErrorDto,
   BatchDecisionRequest,
   BatchDecisionResultDto,
   BatchIgnoreResult,
   ProblemDetails,
-  Reply,
+  ReplyListItemDtoPagedResult,
+  SearchSuggestedRepliesRequest,
   ValidationProblemDetails,
 } from './..';
 
-export const getApiReplies = (options?: AxiosRequestConfig): Promise<AxiosResponse<Reply[]>> => {
-  return axios.default.get(`/api/replies`, options);
+/**
+ * @summary Searches suggested replies for the replies page.
+ */
+export const postApiRepliesSuggestedSearch = (
+  searchSuggestedRepliesRequest: SearchSuggestedRepliesRequest,
+  options?: AxiosRequestConfig,
+): Promise<AxiosResponse<ReplyListItemDtoPagedResult>> => {
+  return axios.default.post(`/api/replies/suggested/search`, searchSuggestedRepliesRequest, options);
 };
 
-export const getGetApiRepliesQueryKey = () => {
-  return [`/api/replies`] as const;
-};
-
-export const getGetApiRepliesQueryOptions = <
-  TData = Awaited<ReturnType<typeof getApiReplies>>,
-  TError = AxiosError<unknown>,
+export const getPostApiRepliesSuggestedSearchMutationOptions = <
+  TError = AxiosError<ApiErrorDto>,
+  TContext = unknown,
 >(options?: {
-  query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiReplies>>, TError, TData>>;
-  axios?: AxiosRequestConfig;
-}) => {
-  const { query: queryOptions, axios: axiosOptions } = options ?? {};
-
-  const queryKey = queryOptions?.queryKey ?? getGetApiRepliesQueryKey();
-
-  const queryFn: QueryFunction<Awaited<ReturnType<typeof getApiReplies>>> = ({ signal }) =>
-    getApiReplies({ signal, ...axiosOptions });
-
-  return { queryKey, queryFn, ...queryOptions } as UseQueryOptions<
-    Awaited<ReturnType<typeof getApiReplies>>,
+  mutation?: UseMutationOptions<
+    Awaited<ReturnType<typeof postApiRepliesSuggestedSearch>>,
     TError,
-    TData
-  > & { queryKey: DataTag<QueryKey, TData, TError> };
-};
+    { data: SearchSuggestedRepliesRequest },
+    TContext
+  >;
+  axios?: AxiosRequestConfig;
+}): UseMutationOptions<
+  Awaited<ReturnType<typeof postApiRepliesSuggestedSearch>>,
+  TError,
+  { data: SearchSuggestedRepliesRequest },
+  TContext
+> => {
+  const mutationKey = ['postApiRepliesSuggestedSearch'];
+  const { mutation: mutationOptions, axios: axiosOptions } = options
+    ? options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey
+      ? options
+      : { ...options, mutation: { ...options.mutation, mutationKey } }
+    : { mutation: { mutationKey }, axios: undefined };
 
-export type GetApiRepliesQueryResult = NonNullable<Awaited<ReturnType<typeof getApiReplies>>>;
-export type GetApiRepliesQueryError = AxiosError<unknown>;
+  const mutationFn: MutationFunction<
+    Awaited<ReturnType<typeof postApiRepliesSuggestedSearch>>,
+    { data: SearchSuggestedRepliesRequest }
+  > = (props) => {
+    const { data } = props ?? {};
 
-export function useGetApiReplies<TData = Awaited<ReturnType<typeof getApiReplies>>, TError = AxiosError<unknown>>(
-  options: {
-    query: Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiReplies>>, TError, TData>> &
-      Pick<
-        DefinedInitialDataOptions<
-          Awaited<ReturnType<typeof getApiReplies>>,
-          TError,
-          Awaited<ReturnType<typeof getApiReplies>>
-        >,
-        'initialData'
-      >;
-    axios?: AxiosRequestConfig;
-  },
-  queryClient?: QueryClient,
-): DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
-export function useGetApiReplies<TData = Awaited<ReturnType<typeof getApiReplies>>, TError = AxiosError<unknown>>(
-  options?: {
-    query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiReplies>>, TError, TData>> &
-      Pick<
-        UndefinedInitialDataOptions<
-          Awaited<ReturnType<typeof getApiReplies>>,
-          TError,
-          Awaited<ReturnType<typeof getApiReplies>>
-        >,
-        'initialData'
-      >;
-    axios?: AxiosRequestConfig;
-  },
-  queryClient?: QueryClient,
-): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
-export function useGetApiReplies<TData = Awaited<ReturnType<typeof getApiReplies>>, TError = AxiosError<unknown>>(
-  options?: {
-    query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiReplies>>, TError, TData>>;
-    axios?: AxiosRequestConfig;
-  },
-  queryClient?: QueryClient,
-): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
-
-export function useGetApiReplies<TData = Awaited<ReturnType<typeof getApiReplies>>, TError = AxiosError<unknown>>(
-  options?: {
-    query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiReplies>>, TError, TData>>;
-    axios?: AxiosRequestConfig;
-  },
-  queryClient?: QueryClient,
-): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
-  const queryOptions = getGetApiRepliesQueryOptions(options);
-
-  const query = useQuery(queryOptions, queryClient) as UseQueryResult<TData, TError> & {
-    queryKey: DataTag<QueryKey, TData, TError>;
+    return postApiRepliesSuggestedSearch(data, axiosOptions);
   };
 
-  return { ...query, queryKey: queryOptions.queryKey };
-}
+  return { mutationFn, ...mutationOptions };
+};
 
+export type PostApiRepliesSuggestedSearchMutationResult = NonNullable<
+  Awaited<ReturnType<typeof postApiRepliesSuggestedSearch>>
+>;
+export type PostApiRepliesSuggestedSearchMutationBody = SearchSuggestedRepliesRequest;
+export type PostApiRepliesSuggestedSearchMutationError = AxiosError<ApiErrorDto>;
+
+/**
+ * @summary Searches suggested replies for the replies page.
+ */
+export const usePostApiRepliesSuggestedSearch = <TError = AxiosError<ApiErrorDto>, TContext = unknown>(
+  options?: {
+    mutation?: UseMutationOptions<
+      Awaited<ReturnType<typeof postApiRepliesSuggestedSearch>>,
+      TError,
+      { data: SearchSuggestedRepliesRequest },
+      TContext
+    >;
+    axios?: AxiosRequestConfig;
+  },
+  queryClient?: QueryClient,
+): UseMutationResult<
+  Awaited<ReturnType<typeof postApiRepliesSuggestedSearch>>,
+  TError,
+  { data: SearchSuggestedRepliesRequest },
+  TContext
+> => {
+  return useMutation(getPostApiRepliesSuggestedSearchMutationOptions(options), queryClient);
+};
 export const deleteApiRepliesId = (id: string, options?: AxiosRequestConfig): Promise<AxiosResponse<void>> => {
   return axios.default.delete(`/api/replies/${id}`, options);
 };
