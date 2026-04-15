@@ -1,6 +1,6 @@
 import { Check, X, XCircle } from 'lucide-react';
-import { Button } from './ui/button';
-import { Checkbox } from './ui/checkbox';
+import { Button } from '../../../components/ui/button';
+import { Checkbox } from '../../../components/ui/checkbox';
 
 interface RepliesSelectionBarProps {
   selectedCount: number;

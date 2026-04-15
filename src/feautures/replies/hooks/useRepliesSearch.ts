@@ -1,7 +1,8 @@
 import { useCallback, useRef, useState } from 'react';
 
-import type { ReplyListItemDto, SearchSuggestedRepliesRequest } from '../api';
-import { usePostApiRepliesSuggestedSearch } from '../api/replies/replies';
+
+import type { ReplyListItemDto, SearchSuggestedRepliesRequest } from '@/api';
+import { usePostApiRepliesSuggestedSearch } from '@/api/replies/replies';
 
 export interface RepliesFilters {
   videoId?: string;

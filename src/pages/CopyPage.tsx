@@ -3,8 +3,8 @@ import { useNavigate } from 'react-router-dom';
 
 import { usePostApiVideosCopyTemplate } from '@/api/videos/videos';
 import type { CopyVideoTemplateRequest } from '@/api';
-import { useRadixConfirmDialog } from '@/components/ui/useRadixConfirmDialog';
-import { VideoSelect } from '@/components/VideoSelect';
+import { useRadixConfirmDialog } from '@/components/dialogs/useRadixConfirmDialog';
+import { VideoSelect } from '@/feautures/videos/components/VideoSelect';
 
 type FormValues = {
   sourceVideoId: string;

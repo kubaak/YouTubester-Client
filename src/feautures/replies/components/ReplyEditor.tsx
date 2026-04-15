@@ -1,8 +1,8 @@
 import { useEffect, useRef, useState } from 'react';
 import { Smile, Check, X } from 'lucide-react';
-import { EmojiPicker } from './EmojiPicker';
-import { Button } from './ui/button';
-import { Textarea } from './ui/textArea';
+import { Button } from '../../../components/ui/button';
+import { Textarea } from '../../../components/ui/textArea';
+import { EmojiPicker } from '../../../components/ui/EmojiPicker';
 
 interface ReplyEditorProps {
   defaultValue: string;

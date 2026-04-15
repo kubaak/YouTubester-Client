@@ -7,8 +7,8 @@ interface AuthGuardProps {
 }
 
 export const AuthGuard = ({ children }: AuthGuardProps) => {
-  var { isAuthenticated, isLoading } = useAuth();
-  var location = useLocation();
+  const { isAuthenticated, isLoading } = useAuth();
+  const location = useLocation();
 
   // Show loading spinner while checking authentication
   if (isLoading) {
@@ -26,7 +26,7 @@ export const AuthGuard = ({ children }: AuthGuardProps) => {
 
   // Redirect to login if not authenticated
   if (!isAuthenticated) {
-    var returnUrl = `${location.pathname}${location.search}`;
+    const returnUrl = `${location.pathname}${location.search}`;
     return <Navigate to={`/login?returnUrl=${encodeURIComponent(returnUrl)}`} replace />;
   }
 

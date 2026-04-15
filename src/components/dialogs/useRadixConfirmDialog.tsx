@@ -1,7 +1,7 @@
 import { useRef, useState } from 'react';
 import type { ReactNode } from 'react';
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from './dialog';
-import { Button } from './button';
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from '../ui/dialog';
+import { Button } from '../ui/button';
 
 interface ConfirmDialogState {
   open: boolean;

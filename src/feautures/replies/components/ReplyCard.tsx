@@ -1,6 +1,6 @@
-import type { ReplyListItemDto } from '../api';
+import type { ReplyListItemDto } from '../../../api';
 import { ReplyEditor } from './ReplyEditor';
-import { Checkbox } from './ui/checkbox';
+import { Checkbox } from '../../../components/ui/checkbox';
 
 interface ReplyCardProps {
   reply: ReplyListItemDto;
@@ -56,22 +56,6 @@ export function ReplyCard({
         minute: '2-digit',
       })
     : null;
-
-  const handleApprove = (approvedText: string) => {
-    if (!commentId) {
-      return;
-    }
-
-    onApprove(commentId, approvedText);
-  };
-
-  const handleIgnore = () => {
-    if (!commentId) {
-      return;
-    }
-
-    onIgnore(commentId);
-  };
 
   return (
     <article className="overflow-hidden rounded-3xl border border-border/50 bg-card shadow-soft transition hover:border-primary/20 hover:shadow-moderate">
