@@ -1,6 +1,9 @@
 import { createContext, useContext, useState, useEffect, useRef, type ReactNode } from 'react';
+import { useQueryClient } from '@tanstack/react-query';
 import { authService, type User } from '../services/auth';
 import { usePostApiChannelsSyncCurrent } from '../api/channels/channels';
+import { getGetApiChannelSettingsQueryOptions } from '@/api/channel-settings/channel-settings';
+import { getGetApiComentsPullQueryOptions } from '@/api/comments/comments';
 import { resetWriteAccessCache } from '@/auth/writeAccess';
 import { clearPendingWriteAction } from '@/auth/pendingWriteAction';
 
@@ -16,10 +19,11 @@ interface AuthContextType {
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 export const useAuth = (): AuthContextType => {
-  var context = useContext(AuthContext);
+  const context = useContext(AuthContext);
   if (context === undefined) {
     throw new Error('useAuth must be used within an AuthProvider');
   }
+
   return context;
 };
 
@@ -28,13 +32,16 @@ interface AuthProviderProps {
 }
 
 export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
-  var [user, setUser] = useState<User | null>(null);
-  var [isLoading, setIsLoading] = useState(true);
-  var hasSyncedCurrentChannel = useRef(false);
+  const [user, setUser] = useState<User | null>(null);
+  const [isLoading, setIsLoading] = useState(true);
+  const hasSyncedCurrentChannel = useRef(false);
+  const hasPrefetchedChannelSettings = useRef(false);
+  const hasPulledComments = useRef(false);
+  const queryClient = useQueryClient();
 
-  var refreshUser = async (): Promise<void> => {
+  const refreshUser = async (): Promise<void> => {
     try {
-      var currentUser = await authService.getCurrentUser();
+      const currentUser = await authService.getCurrentUser();
       setUser(currentUser);
     } catch (error) {
       console.error('Failed to refresh user:', error);
@@ -42,25 +49,27 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     }
   };
 
-  var login = (returnUrl?: string): void => {
+  const login = (returnUrl?: string): void => {
     authService.initiateGoogleLogin(returnUrl);
   };
 
-  var logout = (): void => {
+  const logout = (): void => {
     resetWriteAccessCache();
     clearPendingWriteAction();
+    hasSyncedCurrentChannel.current = false;
+    hasPrefetchedChannelSettings.current = false;
+    hasPulledComments.current = false;
     setUser(null);
     authService.logout();
   };
 
-  var postApiChannelsSyncCurrentMutation = usePostApiChannelsSyncCurrent();
+  const postApiChannelsSyncCurrentMutation = usePostApiChannelsSyncCurrent();
 
   useEffect(() => {
-    var initializeAuth = async (): Promise<void> => {
+    const initializeAuth = async (): Promise<void> => {
       setIsLoading(true);
 
       try {
-        // With cookie-based auth, simply ask the server for the current user
         await refreshUser();
       } catch (error) {
         console.error('Auth initialization error:', error);
@@ -70,19 +79,44 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
       }
     };
 
-    initializeAuth();
+    void initializeAuth();
   }, []);
 
   useEffect(() => {
-    if (user !== null && user.isAuthenticated && !hasSyncedCurrentChannel.current) {
-      hasSyncedCurrentChannel.current = true;
-      postApiChannelsSyncCurrentMutation.mutate();
+    if (user === null || !user.isAuthenticated || hasSyncedCurrentChannel.current) {
+      return;
     }
+
+    hasSyncedCurrentChannel.current = true;
+    postApiChannelsSyncCurrentMutation.mutate();
   }, [user, postApiChannelsSyncCurrentMutation]);
 
-  var isAuthenticated = user !== null && user.isAuthenticated;
+  useEffect(() => {
+    if (user === null || !user.isAuthenticated || hasPrefetchedChannelSettings.current) {
+      return;
+    }
 
-  var value: AuthContextType = {
+    hasPrefetchedChannelSettings.current = true;
+
+    const prefetchChannelSettings = async (): Promise<void> => {
+      try {
+        const response = await queryClient.fetchQuery(getGetApiChannelSettingsQueryOptions());
+
+        if (response?.data?.isCommentAssistantEnabled && !hasPulledComments.current) {
+          await queryClient.prefetchQuery(getGetApiComentsPullQueryOptions());
+          hasPulledComments.current = true;
+        }
+      } catch {
+        // Silently fail - channel settings may not exist yet
+      }
+    };
+
+    void prefetchChannelSettings();
+  }, [user, queryClient]);
+
+  const isAuthenticated = user !== null && user.isAuthenticated;
+
+  const value: AuthContextType = {
     user,
     isLoading,
     isAuthenticated,
