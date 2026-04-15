@@ -11,6 +11,6 @@
  */
 
 export interface DraftDecisionDto {
-  commentId?: string;
-  approvedText?: string;
+  commentId: string;
+  approvedText: string;
 }
