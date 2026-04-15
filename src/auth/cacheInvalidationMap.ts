@@ -1,15 +1,10 @@
 import type { QueryKey } from '@tanstack/react-query';
 import type { UpdateVideoMetadataRequest } from '@/api';
-import { getGetApiRepliesQueryKey } from '@/api/replies/replies';
 import { getGetApiVideosVideoIdQueryKey } from '@/api/videos/videos';
 
 type CacheInvalidationResolver = (body: unknown) => QueryKey[];
 
 const cacheInvalidationMap = new Map<string, CacheInvalidationResolver>();
-
-cacheInvalidationMap.set('POST /api/replies/approve', () => {
-  return [getGetApiRepliesQueryKey()];
-});
 
 cacheInvalidationMap.set('POST /api/videos/update', (body) => {
   if (typeof body === 'object' && body !== null && 'videoId' in body) {

@@ -1,235 +1,86 @@
-import { useCallback, useEffect, useMemo, useState } from 'react';
-import { useQueryClient } from '@tanstack/react-query';
-import { Check, RefreshCcw } from 'lucide-react';
-
-import type { Reply, DraftDecisionDto, BatchDecisionRequest } from '../api';
-import {
-  useGetApiReplies,
-  usePostApiRepliesApprove,
-  usePostApiRepliesBatchIgnore,
-  getGetApiRepliesQueryKey,
-} from '../api/replies/replies';
+import { useCallback, useEffect, useState } from 'react';
+import { Filter } from 'lucide-react';
+import { usePostApiRepliesApprove, usePostApiRepliesBatchIgnore } from '../api/replies/replies';
+import type { BatchDecisionRequest, DraftDecisionDto } from '../api';
 import { useRadixConfirmDialog } from '../components/ui/useRadixConfirmDialog';
 
-const MAX_LEN = 10_000;
+import { Button } from '../components/ui/button';
+import { RepliesContent } from '../components/RepliesContent';
+import { RepliesFilterSection } from '../components/RepliesFilterSection';
+import { RepliesSelectionBar } from '../components/RepliesSelectionBar';
+import { useRepliesSearch } from '../hooks/useRepliesSearch';
+import type { RepliesFilters } from '../hooks/useRepliesSearch';
 
-function getReplyText(reply: Reply): string {
-  return reply.finalText ?? reply.suggestedText ?? '';
-}
-
-function CommentLink({ reply }: { reply: Reply }) {
-  const text = reply.commentText ?? '';
-  const videoId = reply.videoId;
-  const commentId = reply.commentId;
-
-  if (!videoId || !commentId || !text) {
-    return <p className="whitespace-pre-wrap text-sm leading-6 text-slate-700">{text || '—'}</p>;
-  }
-
-  const url = `https://www.youtube.com/watch?v=${videoId}&lc=${commentId}`;
-
-  return (
-    <a
-      href={url}
-      target="_blank"
-      rel="noopener noreferrer"
-      className="whitespace-pre-wrap text-sm leading-6 text-primary underline underline-offset-2 transition-colors hover:text-primary/80"
-    >
-      {text}
-    </a>
-  );
-}
-
-function ReplyCard({
-  reply,
-  selected,
-  disabled,
-  onToggleSelected,
-  onFinalTextChange,
-}: {
-  reply: Reply;
-  selected: boolean;
-  disabled: boolean;
-  onToggleSelected: (commentId: string, checked: boolean) => void;
-  onFinalTextChange: (commentId: string, value: string) => void;
-}) {
-  const commentId = reply.commentId;
-  const replyText = getReplyText(reply);
-  const thumbnailUrl = reply.thumbnailUrl;
-  const textareaId = commentId ? `reply-${commentId}` : undefined;
-
-  return (
-    <article className="overflow-hidden rounded-3xl border border-slate-200 bg-white shadow-sm transition hover:border-slate-300 hover:shadow-md">
-      <div className="p-5 sm:p-6">
-        <div className="space-y-6">
-          <div className="flex flex-col gap-4 sm:flex-row sm:items-start">
-            <div className="h-20 w-full overflow-hidden rounded-2xl border border-slate-200 bg-slate-100 sm:h-16 sm:w-28 sm:shrink-0">
-              {thumbnailUrl ? (
-                <img
-                  src={thumbnailUrl}
-                  alt={reply.videoTitle || 'Video thumbnail'}
-                  className="h-full w-full object-cover"
-                />
-              ) : (
-                <div className="flex h-full w-full items-center justify-center text-xs text-slate-400">No image</div>
-              )}
-            </div>
-
-            <div className="min-w-0 flex-1">
-              <div className="text-[11px] font-semibold uppercase tracking-[0.14em] text-slate-500">Video</div>
-              <h2 className="mt-1 truncate text-base font-semibold leading-6 text-slate-900 sm:text-lg">
-                {reply.videoTitle || 'Untitled video'}
-              </h2>
-            </div>
-          </div>
-
-          <section className="space-y-2">
-            <div className="text-[11px] font-semibold uppercase tracking-[0.14em] text-slate-500">Original comment</div>
-            <div className="rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3">
-              <CommentLink reply={reply} />
-            </div>
-          </section>
-
-          <section className="space-y-2">
-            <div className="flex items-center justify-between gap-3">
-              <label
-                htmlFor={textareaId}
-                className="text-[11px] font-semibold uppercase tracking-[0.14em] text-slate-500"
-              >
-                Reply
-              </label>
-              <span className="text-xs text-slate-400">
-                {replyText.length}/{MAX_LEN}
-              </span>
-            </div>
-
-            <textarea
-              id={textareaId}
-              value={replyText}
-              onChange={(e) => {
-                if (!commentId) return;
-                onFinalTextChange(commentId, e.target.value);
-              }}
-              rows={6}
-              maxLength={MAX_LEN}
-              disabled={!commentId}
-              className="w-full rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm leading-6 text-slate-900 shadow-sm outline-none transition placeholder:text-slate-400 focus:border-slate-400 focus:ring-4 focus:ring-slate-200 disabled:cursor-not-allowed disabled:bg-slate-50 disabled:text-slate-400"
-              placeholder="Write or edit the reply"
-            />
-          </section>
-        </div>
-      </div>
-
-      <div className="border-t border-slate-200 bg-slate-50/80 px-5 py-4 sm:px-6">
-        <label className="flex items-center gap-3">
-          <input
-            type="checkbox"
-            checked={selected}
-            disabled={disabled}
-            onChange={(e) => {
-              if (!commentId) return;
-              onToggleSelected(commentId, e.target.checked);
-            }}
-            className="h-4 w-4 rounded border-slate-300 text-slate-900 focus:ring-slate-400 disabled:cursor-not-allowed disabled:opacity-50"
-          />
-          <span className="text-sm font-medium text-slate-900">{disabled ? 'Unavailable' : 'Select'}</span>
-        </label>
-      </div>
-    </article>
-  );
-}
+const EMPTY_FILTERS: RepliesFilters = {};
 
 export default function RepliesPage() {
-  const {
-    data: rows = [],
-    refetch,
-    isFetching,
-  } = useGetApiReplies<Reply[]>({
-    query: {
-      refetchOnWindowFocus: false,
-      select: (res) => res?.data ?? [],
-    },
-  });
+  const { replies, nextPageToken, isInitialLoading, isFetchingNextPage, error, fetchInitial, fetchNextPage } =
+    useRepliesSearch();
 
-  const queryClient = useQueryClient();
-  const queryKey = getGetApiRepliesQueryKey();
-  const approveMutation = usePostApiRepliesApprove();
-  const ignoreMutation = usePostApiRepliesBatchIgnore();
-  const { confirm, confirmDialog } = useRadixConfirmDialog();
-
+  // Selection state
   const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set());
 
-  const safeRows = useMemo(() => (Array.isArray(rows) ? rows.filter((row) => row.status === 1) : []), [rows]);
+  // Confirmation dialog
+  const { confirm, confirmDialog } = useRadixConfirmDialog();
 
-  const rowMap = useMemo(() => {
-    const map = new Map<string, Reply>();
-    for (const row of safeRows) {
-      if (row.commentId) {
-        map.set(row.commentId, row);
-      }
-    }
-    return map;
-  }, [safeRows]);
+  // Filter state - distinct draft vs applied filters
+  const [isFilterOpen, setIsFilterOpen] = useState(false);
+  const [draftFilters, setDraftFilters] = useState<RepliesFilters>(EMPTY_FILTERS);
+  const [appliedFilters, setAppliedFilters] = useState<RepliesFilters>(EMPTY_FILTERS);
 
-  const selectedRows = useMemo(
-    () =>
-      Array.from(selectedIds)
-        .map((id) => rowMap.get(id))
-        .filter(Boolean) as Reply[],
-    [selectedIds, rowMap],
-  );
+  // Mutations
+  const approveMutation = usePostApiRepliesApprove();
+  const batchIgnoreMutation = usePostApiRepliesBatchIgnore();
 
+  const hasNextPage = nextPageToken !== null;
+  const isApproving = approveMutation.isPending;
+  const isIgnoring = batchIgnoreMutation.isPending;
+  const isActionPending = isApproving || isIgnoring;
+
+  const allVisibleSelected =
+    replies.length > 0 && replies.every((reply) => reply.commentId && selectedIds.has(reply.commentId));
+
+  // Load initial data on mount
   useEffect(() => {
-    setSelectedIds((prev) => {
-      const next = new Set<string>();
-      for (const id of prev) {
-        if (rowMap.has(id)) {
-          next.add(id);
-        }
-      }
+    void fetchInitial(EMPTY_FILTERS);
+    // mount only
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
-      if (next.size === prev.size) {
-        let identical = true;
-        for (const id of prev) {
-          if (!next.has(id)) {
-            identical = false;
-            break;
-          }
-        }
-        if (identical) return prev;
-      }
+  // Handle filter apply
+  const handleApplyFilters = useCallback(async () => {
+    const nextAppliedFilters = draftFilters;
+    setAppliedFilters(nextAppliedFilters);
+    setSelectedIds(new Set());
+    await fetchInitial(nextAppliedFilters);
+    setIsFilterOpen(false);
+  }, [draftFilters, fetchInitial]);
 
-      return next;
-    });
-  }, [rowMap]);
+  // Handle filter reset
+  const handleResetFilters = useCallback(async () => {
+    setDraftFilters(EMPTY_FILTERS);
+    setAppliedFilters(EMPTY_FILTERS);
+    setSelectedIds(new Set());
+    await fetchInitial(EMPTY_FILTERS);
+  }, [fetchInitial]);
 
-  const updateReplyText = useCallback(
-    (commentId: string, nextText: string) => {
-      queryClient.setQueryData<Reply[]>(queryKey, (prev) => {
-        const list = Array.isArray(prev) ? prev : [];
-        const idx = list.findIndex((r) => r.commentId === commentId);
+  // Handle load more for infinite scroll
+  const handleLoadMore = useCallback(() => {
+    if (!isFetchingNextPage && hasNextPage) {
+      void fetchNextPage();
+    }
+  }, [isFetchingNextPage, hasNextPage, fetchNextPage]);
 
-        if (idx === -1) {
-          return prev;
-        }
+  // Toggle filter visibility
+  const toggleFilter = useCallback(() => {
+    setIsFilterOpen((prev) => !prev);
+  }, []);
 
-        if ((list[idx].finalText ?? list[idx].suggestedText ?? '') === nextText) {
-          return prev;
-        }
-
-        const nextList = list.slice();
-        nextList[idx] = { ...list[idx], finalText: nextText };
-
-        return nextList;
-      });
-    },
-    [queryClient, queryKey],
-  );
-
-  const onToggleSelected = useCallback((commentId: string, checked: boolean) => {
+  // Handle selection change
+  const handleSelectionChange = useCallback((commentId: string, selected: boolean) => {
     setSelectedIds((prev) => {
       const next = new Set(prev);
-      if (checked) {
+      if (selected) {
         next.add(commentId);
       } else {
         next.delete(commentId);
@@ -238,158 +89,251 @@ export default function RepliesPage() {
     });
   }, []);
 
-  const onToggleSelectAll = useCallback(
-    (checked: boolean) => {
-      setSelectedIds(() => {
-        if (!checked) {
-          return new Set();
-        }
+  // Handle select all (select all currently rendered replies)
+  const handleSelectAll = useCallback(() => {
+    setSelectedIds((prev) => {
+      const visibleIds = replies
+        .map((reply) => reply.commentId)
+        .filter((commentId): commentId is string => Boolean(commentId));
 
-        return new Set(safeRows.map((row) => row.commentId).filter(Boolean) as string[]);
-      });
-    },
-    [safeRows],
-  );
+      if (visibleIds.length === 0) {
+        return prev;
+      }
 
-  const clearSelection = useCallback(() => {
+      const allVisibleSelected = visibleIds.every((commentId) => prev.has(commentId));
+      const next = new Set(prev);
+
+      if (allVisibleSelected) {
+        visibleIds.forEach((commentId) => {
+          next.delete(commentId);
+        });
+      } else {
+        visibleIds.forEach((commentId) => {
+          next.add(commentId);
+        });
+      }
+
+      return next;
+    });
+  }, [replies]);
+
+  // Handle clear selection
+  const handleClearSelection = useCallback(() => {
     setSelectedIds(new Set());
   }, []);
 
-  const onApproveSelected = async () => {
-    const decisions: DraftDecisionDto[] = selectedRows
-      .map((r) => ({
-        commentId: r.commentId,
-        approvedText: getReplyText(r),
-      }))
-      .filter((d) => d.commentId && d.approvedText && d.approvedText.length > 0);
+  // Handle single approve with confirmation
+  const handleApprove = useCallback(
+    async (commentId: string) => {
+      if (isActionPending) {
+        return;
+      }
 
-    if (decisions.length === 0) return;
+      const reply = replies.find((r) => r.commentId === commentId);
+      if (!reply?.suggestedText) {
+        return;
+      }
 
-    const ok = await confirm(`Approve ${decisions.length} selected ${decisions.length === 1 ? 'reply' : 'replies'}?`);
-    if (!ok) return;
+      const ok = await confirm('Do you really want to approve this reply?', reply.suggestedText);
+      if (!ok) {
+        return;
+      }
 
-    try {
+      const decisions: DraftDecisionDto[] = [
+        {
+          commentId,
+          approvedText: reply.suggestedText,
+        },
+      ];
+
       const request: BatchDecisionRequest = { decisions };
-      await approveMutation.mutateAsync({ data: request });
-      await queryClient.invalidateQueries({ queryKey });
-      clearSelection();
-    } catch (error) {
-      console.error('Failed to approve replies.', error);
+
+      try {
+        await approveMutation.mutateAsync({ data: request });
+
+        setSelectedIds((prev) => {
+          const next = new Set(prev);
+          next.delete(commentId);
+          return next;
+        });
+
+        await fetchInitial(appliedFilters);
+      } catch {
+        // Error is intentionally left to mutation consumers / future toast handling.
+      }
+    },
+    [appliedFilters, approveMutation, confirm, fetchInitial, isActionPending, replies],
+  );
+
+  // Handle single ignore with confirmation
+  const handleIgnore = useCallback(
+    async (commentId: string) => {
+      if (isActionPending) {
+        return;
+      }
+
+      const reply = replies.find((r) => r.commentId === commentId);
+      const ok = await confirm('Do you really want to ignore this reply?', reply?.suggestedText);
+      if (!ok) {
+        return;
+      }
+
+      try {
+        await batchIgnoreMutation.mutateAsync({ data: [commentId] });
+
+        setSelectedIds((prev) => {
+          const next = new Set(prev);
+          next.delete(commentId);
+          return next;
+        });
+
+        await fetchInitial(appliedFilters);
+      } catch {
+        // Error is intentionally left to mutation consumers / future toast handling.
+      }
+    },
+    [appliedFilters, batchIgnoreMutation, confirm, fetchInitial, isActionPending, replies],
+  );
+
+  // Handle batch approve with confirmation
+  const handleBatchApprove = useCallback(async () => {
+    if (isActionPending || selectedIds.size === 0) {
+      return;
     }
-  };
 
-  const onIgnoreSelected = async () => {
-    const ids = selectedRows.map((r) => r.commentId).filter(Boolean) as string[];
-    if (ids.length === 0) return;
+    const count = selectedIds.size;
+    const ok = await confirm(`Do you really want to approve ${count} ${count === 1 ? 'reply' : 'replies'}?`);
+    if (!ok) {
+      return;
+    }
 
-    const ok = await confirm(`Ignore ${ids.length} selected ${ids.length === 1 ? 'reply' : 'replies'}?`);
-    if (!ok) return;
+    const decisions: DraftDecisionDto[] = Array.from(selectedIds)
+      .map((commentId) => {
+        const reply = replies.find((r) => r.commentId === commentId);
+        if (!reply?.suggestedText) {
+          return null;
+        }
+
+        return {
+          commentId,
+          approvedText: reply.suggestedText,
+        };
+      })
+      .filter((decision): decision is DraftDecisionDto => decision !== null);
+
+    if (decisions.length === 0) {
+      return;
+    }
+
+    const request: BatchDecisionRequest = { decisions };
 
     try {
-      await ignoreMutation.mutateAsync({ data: ids });
-      await queryClient.invalidateQueries({ queryKey });
-      clearSelection();
-    } catch (error) {
-      console.error('Failed to ignore replies.', error);
+      await approveMutation.mutateAsync({ data: request });
+      setSelectedIds(new Set());
+      await fetchInitial(appliedFilters);
+    } catch {
+      // Error is intentionally left to mutation consumers / future toast handling.
     }
-  };
+  }, [appliedFilters, approveMutation, confirm, fetchInitial, isActionPending, replies, selectedIds]);
 
-  const isBusy = approveMutation.isPending || ignoreMutation.isPending;
+  // Handle batch ignore with confirmation
+  const handleBatchIgnore = useCallback(async () => {
+    if (isActionPending || selectedIds.size === 0) {
+      return;
+    }
 
-  const selectableRows = safeRows.filter((row) => !!row.commentId);
-  const selectedCount = selectedIds.size;
-  const allSelected = selectableRows.length > 0 && selectedCount === selectableRows.length;
+    const count = selectedIds.size;
+    const ok = await confirm(`Do you really want to ignore ${count} ${count === 1 ? 'reply' : 'replies'}?`);
+    if (!ok) {
+      return;
+    }
+
+    const ids = Array.from(selectedIds);
+
+    try {
+      await batchIgnoreMutation.mutateAsync({ data: ids });
+      setSelectedIds(new Set());
+      await fetchInitial(appliedFilters);
+    } catch {
+      // Error is intentionally left to mutation consumers / future toast handling.
+    }
+  }, [appliedFilters, batchIgnoreMutation, confirm, fetchInitial, isActionPending, selectedIds]);
 
   return (
-    <div className="min-h-full">
-      <div className="overflow-hidden rounded-3xl border border-slate-200 bg-white shadow-sm">
-        <div className="border-b border-slate-200 bg-white px-4 py-5 sm:px-6">
-          <div className="flex flex-col gap-5 xl:flex-row xl:items-start xl:justify-between">
-            <div className="max-w-2xl">
-              <h1 className="text-xl font-semibold tracking-tight text-slate-900 sm:text-2xl">Replies to review</h1>
-              <p className="mt-2 text-sm leading-6 text-slate-500">
-                Check the reply suggestions, adjust the wording if you want, and then approve or ignore the ones you
-                choose.
-              </p>
-            </div>
-
-            <div className="flex flex-wrap items-center gap-2">
-              <button
-                onClick={() => void refetch()}
-                disabled={isFetching || isBusy}
-                className="inline-flex items-center justify-center gap-2 rounded-2xl border border-slate-300 bg-white px-4 py-2.5 text-sm font-medium text-slate-700 shadow-sm transition hover:border-slate-400 hover:bg-slate-50 focus:outline-none focus:ring-4 focus:ring-slate-200 disabled:cursor-not-allowed disabled:opacity-50"
-              >
-                <RefreshCcw className="h-4 w-4" />
-                <span>{isFetching ? 'Refreshing…' : 'Refresh'}</span>
-              </button>
-
-              <button
-                onClick={onApproveSelected}
-                disabled={selectedCount === 0 || isBusy}
-                className="inline-flex items-center justify-center gap-2 rounded-2xl bg-slate-900 px-4 py-2.5 text-sm font-medium text-white shadow-sm transition hover:bg-slate-800 focus:outline-none focus:ring-4 focus:ring-slate-300 disabled:cursor-not-allowed disabled:bg-slate-300"
-              >
-                <Check className="h-4 w-4" />
-                <span>Post{selectedCount > 0 ? ` (${selectedCount})` : ''}</span>
-              </button>
-
-              <button
-                onClick={onIgnoreSelected}
-                disabled={selectedCount === 0 || isBusy}
-                className="inline-flex items-center justify-center rounded-2xl border border-slate-300 bg-white px-4 py-2.5 text-sm font-medium text-slate-700 shadow-sm transition hover:border-slate-400 hover:bg-slate-50 focus:outline-none focus:ring-4 focus:ring-slate-200 disabled:cursor-not-allowed disabled:opacity-50"
-              >
-                Ignore{selectedCount > 0 ? ` (${selectedCount})` : ''}
-              </button>
-            </div>
-          </div>
+    <div className="space-y-6 animate-fade-in">
+      {/* Header */}
+      <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+        <div>
+          <h1 className="text-2xl font-bold text-foreground sm:text-3xl">Suggested Replies</h1>
+          <p className="mt-1.5 text-sm text-muted-foreground">
+            Browse and manage AI-generated reply suggestions for your comments
+          </p>
         </div>
 
-        <div className="border-b border-slate-200 bg-slate-50/80 px-4 py-3 sm:px-6">
-          <div className="flex flex-col gap-3 lg:flex-row lg:items-center lg:justify-between">
-            <div className="text-sm text-slate-500">
-              {selectedCount === 0
-                ? 'No replies selected.'
-                : `${selectedCount} ${selectedCount === 1 ? 'reply' : 'replies'} selected.`}
-            </div>
-
-            {selectableRows.length > 0 && (
-              <label className="flex items-center gap-3 text-sm text-slate-700">
-                <input
-                  type="checkbox"
-                  checked={allSelected}
-                  onChange={(e) => onToggleSelectAll(e.target.checked)}
-                  className="h-4 w-4 rounded border-slate-300 text-slate-900 focus:ring-slate-400"
-                />
-                <span>Select all</span>
-              </label>
-            )}
-          </div>
-        </div>
-
-        <div className="space-y-4 bg-slate-50/40 p-4 sm:p-6">
-          {safeRows.length === 0 ? (
-            <div className="rounded-2xl border border-dashed border-slate-300 bg-white px-5 py-10 text-sm text-slate-500">
-              {isFetching ? 'Loading replies…' : 'No replies to review right now.'}
-            </div>
-          ) : (
-            safeRows.map((reply, index) => {
-              const commentId = reply.commentId;
-              const key = commentId || `reply-${index}`;
-
-              return (
-                <ReplyCard
-                  key={key}
-                  reply={reply}
-                  selected={commentId ? selectedIds.has(commentId) : false}
-                  disabled={!commentId}
-                  onToggleSelected={onToggleSelected}
-                  onFinalTextChange={updateReplyText}
-                />
-              );
-            })
-          )}
-        </div>
+        <Button variant="outline" onClick={toggleFilter} className="shrink-0">
+          <Filter className="h-4 w-4" />
+          {isFilterOpen ? 'Hide Filters' : 'Filter'}
+        </Button>
       </div>
 
+      {/* Filter Section - hidden by default */}
+      {isFilterOpen && (
+        <RepliesFilterSection
+          draftFilters={draftFilters}
+          onDraftFiltersChange={setDraftFilters}
+          onApply={handleApplyFilters}
+          onReset={handleResetFilters}
+          onClose={() => setIsFilterOpen(false)}
+        />
+      )}
+
+      {/* Error state */}
+      {error && (
+        <div className="rounded-2xl border border-destructive/30 bg-destructive/10 px-5 py-4">
+          <p className="text-sm text-destructive">Failed to load replies. Please try again.</p>
+          <Button
+            variant="ghost"
+            size="sm"
+            disabled={isInitialLoading}
+            onClick={() => {
+              setSelectedIds(new Set());
+              void fetchInitial(appliedFilters);
+            }}
+            className="mt-2"
+          >
+            Retry
+          </Button>
+        </div>
+      )}
+
+      {/* Selection Bar */}
+      {replies.length > 0 && (
+        <RepliesSelectionBar
+          selectedCount={selectedIds.size}
+          allSelected={allVisibleSelected}
+          onToggleSelectAll={handleSelectAll}
+          onClearSelection={handleClearSelection}
+          onBatchIgnore={handleBatchIgnore}
+          onBatchApprove={handleBatchApprove}
+          isActionPending={isActionPending}
+        />
+      )}
+
+      {/* Content Area */}
+      <RepliesContent
+        replies={replies}
+        isInitialLoading={isInitialLoading && replies.length === 0}
+        isFetchingNextPage={isFetchingNextPage}
+        hasNextPage={hasNextPage}
+        onLoadMore={handleLoadMore}
+        selectedIds={selectedIds}
+        onSelectionChange={handleSelectionChange}
+        onApprove={handleApprove}
+        onIgnore={handleIgnore}
+        isActionPending={isActionPending}
+      />
+
+      {/* Confirmation Dialog */}
       {confirmDialog}
     </div>
   );
