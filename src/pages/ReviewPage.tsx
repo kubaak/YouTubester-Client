@@ -2,8 +2,8 @@ import { useCallback } from 'react';
 import { useForm } from 'react-hook-form';
 import { useQueryClient } from '@tanstack/react-query';
 
-import { VideoSelect } from '@/components/VideoSelect';
-import { useRadixConfirmDialog } from '@/components/ui/useRadixConfirmDialog';
+import { VideoSelect } from '@/feautures/videos/components/VideoSelect';
+import { useRadixConfirmDialog } from '@/components/dialogs/useRadixConfirmDialog';
 import {
   getGetApiVideosVideoIdQueryKey,
   useGetApiVideosVideoId,
@@ -12,8 +12,8 @@ import {
 } from '@/api/videos/videos';
 import type { UpdateVideoMetadataRequest } from '@/api';
 
-import { useVideoIdParam } from '@/hooks/useVideoIdParam';
-import { useVideoSnapshotSync } from '@/hooks/useVideoSnapshotSync';
+import { useVideoIdParam } from '@/feautures/videos/hooks/useVideoIdParam';
+import { useVideoSnapshotSync } from '@/feautures/videos/hooks/useVideoSnapshotSync';
 
 type ReviewFormValues = {
   title: string;

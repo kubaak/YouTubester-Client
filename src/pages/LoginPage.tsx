@@ -2,10 +2,10 @@ import { useAuth } from '../contexts/AuthContext';
 import { Button } from '../components/ui/button';
 
 export default function LoginPage() {
-  var { login, isLoading } = useAuth();
+  const { login, isLoading } = useAuth();
 
-  var handleGoogleLogin = (): void => {
-    var returnUrl = new URLSearchParams(window.location.search).get('returnUrl') || '/';
+  const handleGoogleLogin = (): void => {
+    const returnUrl = new URLSearchParams(window.location.search).get('returnUrl') || '/';
     login(returnUrl);
   };
 

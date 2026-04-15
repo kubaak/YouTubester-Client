@@ -1,8 +1,8 @@
 import { Controller, useForm } from 'react-hook-form';
 import { useNavigate } from 'react-router-dom';
 
-import { VideoSelect } from '@/components/VideoSelect';
-import { useRadixConfirmDialog } from '@/components/ui/useRadixConfirmDialog';
+import { VideoSelect } from '@/feautures/videos/components/VideoSelect';
+import { useRadixConfirmDialog } from '@/components/dialogs/useRadixConfirmDialog';
 import { usePostApiVideosAiTemplate } from '@/api/videos/videos';
 import type { AiVideoTemplateRequest } from '@/api';
 

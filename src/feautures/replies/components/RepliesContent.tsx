@@ -1,7 +1,7 @@
 import { useEffect, useRef } from 'react';
 import { Loader2, SearchX } from 'lucide-react';
 
-import type { ReplyListItemDto } from '../api';
+import type { ReplyListItemDto } from '../../../api';
 import { ReplyCard } from './ReplyCard';
 
 interface RepliesContentProps {

@@ -2,14 +2,14 @@ import { useCallback, useEffect, useState } from 'react';
 import { Filter } from 'lucide-react';
 import { usePostApiRepliesApprove, usePostApiRepliesBatchIgnore } from '../api/replies/replies';
 import type { BatchDecisionRequest, DraftDecisionDto } from '../api';
-import { useRadixConfirmDialog } from '../components/ui/useRadixConfirmDialog';
+import { useRadixConfirmDialog } from '../components/dialogs/useRadixConfirmDialog';
 
 import { Button } from '../components/ui/button';
-import { RepliesContent } from '../components/RepliesContent';
-import { RepliesFilterSection } from '../components/RepliesFilterSection';
-import { RepliesSelectionBar } from '../components/RepliesSelectionBar';
-import { useRepliesSearch } from '../hooks/useRepliesSearch';
-import type { RepliesFilters } from '../hooks/useRepliesSearch';
+import { RepliesContent } from '../feautures/replies/components/RepliesContent';
+import { RepliesFilterSection } from '../feautures/replies/components/RepliesFilterSection';
+import { RepliesSelectionBar } from '../feautures/replies/components/RepliesSelectionBar';
+import { useRepliesSearch } from '../feautures/replies/hooks/useRepliesSearch';
+import type { RepliesFilters } from '../feautures/replies/hooks/useRepliesSearch';
 
 const EMPTY_FILTERS: RepliesFilters = {};
 
