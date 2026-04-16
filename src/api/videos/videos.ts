@@ -32,7 +32,7 @@ import type {
   AiTemplateEnqueueResult,
   AiVideoTemplateRequest,
   CopyVideoTemplateRequest,
-  GetApiVideosParams,
+  GetVideosRequest,
   PostApiVideosResyncParams,
   ProblemDetails,
   UpdateVideoMetadataRequest,
@@ -189,108 +189,69 @@ export const usePostApiVideosAiTemplate = <TError = AxiosError<ProblemDetails>, 
 /**
  * @summary Gets a paginated list of videos with optional title and visibility filters.
  */
-export const getApiVideos = (
-  params?: GetApiVideosParams,
+export const postApiVideosSearch = (
+  getVideosRequest: GetVideosRequest,
   options?: AxiosRequestConfig,
 ): Promise<AxiosResponse<VideoListItemDtoPagedResult>> => {
-  return axios.default.get(`/api/videos`, {
-    ...options,
-    params: { ...params, ...options?.params },
-  });
+  return axios.default.post(`/api/videos/search`, getVideosRequest, options);
 };
 
-export const getGetApiVideosQueryKey = (params?: GetApiVideosParams) => {
-  return [`/api/videos`, ...(params ? [params] : [])] as const;
-};
-
-export const getGetApiVideosQueryOptions = <
-  TData = Awaited<ReturnType<typeof getApiVideos>>,
+export const getPostApiVideosSearchMutationOptions = <
   TError = AxiosError<ProblemDetails>,
->(
-  params?: GetApiVideosParams,
-  options?: {
-    query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiVideos>>, TError, TData>>;
-    axios?: AxiosRequestConfig;
-  },
-) => {
-  const { query: queryOptions, axios: axiosOptions } = options ?? {};
-
-  const queryKey = queryOptions?.queryKey ?? getGetApiVideosQueryKey(params);
-
-  const queryFn: QueryFunction<Awaited<ReturnType<typeof getApiVideos>>> = ({ signal }) =>
-    getApiVideos(params, { signal, ...axiosOptions });
-
-  return { queryKey, queryFn, ...queryOptions } as UseQueryOptions<
-    Awaited<ReturnType<typeof getApiVideos>>,
+  TContext = unknown,
+>(options?: {
+  mutation?: UseMutationOptions<
+    Awaited<ReturnType<typeof postApiVideosSearch>>,
     TError,
-    TData
-  > & { queryKey: DataTag<QueryKey, TData, TError> };
+    { data: GetVideosRequest },
+    TContext
+  >;
+  axios?: AxiosRequestConfig;
+}): UseMutationOptions<
+  Awaited<ReturnType<typeof postApiVideosSearch>>,
+  TError,
+  { data: GetVideosRequest },
+  TContext
+> => {
+  const mutationKey = ['postApiVideosSearch'];
+  const { mutation: mutationOptions, axios: axiosOptions } = options
+    ? options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey
+      ? options
+      : { ...options, mutation: { ...options.mutation, mutationKey } }
+    : { mutation: { mutationKey }, axios: undefined };
+
+  const mutationFn: MutationFunction<Awaited<ReturnType<typeof postApiVideosSearch>>, { data: GetVideosRequest }> = (
+    props,
+  ) => {
+    const { data } = props ?? {};
+
+    return postApiVideosSearch(data, axiosOptions);
+  };
+
+  return { mutationFn, ...mutationOptions };
 };
 
-export type GetApiVideosQueryResult = NonNullable<Awaited<ReturnType<typeof getApiVideos>>>;
-export type GetApiVideosQueryError = AxiosError<ProblemDetails>;
+export type PostApiVideosSearchMutationResult = NonNullable<Awaited<ReturnType<typeof postApiVideosSearch>>>;
+export type PostApiVideosSearchMutationBody = GetVideosRequest;
+export type PostApiVideosSearchMutationError = AxiosError<ProblemDetails>;
 
-export function useGetApiVideos<TData = Awaited<ReturnType<typeof getApiVideos>>, TError = AxiosError<ProblemDetails>>(
-  params: undefined | GetApiVideosParams,
-  options: {
-    query: Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiVideos>>, TError, TData>> &
-      Pick<
-        DefinedInitialDataOptions<
-          Awaited<ReturnType<typeof getApiVideos>>,
-          TError,
-          Awaited<ReturnType<typeof getApiVideos>>
-        >,
-        'initialData'
-      >;
-    axios?: AxiosRequestConfig;
-  },
-  queryClient?: QueryClient,
-): DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
-export function useGetApiVideos<TData = Awaited<ReturnType<typeof getApiVideos>>, TError = AxiosError<ProblemDetails>>(
-  params?: GetApiVideosParams,
-  options?: {
-    query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiVideos>>, TError, TData>> &
-      Pick<
-        UndefinedInitialDataOptions<
-          Awaited<ReturnType<typeof getApiVideos>>,
-          TError,
-          Awaited<ReturnType<typeof getApiVideos>>
-        >,
-        'initialData'
-      >;
-    axios?: AxiosRequestConfig;
-  },
-  queryClient?: QueryClient,
-): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
-export function useGetApiVideos<TData = Awaited<ReturnType<typeof getApiVideos>>, TError = AxiosError<ProblemDetails>>(
-  params?: GetApiVideosParams,
-  options?: {
-    query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiVideos>>, TError, TData>>;
-    axios?: AxiosRequestConfig;
-  },
-  queryClient?: QueryClient,
-): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
 /**
  * @summary Gets a paginated list of videos with optional title and visibility filters.
  */
-
-export function useGetApiVideos<TData = Awaited<ReturnType<typeof getApiVideos>>, TError = AxiosError<ProblemDetails>>(
-  params?: GetApiVideosParams,
+export const usePostApiVideosSearch = <TError = AxiosError<ProblemDetails>, TContext = unknown>(
   options?: {
-    query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof getApiVideos>>, TError, TData>>;
+    mutation?: UseMutationOptions<
+      Awaited<ReturnType<typeof postApiVideosSearch>>,
+      TError,
+      { data: GetVideosRequest },
+      TContext
+    >;
     axios?: AxiosRequestConfig;
   },
   queryClient?: QueryClient,
-): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
-  const queryOptions = getGetApiVideosQueryOptions(params, options);
-
-  const query = useQuery(queryOptions, queryClient) as UseQueryResult<TData, TError> & {
-    queryKey: DataTag<QueryKey, TData, TError>;
-  };
-
-  return { ...query, queryKey: queryOptions.queryKey };
-}
-
+): UseMutationResult<Awaited<ReturnType<typeof postApiVideosSearch>>, TError, { data: GetVideosRequest }, TContext> => {
+  return useMutation(getPostApiVideosSearchMutationOptions(options), queryClient);
+};
 /**
  * @summary Gets video details (title, description, tags) for a single video.
  */

@@ -14,6 +14,8 @@ export interface CopyVideoTemplateRequest {
   sourceVideoId?: string;
   targetVideoId?: string;
   copyTags?: boolean;
+  copyTitle?: boolean;
+  copyDescription?: boolean;
   copyPlaylists?: boolean;
   copyCategory?: boolean;
   copyDefaultLanguages?: boolean;

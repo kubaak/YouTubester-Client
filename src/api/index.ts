@@ -28,7 +28,7 @@ export * from './draftDecisionResultDto';
 export * from './geoLocationDto';
 export * from './getApiAuthLoginGoogleParams';
 export * from './getApiAuthLoginGoogleWriteParams';
-export * from './getApiVideosParams';
+export * from './getVideosRequest';
 export * from './playlistDto';
 export * from './postApiVideosResyncParams';
 export * from './problemDetails';
