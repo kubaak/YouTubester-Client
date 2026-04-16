@@ -1,14 +1,17 @@
+import { ArrowDown, ArrowRight } from 'lucide-react';
 import { Controller, useForm } from 'react-hook-form';
 import { useNavigate } from 'react-router-dom';
 
 import { usePostApiVideosCopyTemplate } from '@/api/videos/videos';
-import type { CopyVideoTemplateRequest } from '@/api';
+import { VideoVisibility, type CopyVideoTemplateRequest } from '@/api';
 import { useRadixConfirmDialog } from '@/components/dialogs/useRadixConfirmDialog';
 import { VideoSelect } from '@/feautures/videos/components/VideoSelect';
 
 type FormValues = {
   sourceVideoId: string;
   targetVideoId: string;
+  copyTitle: boolean;
+  copyDescription: boolean;
   copyTags: boolean;
   copyPlaylists: boolean;
   copyCategory: boolean;
@@ -30,6 +33,8 @@ export default function CopyPage() {
     defaultValues: {
       sourceVideoId: '',
       targetVideoId: '',
+      copyTitle: true,
+      copyDescription: true,
       copyTags: true,
       copyPlaylists: true,
       copyCategory: true,
@@ -39,12 +44,15 @@ export default function CopyPage() {
 
   const sourceVideoId = watch('sourceVideoId');
   const targetVideoId = watch('targetVideoId');
+  const copyTitle = watch('copyTitle');
+  const copyDescription = watch('copyDescription');
   const copyTags = watch('copyTags');
   const copyPlaylists = watch('copyPlaylists');
   const copyCategory = watch('copyCategory');
   const copyDefaultLanguages = watch('copyDefaultLanguages');
 
-  const hasAnyOptionSelected = copyTags || copyPlaylists || copyCategory || copyDefaultLanguages;
+  const hasAnyOptionSelected =
+    copyTitle || copyDescription || copyTags || copyPlaylists || copyCategory || copyDefaultLanguages;
 
   const disabled = isSubmitting || copyMutation.isPending || !sourceVideoId || !targetVideoId || !hasAnyOptionSelected;
 
@@ -55,6 +63,8 @@ export default function CopyPage() {
     const request: CopyVideoTemplateRequest = {
       sourceVideoId: values.sourceVideoId,
       targetVideoId: values.targetVideoId,
+      copyTitle: values.copyTitle,
+      copyDescription: values.copyDescription,
       copyTags: values.copyTags,
       copyPlaylists: values.copyPlaylists,
       copyCategory: values.copyCategory,
@@ -72,22 +82,22 @@ export default function CopyPage() {
           <h1 className="mt-4 text-3xl font-semibold tracking-tight text-slate-900 sm:text-4xl">Copy video details</h1>
 
           <p className="mt-3 max-w-2xl text-sm leading-6 text-slate-600 sm:text-base">
-            Copy selected video details from one video to another. You choose exactly what to copy, and you'll review
-            the changes before applying them.
+            Copy selected video details from one video to another. You choose exactly what to copy, and you&apos;ll
+            review the changes before applying them.
           </p>
         </div>
 
         <form onSubmit={onSubmit} className="space-y-6">
           <div className="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm sm:p-8">
             <div className="grid gap-6">
-              <div className="grid gap-6 lg:grid-cols-2">
+              <div className="grid gap-4 lg:grid-cols-[minmax(0,1fr)_auto_minmax(0,1fr)] lg:items-stretch">
                 <div className="rounded-2xl border border-slate-200 bg-slate-50 p-5">
                   <Controller
                     control={control}
                     name="sourceVideoId"
                     render={({ field }) => (
                       <VideoSelect
-                        label="Select the video you want to copy details from"
+                        label="Source video"
                         value={field.value}
                         onChange={field.onChange}
                         placeholder="Start typing or pick a video…"
@@ -97,17 +107,26 @@ export default function CopyPage() {
                   />
                 </div>
 
+                <div className="flex items-center justify-center py-1 lg:py-0">
+                  <div className="flex h-12 w-12 items-center justify-center rounded-full border border-slate-200 bg-white shadow-sm">
+                    <ArrowRight className="hidden h-5 w-5 text-slate-500 lg:block" aria-hidden="true" />
+                    <ArrowDown className="h-5 w-5 text-slate-500 lg:hidden" aria-hidden="true" />
+                  </div>
+                  <span className="sr-only">Copy from source video to target video</span>
+                </div>
+
                 <div className="rounded-2xl border border-slate-200 bg-slate-50 p-5">
                   <Controller
                     control={control}
                     name="targetVideoId"
                     render={({ field }) => (
                       <VideoSelect
-                        label="Select the video that should receive the details"
+                        label="Target video"
                         value={field.value}
                         onChange={field.onChange}
                         placeholder="Start typing or pick a video…"
                         disabled={copyMutation.isPending}
+                        defaultVisibilities={[VideoVisibility.Unlisted]}
                       />
                     )}
                   />
@@ -124,6 +143,34 @@ export default function CopyPage() {
                   </div>
 
                   <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+                    <label className="flex cursor-pointer items-start gap-3 rounded-2xl border border-slate-200 bg-white p-4 shadow-sm transition hover:border-slate-300 hover:shadow">
+                      <input
+                        type="checkbox"
+                        {...register('copyTitle')}
+                        className="mt-1 h-4 w-4 rounded border-slate-300 text-slate-900 focus:ring-slate-400"
+                      />
+                      <div>
+                        <div className="text-sm font-medium text-slate-900">Title</div>
+                        <div className="mt-1 text-xs leading-5 text-slate-500">
+                          Copy the video title from the source.
+                        </div>
+                      </div>
+                    </label>
+
+                    <label className="flex cursor-pointer items-start gap-3 rounded-2xl border border-slate-200 bg-white p-4 shadow-sm transition hover:border-slate-300 hover:shadow">
+                      <input
+                        type="checkbox"
+                        {...register('copyDescription')}
+                        className="mt-1 h-4 w-4 rounded border-slate-300 text-slate-900 focus:ring-slate-400"
+                      />
+                      <div>
+                        <div className="text-sm font-medium text-slate-900">Description</div>
+                        <div className="mt-1 text-xs leading-5 text-slate-500">
+                          Copy the video description from the source.
+                        </div>
+                      </div>
+                    </label>
+
                     <label className="flex cursor-pointer items-start gap-3 rounded-2xl border border-slate-200 bg-white p-4 shadow-sm transition hover:border-slate-300 hover:shadow">
                       <input
                         type="checkbox"

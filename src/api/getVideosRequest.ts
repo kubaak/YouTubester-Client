@@ -9,12 +9,15 @@
 [🔐 write Login with Google](/api/auth/login/google/write?returnUrl=/swagger/index.html)
  * OpenAPI spec version: v1
  */
+import type { VideoVisibility } from './videoVisibility';
 
-export type VideoVisibility = (typeof VideoVisibility)[keyof typeof VideoVisibility];
-
-export const VideoVisibility = {
-  Public: 'Public',
-  Unlisted: 'Unlisted',
-  Private: 'Private',
-  Scheduled: 'Scheduled',
-} as const;
+export interface GetVideosRequest {
+  /** @nullable */
+  title?: string | null;
+  /** @nullable */
+  visibility?: VideoVisibility[] | null;
+  /** @nullable */
+  pageSize?: number | null;
+  /** @nullable */
+  pageToken?: string | null;
+}
