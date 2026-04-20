@@ -85,7 +85,8 @@ export default function GeneratePage() {
                     <VideoSelect
                       label="Choose your video"
                       value={field.value}
-                      onChange={field.onChange}
+                     defaultVisibilities={[VideoVisibility.Unlisted]}
+ onChange={field.onChange}
                       placeholder="Start typing or pick a video…"
                       disabled={aiTemplateMutation.isPending}
                     />
