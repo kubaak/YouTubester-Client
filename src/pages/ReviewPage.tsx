@@ -10,7 +10,7 @@ import {
   usePostApiVideosSaveDraft,
   usePostApiVideosUpdate,
 } from '@/api/videos/videos';
-import type { UpdateVideoMetadataRequest } from '@/api';
+import { VideoVisibility, type UpdateVideoMetadataRequest } from '@/api';
 
 import { useVideoIdParam } from '@/feautures/videos/hooks/useVideoIdParam';
 import { useVideoSnapshotSync } from '@/feautures/videos/hooks/useVideoSnapshotSync';
@@ -130,8 +130,8 @@ export default function ReviewPage() {
                 <VideoSelect
                   label="Select a video to load its current details"
                   value={videoId}
-                 defaultVisibilities={[VideoVisibility.Unlisted]}
- onChange={handleVideoChange}
+                  defaultVisibilities={[VideoVisibility.Unlisted]}
+                  onChange={handleVideoChange}
                   placeholder="Start typing or pick a video…"
                   disabled={saveDraftMutation.isPending || updateVideoMutation.isPending}
                 />

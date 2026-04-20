@@ -4,7 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import { VideoSelect } from '@/feautures/videos/components/VideoSelect';
 import { useRadixConfirmDialog } from '@/components/dialogs/useRadixConfirmDialog';
 import { usePostApiVideosAiTemplate } from '@/api/videos/videos';
-import type { AiVideoTemplateRequest } from '@/api';
+import { VideoVisibility, type AiVideoTemplateRequest } from '@/api';
 
 type GenerateFormValues = {
   targetVideoId: string;
@@ -85,8 +85,8 @@ export default function GeneratePage() {
                     <VideoSelect
                       label="Choose your video"
                       value={field.value}
-                     defaultVisibilities={[VideoVisibility.Unlisted]}
- onChange={field.onChange}
+                      defaultVisibilities={[VideoVisibility.Unlisted]}
+                      onChange={field.onChange}
                       placeholder="Start typing or pick a video…"
                       disabled={aiTemplateMutation.isPending}
                     />
