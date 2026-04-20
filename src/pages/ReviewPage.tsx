@@ -130,7 +130,8 @@ export default function ReviewPage() {
                 <VideoSelect
                   label="Select a video to load its current details"
                   value={videoId}
-                  onChange={handleVideoChange}
+                 defaultVisibilities={[VideoVisibility.Unlisted]}
+ onChange={handleVideoChange}
                   placeholder="Start typing or pick a video…"
                   disabled={saveDraftMutation.isPending || updateVideoMutation.isPending}
                 />
