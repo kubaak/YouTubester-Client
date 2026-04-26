@@ -19,7 +19,7 @@ interface NavigationItem {
 const primaryNav: readonly NavigationItem[] = [
   { path: '/dashboard', label: 'Dashboard', icon: Home },
   { path: '/copy', label: 'Copy', icon: Video },
-  { path: '/generate', label: 'Improve', icon: Video },
+  { path: '/improve', label: 'Improve', icon: Video },
   { path: '/review', label: 'Review', icon: Video },
   { path: '/replies', label: 'Replies', icon: MessageCircle },
 ] as const;

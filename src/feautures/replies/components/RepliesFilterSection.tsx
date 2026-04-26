@@ -44,6 +44,7 @@ export function RepliesFilterSection({
           value={draftFilters.videoId}
           onChange={(videoId) => onDraftFiltersChange({ ...draftFilters, videoId })}
           placeholder="Filter by video..."
+          showVisibilities={false}
         />
 
         <div className="space-y-2">
