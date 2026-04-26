@@ -5,6 +5,7 @@ import { VideoSelect } from '@/feautures/videos/components/VideoSelect';
 import { useRadixConfirmDialog } from '@/components/dialogs/useRadixConfirmDialog';
 import { usePostApiVideosAiTemplate } from '@/api/videos/videos';
 import { VideoVisibility, type AiVideoTemplateRequest } from '@/api';
+import { useMemo } from 'react';
 
 type GenerateFormValues = {
   targetVideoId: string;
@@ -12,9 +13,10 @@ type GenerateFormValues = {
   generateTitle: boolean;
   generateDescription: boolean;
   generateTags: boolean;
+  suggestPlaylists: boolean;
 };
 
-export default function GeneratePage() {
+export default function ImprovePage() {
   const navigate = useNavigate();
   const { confirm, confirmDialog } = useRadixConfirmDialog();
   const aiTemplateMutation = usePostApiVideosAiTemplate();
@@ -26,6 +28,7 @@ export default function GeneratePage() {
       generateTitle: true,
       generateDescription: true,
       generateTags: true,
+      suggestPlaylists: true,
     },
   });
 
@@ -34,11 +37,12 @@ export default function GeneratePage() {
   const generateTitle = watch('generateTitle');
   const generateDescription = watch('generateDescription');
   const generateTags = watch('generateTags');
+  const suggestPlaylists = watch('suggestPlaylists');
 
   const canGenerate =
     targetVideoId.length > 0 &&
     !aiTemplateMutation.isPending &&
-    (promptEnrichment.trim().length > 0 || generateTitle || generateDescription || generateTags);
+    (promptEnrichment.trim().length > 0 || generateTitle || generateDescription || generateTags || suggestPlaylists);
 
   const onGenerate = handleSubmit(async (values) => {
     const ok = await confirm('Improve this video with AI?');
@@ -50,6 +54,7 @@ export default function GeneratePage() {
       generateTitle: values.generateTitle,
       generateDescription: values.generateDescription,
       generateTags: values.generateTags,
+      suggestPlaylists: values.suggestPlaylists,
     };
 
     try {
@@ -59,6 +64,8 @@ export default function GeneratePage() {
       // error already exposed via isError
     }
   });
+
+  const defaultVisibilities = useMemo(() => [VideoVisibility.Unlisted], []);
 
   return (
     <div className="min-h-full bg-slate-50/70">
@@ -85,7 +92,7 @@ export default function GeneratePage() {
                     <VideoSelect
                       label="Choose your video"
                       value={field.value}
-                      defaultVisibilities={[VideoVisibility.Unlisted]}
+                      defaultVisibilities={defaultVisibilities}
                       onChange={field.onChange}
                       placeholder="Start typing or pick a video…"
                       disabled={aiTemplateMutation.isPending}
@@ -119,7 +126,7 @@ export default function GeneratePage() {
                     </p>
                   </div>
 
-                  <div className="grid gap-3 sm:grid-cols-3">
+                  <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
                     <label className="flex cursor-pointer items-start gap-3 rounded-2xl border border-slate-200 bg-white p-4 shadow-sm transition hover:border-slate-300 hover:shadow">
                       <input
                         type="checkbox"
@@ -158,6 +165,20 @@ export default function GeneratePage() {
                         <div className="text-sm font-medium text-slate-900">Tags</div>
                         <div className="mt-1 text-xs leading-5 text-slate-500">
                           Suggest tags that better match the content.
+                        </div>
+                      </div>
+                    </label>
+
+                    <label className="flex cursor-pointer items-start gap-3 rounded-2xl border border-slate-200 bg-white p-4 shadow-sm transition hover:border-slate-300 hover:shadow">
+                      <input
+                        type="checkbox"
+                        {...register('suggestPlaylists')}
+                        className="mt-1 h-4 w-4 rounded border-slate-300 text-slate-900 focus:ring-slate-400"
+                      />
+                      <div>
+                        <div className="text-sm font-medium text-slate-900">Suggest Playlists</div>
+                        <div className="mt-1 text-xs leading-5 text-slate-500">
+                          Suggest playlists to add this video to.
                         </div>
                       </div>
                     </label>

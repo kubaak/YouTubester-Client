@@ -1,4 +1,4 @@
-import { useCallback } from 'react';
+import { useCallback, useMemo } from 'react';
 import { useForm } from 'react-hook-form';
 import { useQueryClient } from '@tanstack/react-query';
 
@@ -112,6 +112,8 @@ export default function ReviewPage() {
     await queryClient.invalidateQueries({ queryKey: getGetApiVideosVideoIdQueryKey(videoId) });
   });
 
+  const defaultVisibilities = useMemo(() => [VideoVisibility.Unlisted], []);
+
   return (
     <div className="min-h-full bg-slate-50/70">
       <div className="mx-auto max-w-4xl px-6 py-10">
@@ -130,7 +132,7 @@ export default function ReviewPage() {
                 <VideoSelect
                   label="Select a video to load its current details"
                   value={videoId}
-                  defaultVisibilities={[VideoVisibility.Unlisted]}
+                  defaultVisibilities={defaultVisibilities}
                   onChange={handleVideoChange}
                   placeholder="Start typing or pick a video…"
                   disabled={saveDraftMutation.isPending || updateVideoMutation.isPending}
@@ -199,6 +201,27 @@ export default function ReviewPage() {
                             className="mt-2 w-full rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm text-slate-900 shadow-sm outline-none transition placeholder:text-slate-400 focus:border-slate-400 focus:ring-4 focus:ring-slate-200 disabled:cursor-not-allowed disabled:opacity-60"
                             placeholder="tutorial, youtube growth, creator tips"
                           />
+                        </div>
+
+                        <div>
+                          <label className="block text-sm font-medium text-slate-900">Playlists</label>
+                          <p className="mt-1 text-sm text-slate-500">Playlists this video currently belongs to.</p>
+                          <div className="mt-2 rounded-2xl border border-slate-200 bg-white px-4 py-3 min-h-[60px]">
+                            {!videoDetails?.playlists?.length ? (
+                              <p className="text-sm text-slate-400">No playlists</p>
+                            ) : (
+                              <div className="flex flex-wrap gap-2">
+                                {videoDetails.playlists.map((playlist) => (
+                                  <span
+                                    key={playlist.id ?? playlist.name}
+                                    className="inline-flex items-center rounded-full bg-slate-100 px-3 py-1 text-sm text-slate-700"
+                                  >
+                                    {playlist.name ?? 'Unnamed playlist'}
+                                  </span>
+                                ))}
+                              </div>
+                            )}
+                          </div>
                         </div>
                       </div>
                     )}

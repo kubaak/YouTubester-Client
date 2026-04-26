@@ -16,4 +16,5 @@ export interface AiVideoTemplateRequest {
   generateTitle?: boolean;
   generateDescription?: boolean;
   generateTags?: boolean;
+  suggestPlaylists?: boolean;
 }

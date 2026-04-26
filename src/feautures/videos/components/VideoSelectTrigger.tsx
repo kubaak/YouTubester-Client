@@ -17,8 +17,8 @@ export const VideoSelectTrigger = forwardRef<HTMLButtonElement, Props>(function 
   ref,
 ) {
   return (
-    <div className={cn('relative')}>
-      <label className="block text-sm font-medium text-gray-900 mb-1">{label}</label>
+    <div className="relative">
+      <label className="block text-sm font-medium text-foreground mb-1">{label}</label>
 
       <button
         ref={ref}
@@ -26,19 +26,19 @@ export const VideoSelectTrigger = forwardRef<HTMLButtonElement, Props>(function 
         disabled={disabled}
         onClick={onClick}
         className={cn(
-          'w-full rounded-xl border px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-black text-left flex items-center justify-between',
+          'w-full rounded-xl border border-border/50 bg-background px-3 py-2 text-sm text-foreground outline-none focus:border-primary/30 focus:ring-2 focus:ring-primary/20 text-left flex items-center justify-between',
           disabled && 'opacity-50 cursor-not-allowed',
         )}
         aria-haspopup="listbox"
         aria-expanded={open}
       >
         {selected ? (
-          <span className="inline-flex items-center gap-3">
+          <span className="inline-flex min-w-0 items-center gap-3">
             {selected.thumbnailUrl && (
               <img
                 src={selected.thumbnailUrl}
-                alt={selected.title!}
-                className="w-15 h-9 rounded object-cover border"
+                alt={selected.title ?? 'Selected video thumbnail'}
+                className="w-15 h-9 rounded object-cover border border-border/50"
                 loading="lazy"
               />
             )}
@@ -47,9 +47,9 @@ export const VideoSelectTrigger = forwardRef<HTMLButtonElement, Props>(function 
             </span>
           </span>
         ) : (
-          <span className="text-gray-500">{placeholder}</span>
+          <span className="text-muted-foreground">{placeholder}</span>
         )}
-        <ChevronDown className={cn('w-4 h-4 transition-transform', open && 'rotate-180')} />
+        <ChevronDown aria-hidden="true" className={cn('w-4 h-4 transition-transform', open && 'rotate-180')} />
       </button>
     </div>
   );

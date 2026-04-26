@@ -10,6 +10,7 @@ import { VideoSelectList } from './VideoSelectList';
 type Props = {
   label: string;
   defaultVisibilities?: readonly VideoVisibilityValue[];
+  showVisibilities?: boolean;
   value?: string;
   onChange: (videoId: string) => void;
   placeholder?: string;
@@ -23,6 +24,7 @@ const ALL_VISIBILITIES = Object.values(VideoVisibility) as VideoVisibilityValue[
 export function VideoSelect({
   label,
   defaultVisibilities = ALL_VISIBILITIES,
+  showVisibilities = true,
   value,
   onChange,
   placeholder = 'Select a video…',
@@ -149,6 +151,7 @@ export function VideoSelect({
             filter={filter}
             onFilterChange={setFilter}
             selectedVisibilities={selectedVisibilities}
+            showVisibilities={showVisibilities}
             onVisibilityToggle={toggleVisibility}
           />
 

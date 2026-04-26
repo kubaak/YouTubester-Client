@@ -11,7 +11,7 @@ import LoginPage from '@/pages/LoginPage';
 import DashboardPage from '@/pages/DashboardPage';
 import RepliesPage from '@/pages/RepliesPage';
 import CopyPage from '@/pages/CopyPage';
-import GeneratePage from '@/pages/GeneratePage';
+import ImprovePage from '@/pages/ImprovePage';
 import ReviewPage from '@/pages/ReviewPage';
 import AccountSettingsPage from '@/pages/AccountSettingsPage';
 import ChannelSettingsPage from '@/pages/ChannelSettingsPage';
@@ -91,7 +91,7 @@ export default function App() {
                     <Routes>
                       <Route path="/dashboard" element={<DashboardPage />} />
                       <Route path="/copy" element={<CopyPage />} />
-                      <Route path="/generate" element={<GeneratePage />} />
+                      <Route path="/improve" element={<ImprovePage />} />
                       <Route path="/review" element={<ReviewPage />} />
                       <Route path="/replies" element={<RepliesPage />} />
                       <Route path="/settings/account" element={<AccountSettingsPage />} />

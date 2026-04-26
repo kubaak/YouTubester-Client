@@ -6,6 +6,7 @@ import { usePostApiVideosCopyTemplate } from '@/api/videos/videos';
 import { VideoVisibility, type CopyVideoTemplateRequest } from '@/api';
 import { useRadixConfirmDialog } from '@/components/dialogs/useRadixConfirmDialog';
 import { VideoSelect } from '@/feautures/videos/components/VideoSelect';
+import { useMemo } from 'react';
 
 type FormValues = {
   sourceVideoId: string;
@@ -75,6 +76,8 @@ export default function CopyPage() {
     navigate(`/review?videoId=${encodeURIComponent(values.targetVideoId)}`);
   });
 
+  const defaultVisibilities = useMemo(() => [VideoVisibility.Unlisted], []);
+
   return (
     <div className="min-h-full bg-slate-50/70">
       <div className="mx-auto max-w-4xl px-6 py-10">
@@ -126,7 +129,7 @@ export default function CopyPage() {
                         onChange={field.onChange}
                         placeholder="Start typing or pick a video…"
                         disabled={copyMutation.isPending}
-                        defaultVisibilities={[VideoVisibility.Unlisted]}
+                        defaultVisibilities={defaultVisibilities}
                       />
                     )}
                   />
