@@ -13,6 +13,7 @@ type Props = {
   showVisibilities?: boolean;
   value?: string;
   onChange: (videoId: string) => void;
+  onSelect?: (video: VideoListItemDto) => void;
   placeholder?: string;
   disabled?: boolean;
   className?: string;
@@ -27,6 +28,7 @@ export function VideoSelect({
   showVisibilities = true,
   value,
   onChange,
+  onSelect,
   placeholder = 'Select a video…',
   disabled,
   className,
@@ -124,8 +126,9 @@ export function VideoSelect({
     });
   }
 
-  function handleSelect(videoId: string) {
-    onChange(videoId);
+  function handleSelect(video: VideoListItemDto) {
+    onChange(video.videoId);
+    onSelect?.(video);
     setOpen(false);
   }
 

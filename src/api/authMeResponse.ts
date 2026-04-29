@@ -24,4 +24,5 @@ export interface AuthMeResponse {
   /** @nullable */
   picture?: string | null;
   hasWriteAccess?: boolean;
+  isAdmin?: boolean;
 }

@@ -15,6 +15,7 @@ import ImprovePage from '@/pages/ImprovePage';
 import ReviewPage from '@/pages/ReviewPage';
 import AccountSettingsPage from '@/pages/AccountSettingsPage';
 import ChannelSettingsPage from '@/pages/ChannelSettingsPage';
+import ConfigurationPage from '@/pages/ConfigurationPage';
 import AboutPage from '@/pages/AboutPage';
 import FaqPage from '@/pages/FaqPage';
 import ContactPage from '@/pages/ContactPage';
@@ -96,6 +97,7 @@ export default function App() {
                       <Route path="/replies" element={<RepliesPage />} />
                       <Route path="/settings/account" element={<AccountSettingsPage />} />
                       <Route path="/settings/channel" element={<ChannelSettingsPage />} />
+                      <Route path="/settings/configuration" element={<ConfigurationPage />} />
                       <Route path="/about" element={<AboutPage />} />
                       <Route path="/faq" element={<FaqPage />} />
                       <Route path="/contact" element={<ContactPage />} />

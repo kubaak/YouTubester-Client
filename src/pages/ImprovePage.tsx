@@ -21,7 +21,7 @@ export default function ImprovePage() {
   const { confirm, confirmDialog } = useRadixConfirmDialog();
   const aiTemplateMutation = usePostApiVideosAiTemplate();
 
-  const { control, register, handleSubmit, watch } = useForm<GenerateFormValues>({
+  const { control, register, handleSubmit, watch, setValue } = useForm<GenerateFormValues>({
     defaultValues: {
       targetVideoId: '',
       promptEnrichment: '',
@@ -94,6 +94,7 @@ export default function ImprovePage() {
                       value={field.value}
                       defaultVisibilities={defaultVisibilities}
                       onChange={field.onChange}
+                      onSelect={(video) => setValue('promptEnrichment', video.title ?? 'e.g., Funny cat compilation')}
                       placeholder="Start typing or pick a video…"
                       disabled={aiTemplateMutation.isPending}
                     />
