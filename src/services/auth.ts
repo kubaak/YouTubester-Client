@@ -6,6 +6,7 @@ export interface User {
   name: string;
   picture?: string;
   isAuthenticated: boolean;
+  isAdmin: boolean;
 }
 
 export const authService = {
@@ -24,8 +25,14 @@ export const authService = {
   async getCurrentUser(): Promise<User | null> {
     try {
       // With cookie-based auth, the server reads the auth cookie and returns the current user
-      const response = await axios.get<User>('/api/auth/me');
-      const authenticatedUser: User = { ...response.data, isAuthenticated: true };
+      const response = await axios.get<{ email: string; name: string; picture?: string; isAdmin: boolean }>('/api/auth/me');
+      const authenticatedUser: User = {
+        email: response.data.email,
+        name: response.data.name,
+        picture: response.data.picture,
+        isAuthenticated: true,
+        isAdmin: response.data.isAdmin ?? false,
+      };
       return authenticatedUser;
     } catch {
       // Any error (including 401) is treated as "not authenticated" on the client side

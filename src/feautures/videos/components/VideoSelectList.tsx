@@ -6,7 +6,7 @@ type Props = {
   items: readonly VideoListItemDto[];
   isPending: boolean;
   value?: string;
-  onChange: (videoId: string) => void;
+  onChange: (video: VideoListItemDto) => void;
   nextPageToken?: string;
   onLoadMore: () => void;
 };
@@ -35,7 +35,7 @@ export function VideoSelectList({ items, isPending, value, onChange, nextPageTok
                       'w-full flex items-center gap-3 rounded-lg px-2 py-2 text-sm hover:bg-gray-100 text-left',
                       active && 'bg-gray-100',
                     )}
-                    onClick={() => onChange(videoId)}
+                    onClick={() => onChange(v)}
                   >
                     {v.thumbnailUrl && (
                       <img

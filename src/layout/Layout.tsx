@@ -1,6 +1,6 @@
 import { useLocation } from 'react-router-dom';
 import { useState, type ReactNode } from 'react';
-import { Video, MessageCircle, Home, HelpCircle, Info, Mail } from 'lucide-react';
+import { Video, MessageCircle, Home, HelpCircle, Info, Mail, Settings } from 'lucide-react';
 
 import { DesktopSidebar } from './DesktopSidebar';
 import { MobileHeader } from './MobileHeader';
@@ -24,11 +24,19 @@ const primaryNav: readonly NavigationItem[] = [
   { path: '/replies', label: 'Replies', icon: MessageCircle },
 ] as const;
 
-const secondaryNav: readonly NavigationItem[] = [
+const baseSecondaryNav: readonly NavigationItem[] = [
+  { path: '/settings/account', label: 'Account', icon: Settings },
+  { path: '/settings/channel', label: 'Channel', icon: Settings },
   { path: '/help', label: 'Help', icon: HelpCircle },
   { path: '/about', label: 'About', icon: Info },
   { path: '/contact', label: 'Contact', icon: Mail },
 ] as const;
+
+function getSecondaryNav(isAdmin: boolean): readonly NavigationItem[] {
+  return isAdmin
+    ? [...baseSecondaryNav, { path: '/settings/configuration', label: 'Configuration', icon: Settings }]
+    : baseSecondaryNav;
+}
 
 interface LayoutProps {
   children: ReactNode;
@@ -47,6 +55,7 @@ function getCurrentPageTitle(
     (pathname === '/terms' ? 'Terms of Service' : null) ||
     (pathname === '/settings/account' ? 'Account Settings' : null) ||
     (pathname === '/settings/channel' ? 'Channel Settings' : null) ||
+    (pathname === '/settings/configuration' ? 'Configuration' : null) ||
     'Tubester'
   );
 }
@@ -60,6 +69,7 @@ export default function Layout({ children }: LayoutProps) {
   const [isDesktopUserMenuOpen, setIsDesktopUserMenuOpen] = useState(false);
   const [isMobileNavOpen, setIsMobileNavOpen] = useState(false);
 
+  const secondaryNav = getSecondaryNav(!!user?.isAdmin);
   const currentPageTitle = getCurrentPageTitle(location.pathname, primaryNav, secondaryNav);
 
   const closeMobileSurfaces = (): void => {
